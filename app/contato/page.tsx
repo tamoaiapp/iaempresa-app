@@ -37,7 +37,7 @@ export default function ContatoPage() {
           A forma mais rápida de falar com a gente.
         </p>
         <a
-          href="https://wa.me/5511999999999?text=Olá!%20Vim%20pelo%20iaempresa.app"
+          href="https://wa.me/5511967245795?text=Olá!%20Vim%20pelo%20iaempresa.app"
           target="_blank"
           rel="noopener noreferrer"
           style={{ background: "#25d366", color: "#fff", padding: "0.75rem 1.75rem", borderRadius: 10, textDecoration: "none", fontWeight: 800, display: "inline-block" }}
