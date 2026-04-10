@@ -26,9 +26,11 @@ const categoriaColors: Record<string, string> = {
   vendas: "#16c784",
 };
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   const guias = getAllGuias();
-  return guias.map((g) => ({ slug: g.slug }));
+  return guias.slice(0, 80).map((g) => ({ slug: g.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
