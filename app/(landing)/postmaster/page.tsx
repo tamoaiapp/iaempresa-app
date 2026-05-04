@@ -130,24 +130,24 @@ export default function PostmasterPage() {
               color: "#a78bfa", borderRadius: 20, padding: "0.35rem 1rem",
               fontSize: "0.85rem", fontWeight: 600, marginBottom: "1.75rem",
             }}>
-              App para Windows · IA local gratuita
+              App Windows · sem mensalidade · IA gratuita e sem limites
             </div>
 
             <h1 style={{
               fontSize: "clamp(2rem, 4vw, 3.2rem)",
               fontWeight: 900, lineHeight: 1.1, marginBottom: "1.25rem",
             }}>
-              Poste Reels no{" "}
+              Posta todo dia no{" "}
               <span style={{ background: "linear-gradient(135deg,#f58529,#dd2a7b,#8134af)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 Instagram
               </span>{" "}
               e{" "}
               <span style={{ color: "#69c9d0" }}>TikTok</span>
-              <br />no piloto automatico
+              <br />sem gastar nada com IA
             </h1>
 
             <p style={{ fontSize: "1.05rem", color: "#8394b0", marginBottom: "2rem", lineHeight: 1.7 }}>
-              O PostMaster busca videos no YouTube, converte para Reel, gera a legenda com IA local e posta automaticamente — enquanto voce faz outra coisa.
+              Busca videos no YouTube, converte para Reel, gera a legenda com IA embarcada e posta automaticamente nos seus perfis — sem limite de posts, sem custo de API, sem mensalidade.
             </p>
 
             <div style={{ display: "flex", gap: "0.875rem", flexWrap: "wrap", marginBottom: "2rem" }}>
@@ -172,7 +172,7 @@ export default function PostmasterPage() {
             </div>
 
             <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap" }}>
-              {["Sem mensalidade", "IA 100% local", "Multiplas contas", "Instagram + TikTok"].map(t => (
+              {["Sem mensalidade", "IA gratuita e sem limites", "Posts ilimitados", "Instagram + TikTok"].map(t => (
                 <span key={t} style={{ color: "#8394b0", fontSize: "0.85rem", fontWeight: 500, display: "flex", alignItems: "center", gap: "0.35rem" }}>
                   <span style={{ color: "#16c784", fontWeight: 900 }}>+</span> {t}
                 </span>
