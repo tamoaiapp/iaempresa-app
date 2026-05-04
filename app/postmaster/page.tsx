@@ -1,16 +1,7 @@
-import type { Metadata } from "next";
+"use client";
 import Link from "next/link";
+import { useState } from "react";
 
-export const metadata: Metadata = {
-  title: "PostMaster — Poste no Instagram e TikTok no piloto automático",
-  description:
-    "Aplicativo Windows que posta Reels no Instagram e TikTok automaticamente, usando IA local gratuita. Sem mensalidade, sem API paga. Roda no seu PC 24h.",
-  openGraph: {
-    title: "PostMaster — Postagem automática com IA para Instagram e TikTok",
-    description: "Poste Reels automaticamente no Instagram e TikTok, com legenda gerada por IA local. Sem mensalidade.",
-    images: [{ url: "/postmaster-og.png", width: 1200, height: 630 }],
-  },
-};
 
 const features = [
   {
@@ -79,7 +70,22 @@ const faqs = [
   },
 ];
 
+async function handleCheckout(setLoading: (v: boolean) => void) {
+  setLoading(true);
+  try {
+    const res = await fetch("/api/checkout/postmaster", { method: "POST" });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else alert("Erro ao iniciar pagamento. Tente novamente.");
+  } catch {
+    alert("Erro ao conectar. Tente novamente.");
+  } finally {
+    setLoading(false);
+  }
+}
+
 export default function PostmasterPage() {
+  const [loading, setLoading] = useState(false);
   return (
     <>
       {/* ── Hero ── */}
@@ -128,16 +134,16 @@ export default function PostmasterPage() {
           </p>
 
           <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", marginBottom: "2rem" }}>
-            <a href="#comprar" style={{
+            <button onClick={() => handleCheckout(setLoading)} disabled={loading} style={{
               display: "inline-flex", alignItems: "center", gap: "0.5rem",
               background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
               color: "#fff", padding: "0.9rem 2rem", borderRadius: 14,
               fontWeight: 700, fontSize: "1.05rem",
               boxShadow: "0 4px 24px rgba(99,102,241,0.4)",
-              textDecoration: "none",
+              border: "none", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1,
             }}>
-              ⬇ Comprar agora
-            </a>
+              {loading ? "Aguarde..." : "⬇ Comprar agora"}
+            </button>
             <a href="#como-funciona" style={{
               display: "inline-flex", alignItems: "center", gap: "0.5rem",
               background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
@@ -316,17 +322,18 @@ export default function PostmasterPage() {
               ))}
             </div>
 
-            <a href="mailto:contato@iaempresa.app?subject=Compra PostMaster" style={{
-              display: "block",
+            <button onClick={() => handleCheckout(setLoading)} disabled={loading} style={{
+              display: "block", width: "100%",
               background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
               color: "#fff", padding: "1rem",
               borderRadius: 14, fontWeight: 700, fontSize: "1.05rem",
-              textDecoration: "none", textAlign: "center",
+              textAlign: "center", border: "none",
               boxShadow: "0 4px 24px rgba(99,102,241,0.4)",
+              cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1,
               marginBottom: "1rem",
             }}>
-              ⬇ Comprar PostMaster — R$ 97
-            </a>
+              {loading ? "Redirecionando para pagamento..." : "⬇ Comprar PostMaster — R$ 97"}
+            </button>
 
             <p style={{ color: "#4e5c72", fontSize: "0.8rem" }}>
               Após o pagamento você recebe o link de download e a chave de ativação por e-mail em até 10 minutos.
@@ -364,16 +371,16 @@ export default function PostmasterPage() {
           <p style={{ color: "#8394b0", marginBottom: "2rem", fontSize: "1.05rem" }}>
             Configure uma vez. O PostMaster cuida do resto.
           </p>
-          <a href="#comprar" style={{
-            display: "inline-block",
+          <button onClick={() => handleCheckout(setLoading)} disabled={loading} style={{
             background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
             color: "#fff", padding: "1rem 2.5rem",
             borderRadius: 14, fontWeight: 700, fontSize: "1.05rem",
-            textDecoration: "none",
+            border: "none", cursor: loading ? "wait" : "pointer",
             boxShadow: "0 4px 24px rgba(99,102,241,0.4)",
+            opacity: loading ? 0.7 : 1,
           }}>
-            ⬇ Comprar PostMaster — R$ 97
-          </a>
+            {loading ? "Aguarde..." : "⬇ Comprar PostMaster — R$ 97"}
+          </button>
           <p style={{ color: "#4e5c72", fontSize: "0.8rem", marginTop: "1rem" }}>
             Dúvidas? Fale com a gente: <a href="mailto:contato@iaempresa.app" style={{ color: "#8394b0" }}>contato@iaempresa.app</a>
           </p>
