@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react'
 const TOGETHER_DATE = new Date(2015, 4, 6, 11, 0, 0) // início do namoro: 06/05/2015
 const WEDDING_DATE  = new Date(2017, 4, 6, 11, 0, 0) // casamento: 06/05/2017
 
-// ✏️ Fotos: coloque os arquivos em public/9anos/foto1.jpg ... foto6.jpg
+// ✏️ Fotos: coloque os arquivos em public/9anos/
 const PHOTOS = [
-  { src: '/9anos/foto1.jpg', year: '2017', label: 'O começo de tudo' },
-  { src: '/9anos/foto2.jpg', year: '2018', label: 'Crescendo juntos' },
-  { src: '/9anos/foto3.jpg', year: '2019', label: 'Aventuras a dois' },
+  { src: '/9anos/foto1.jpg', year: '2015', label: 'O início do nosso amor' },
+  { src: '/9anos/foto2.jpg', year: '2017', label: 'Nosso casamento' },
+  { src: '/9anos/foto3.jpg', year: '2018 · 2019', label: 'Aventuras a dois' },
   { src: '/9anos/foto4.jpg', year: '2020 · 2021', label: 'Amor que nunca falha' },
   { src: '/9anos/foto5.jpg', year: '2022 · 2023', label: 'Nossa família' },
   { src: '/9anos/foto6.jpg', year: '2024 · 2026', label: 'E muito mais por vir...' },
