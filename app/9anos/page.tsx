@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 
-// ✏️ Data do casamento — ajuste o horário se quiser mais precisão
-const WEDDING_DATE = new Date(2017, 4, 6, 11, 0, 0) // 6 de maio de 2017, 11h
+// ✏️ Data em que se conheceram — usada no contador "Juntos há"
+const TOGETHER_DATE = new Date(2015, 1, 8, 11, 0, 0) // 8 de fevereiro de 2015
 
 // ✏️ Fotos: coloque os arquivos em public/9anos/foto1.jpg ... foto6.jpg
 const PHOTOS = [
@@ -27,7 +27,7 @@ interface TimeElapsed {
 
 function calcTime(): TimeElapsed {
   const now = new Date()
-  const diff = now.getTime() - WEDDING_DATE.getTime()
+  const diff = now.getTime() - TOGETHER_DATE.getTime()
 
   const totalSeconds = Math.floor(diff / 1000)
   const totalDays = Math.floor(totalSeconds / 86400)
@@ -35,9 +35,9 @@ function calcTime(): TimeElapsed {
   const minutes = Math.floor(totalSeconds / 60) % 60
   const hours = Math.floor(totalSeconds / 3600) % 24
 
-  let years = now.getFullYear() - WEDDING_DATE.getFullYear()
-  let months = now.getMonth() - WEDDING_DATE.getMonth()
-  let days = now.getDate() - WEDDING_DATE.getDate()
+  let years = now.getFullYear() - TOGETHER_DATE.getFullYear()
+  let months = now.getMonth() - TOGETHER_DATE.getMonth()
+  let days = now.getDate() - TOGETHER_DATE.getDate()
 
   if (days < 0) {
     months--
@@ -505,7 +505,7 @@ export default function NoveAnos() {
         {/* ── Contador ── */}
         <section className="counter-sec">
           <div className="fi">
-            <span className="sec-script">Juntos há</span>
+            <span className="sec-script">Juntos desde 08/02/2015</span>
             <span className="sec-upper">cada segundo conta</span>
           </div>
 
