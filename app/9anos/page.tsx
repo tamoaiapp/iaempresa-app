@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 
-// ✏️ Início do namoro — 06/05/2015 (confirmado: 9 meses = 06/02/2016)
-const TOGETHER_DATE = new Date(2015, 4, 6, 11, 0, 0) // 6 de maio de 2015
+const TOGETHER_DATE = new Date(2015, 4, 6, 11, 0, 0) // início do namoro: 06/05/2015
+const WEDDING_DATE  = new Date(2017, 4, 6, 11, 0, 0) // casamento: 06/05/2017
 
 // ✏️ Fotos: coloque os arquivos em public/9anos/foto1.jpg ... foto6.jpg
 const PHOTOS = [
@@ -15,37 +15,29 @@ const PHOTOS = [
   { src: '/9anos/foto6.jpg', year: '2024 · 2026', label: 'E muito mais por vir...' },
 ]
 
-interface TimeElapsed {
-  years: number
-  months: number
-  days: number
-  hours: number
-  minutes: number
-  seconds: number
-  totalDays: number
+interface Period { years: number; months: number; days: number; totalDays: number }
+interface TimeElapsed { namoro: Period; casamento: Period; hours: number; minutes: number; seconds: number }
+
+function calcPeriod(from: Date, now: Date): Period {
+  const totalDays = Math.floor((now.getTime() - from.getTime()) / 86400000)
+  let years = now.getFullYear() - from.getFullYear()
+  let months = now.getMonth() - from.getMonth()
+  let days = now.getDate() - from.getDate()
+  if (days < 0) { months--; days += new Date(now.getFullYear(), now.getMonth(), 0).getDate() }
+  if (months < 0) { years--; months += 12 }
+  return { years, months, days, totalDays }
 }
 
 function calcTime(): TimeElapsed {
   const now = new Date()
-  const diff = now.getTime() - TOGETHER_DATE.getTime()
-
-  const totalSeconds = Math.floor(diff / 1000)
-  const totalDays = Math.floor(totalSeconds / 86400)
-  const seconds = totalSeconds % 60
-  const minutes = Math.floor(totalSeconds / 60) % 60
-  const hours = Math.floor(totalSeconds / 3600) % 24
-
-  let years = now.getFullYear() - TOGETHER_DATE.getFullYear()
-  let months = now.getMonth() - TOGETHER_DATE.getMonth()
-  let days = now.getDate() - TOGETHER_DATE.getDate()
-
-  if (days < 0) {
-    months--
-    days += new Date(now.getFullYear(), now.getMonth(), 0).getDate()
+  const totalSeconds = Math.floor((now.getTime() - TOGETHER_DATE.getTime()) / 1000)
+  return {
+    namoro:    calcPeriod(TOGETHER_DATE, now),
+    casamento: calcPeriod(WEDDING_DATE, now),
+    hours:   Math.floor(totalSeconds / 3600) % 24,
+    minutes: Math.floor(totalSeconds / 60) % 60,
+    seconds: totalSeconds % 60,
   }
-  if (months < 0) { years--; months += 12 }
-
-  return { years, months, days, hours, minutes, seconds, totalDays }
 }
 
 function PhotoFrame({ src, year, label }: { src: string; year: string; label: string }) {
@@ -318,6 +310,47 @@ export default function NoveAnos() {
         }
         .total-line strong { color: #f4c95d; }
 
+        .period-block {
+          max-width: 360px;
+          margin: 0 auto 8px;
+          background: rgba(232,160,191,0.04);
+          border: 1px solid rgba(232,160,191,0.12);
+          border-radius: 20px;
+          padding: 24px 20px 20px;
+        }
+        .period-tag {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(14px, 4vw, 17px);
+          font-weight: 600;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: #e8a0bf;
+          margin-bottom: 4px;
+        }
+        .period-since {
+          font-size: 10px;
+          letter-spacing: 0.25em;
+          color: #3a2a4a;
+          margin-bottom: 16px;
+          text-transform: uppercase;
+        }
+        .c-item-gold {
+          background: rgba(244,201,93,0.06) !important;
+          border-color: rgba(244,201,93,0.18) !important;
+        }
+        .c-num-gold {
+          background: linear-gradient(135deg, #f4c95d, #e8a0bf) !important;
+          -webkit-background-clip: text !important;
+          -webkit-text-fill-color: transparent !important;
+        }
+        .period-divider {
+          text-align: center;
+          color: #2e2040;
+          font-size: 18px;
+          margin: 16px 0;
+          display: block;
+        }
+
         /* ── Carta ── */
         .letter-sec {
           padding: 60px 20px;
@@ -498,45 +531,76 @@ export default function NoveAnos() {
           <div className="hero-anos">Anos de Amor</div>
           <div className="hero-div" />
           <div className="hero-names">Tiago &amp; Nathalia</div>
-          <div className="hero-date">06 · 05 · 2017 &nbsp;→&nbsp; 06 · 05 · 2026</div>
+          <div className="hero-date">💑 namoro: 06 · 05 · 2015 &nbsp;·&nbsp; 💍 casamento: 06 · 05 · 2017</div>
           <div className="scroll-hint">↓</div>
         </section>
 
         {/* ── Contador ── */}
         <section className="counter-sec">
           <div className="fi">
-            <span className="sec-script">Juntos desde 06/05/2015</span>
+            <span className="sec-script">Nossa história em números</span>
             <span className="sec-upper">cada segundo conta</span>
           </div>
 
           {time && (
             <>
-              <div className="counter-grid fi d1">
-                <div className="c-item">
-                  <span className="c-num">{time.years}</span>
-                  <span className="c-lbl">Anos</span>
+              {/* Bloco Namoro */}
+              <div className="period-block fi d1">
+                <div className="period-tag">💑 Namorando</div>
+                <div className="period-since">desde 06 · 05 · 2015</div>
+                <div className="counter-grid" style={{ marginBottom: 0 }}>
+                  <div className="c-item">
+                    <span className="c-num">{time.namoro.years}</span>
+                    <span className="c-lbl">Anos</span>
+                  </div>
+                  <div className="c-item">
+                    <span className="c-num">{time.namoro.months}</span>
+                    <span className="c-lbl">Meses</span>
+                  </div>
+                  <div className="c-item">
+                    <span className="c-num">{time.namoro.days}</span>
+                    <span className="c-lbl">Dias</span>
+                  </div>
                 </div>
-                <div className="c-item">
-                  <span className="c-num">{time.months}</span>
-                  <span className="c-lbl">Meses</span>
-                </div>
-                <div className="c-item">
-                  <span className="c-num">{time.days}</span>
-                  <span className="c-lbl">Dias</span>
+                <div className="total-line" style={{ marginTop: 12 }}>
+                  <strong>{time.namoro.totalDays.toLocaleString('pt-BR')}</strong> dias juntos
                 </div>
               </div>
 
-              <div className="clock-row fi d2">
+              {/* Divisor */}
+              <div className="period-divider fi d2">✦</div>
+
+              {/* Bloco Casamento */}
+              <div className="period-block fi d2">
+                <div className="period-tag">💍 Casados</div>
+                <div className="period-since">desde 06 · 05 · 2017</div>
+                <div className="counter-grid" style={{ marginBottom: 0 }}>
+                  <div className="c-item c-item-gold">
+                    <span className="c-num c-num-gold">{time.casamento.years}</span>
+                    <span className="c-lbl">Anos</span>
+                  </div>
+                  <div className="c-item c-item-gold">
+                    <span className="c-num c-num-gold">{time.casamento.months}</span>
+                    <span className="c-lbl">Meses</span>
+                  </div>
+                  <div className="c-item c-item-gold">
+                    <span className="c-num c-num-gold">{time.casamento.days}</span>
+                    <span className="c-lbl">Dias</span>
+                  </div>
+                </div>
+                <div className="total-line" style={{ marginTop: 12 }}>
+                  <strong>{time.casamento.totalDays.toLocaleString('pt-BR')}</strong> dias de casados
+                </div>
+              </div>
+
+              {/* Relógio ao vivo */}
+              <div className="clock-row fi d3">
                 <span>{pad(time.hours)}</span>
                 <span className="sep">h</span>
                 <span>{pad(time.minutes)}</span>
                 <span className="sep">m</span>
                 <span>{pad(time.seconds)}</span>
                 <span className="sep">s</span>
-              </div>
-
-              <div className="total-line fi d3">
-                Isso são <strong>{time.totalDays.toLocaleString('pt-BR')}</strong> dias vividos juntos
               </div>
             </>
           )}
@@ -590,7 +654,7 @@ export default function NoveAnos() {
           <div className="final-quote">
             Te amo hoje,<br />amanhã e sempre
           </div>
-          <div className="final-sub">06 de Maio, 2026 · 9 anos juntos</div>
+          <div className="final-sub">11 anos namorando · 9 anos casados · 06 de Maio, 2026</div>
         </section>
       </div>
     </>
