@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 
-// ✏️ Data em que se conheceram — usada no contador "Juntos há"
-const TOGETHER_DATE = new Date(2015, 1, 8, 11, 0, 0) // 8 de fevereiro de 2015
+// ✏️ Início do namoro — 06/05/2015 (confirmado: 9 meses = 06/02/2016)
+const TOGETHER_DATE = new Date(2015, 4, 6, 11, 0, 0) // 6 de maio de 2015
 
 // ✏️ Fotos: coloque os arquivos em public/9anos/foto1.jpg ... foto6.jpg
 const PHOTOS = [
@@ -505,7 +505,7 @@ export default function NoveAnos() {
         {/* ── Contador ── */}
         <section className="counter-sec">
           <div className="fi">
-            <span className="sec-script">Juntos desde 08/02/2015</span>
+            <span className="sec-script">Juntos desde 06/05/2015</span>
             <span className="sec-upper">cada segundo conta</span>
           </div>
 
