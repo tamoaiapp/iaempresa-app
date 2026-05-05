@@ -1,6 +1,24 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+function useCountdown() {
+  const [t, setT] = useState({ h: 0, m: 0, s: 0 });
+  useEffect(() => {
+    function calc() {
+      const now = new Date();
+      // meia-noite horário de Brasília (UTC-3)
+      const end = new Date(now.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+      end.setHours(23, 59, 59, 999);
+      const diff = Math.max(0, end.getTime() - new Date(now.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" })).getTime());
+      return { h: Math.floor(diff / 3600000), m: Math.floor((diff % 3600000) / 60000), s: Math.floor((diff % 60000) / 1000) };
+    }
+    setT(calc());
+    const id = setInterval(() => setT(calc()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return t;
+}
 
 const features = [
   {
@@ -156,6 +174,8 @@ async function handleCheckout(setLoading: (v: boolean) => void) {
 export default function PostmasterPage() {
   const [loading, setLoading] = useState(false);
   const buy = () => handleCheckout(setLoading);
+  const { h, m, s } = useCountdown();
+  const pad = (n: number) => String(n).padStart(2, "0");
 
   return (
     <div style={{ background: "var(--bg)", color: "var(--text)", fontFamily: "'Outfit', sans-serif", minHeight: "100vh" }}>
@@ -180,14 +200,27 @@ export default function PostmasterPage() {
         </button>
       </nav>
 
-      {/* ── Faixa de urgência ── */}
+      {/* ── Faixa de urgência com timer ── */}
       <div style={{
         background: "linear-gradient(90deg,#6366f1,#8b5cf6)",
-        textAlign: "center", padding: "0.6rem 1rem",
-        fontSize: "0.875rem", fontWeight: 600, color: "#fff",
-        letterSpacing: "0.01em",
+        textAlign: "center", padding: "0.55rem 1rem",
+        fontSize: "0.85rem", fontWeight: 600, color: "#fff",
+        display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem", flexWrap: "wrap",
       }}>
-        🔥 Preço de lançamento: <strong>R$ 197</strong> — sobe para R$ 597 em breve
+        <span>🔥 Oferta expira hoje à meia-noite</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+          {[pad(h), pad(m), pad(s)].map((v, i) => (
+            <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+              <span style={{
+                background: "rgba(0,0,0,0.25)", borderRadius: 6,
+                padding: "0.1rem 0.45rem", fontVariantNumeric: "tabular-nums",
+                fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.05em",
+              }}>{v}</span>
+              {i < 2 && <span style={{ opacity: 0.7, fontWeight: 900 }}>:</span>}
+            </span>
+          ))}
+        </span>
+        <span style={{ opacity: 0.85 }}>— depois sobe para <strong>R$ 597</strong></span>
       </div>
 
       {/* ── Hero ── */}

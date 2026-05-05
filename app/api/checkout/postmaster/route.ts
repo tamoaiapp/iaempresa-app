@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import { MercadoPagoConfig, Preference } from "mercadopago";
 
-const client = new MercadoPagoConfig({
-  accessToken: process.env.MP_ACCESS_TOKEN_POSTMASTER!,
-});
-
 export async function POST() {
+  const token = process.env.MP_ACCESS_TOKEN_POSTMASTER;
+  if (!token) {
+    console.error("MP_ACCESS_TOKEN_POSTMASTER não está definido");
+    return NextResponse.json({ error: "Configuração de pagamento ausente" }, { status: 500 });
+  }
+
+  const client = new MercadoPagoConfig({ accessToken: token });
+
   try {
     const preference = new Preference(client);
     const result = await preference.create({
