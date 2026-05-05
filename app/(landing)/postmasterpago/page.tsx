@@ -3,7 +3,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import Link from "next/link";
 
-const DOWNLOAD_URL = "https://drive.google.com/uc?id=SEU_ID_AQUI"; // troque após subir o .exe
+const DOWNLOAD_URL = "https://github.com/tamoaiapp/postmaster/releases/latest/download/PostMaster-Setup.exe";
 
 const antivirusSteps = [
   {
@@ -92,7 +92,7 @@ function PaidContent() {
               PostMaster — Download
             </h2>
             <p style={{ color: "#8394b0", fontSize: "0.9rem", marginBottom: "1.5rem" }}>
-              Versão 1.0.0 · Windows 10/11 · ~200 MB
+              Versão 1.0.0 · Windows 10/11 · Instalador completo
             </p>
             <a
               href={DOWNLOAD_URL}
@@ -119,14 +119,14 @@ function PaidContent() {
             </h2>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
               {[
-                ["1", "Baixe o arquivo PostMaster.exe acima"],
-                ["2", "Instale o Ollama gratuitamente em ollama.com — clique em \"Download\" e siga o instalador"],
-                ["3", 'Abra o terminal (Win+R → digite "cmd" → Enter) e rode: ollama pull qwen2.5:0.5b'],
-                ["4", "Instale o yt-dlp: acesse github.com/yt-dlp/yt-dlp/releases e baixe o yt-dlp.exe — coloque em C:\\Windows\\System32"],
-                ["5", "Execute o PostMaster.exe. Se o Windows bloquear, veja as instruções abaixo."],
-                ["6", "Clique em \"Contas\" → adicione sua conta do Instagram ou TikTok"],
-                ["7", "Clique em \"Nova automação\" e configure fonte, filtros e horário"],
-                ["8", "Clique em Iniciar — pronto, o bot roda sozinho!"],
+                ["1", "Baixe o arquivo PostMaster-Setup.exe acima e execute — ele instala automaticamente"],
+                ["2", "Se o Windows bloquear, clique em \"Mais informações\" → \"Executar assim mesmo\" (veja instruções abaixo)"],
+                ["3", "Instale o yt-dlp: baixe o yt-dlp.exe em github.com/yt-dlp/yt-dlp/releases e coloque em C:\\Windows\\System32"],
+                ["4", "Abra o PostMaster — a IA já vem embutida, não precisa instalar nada mais"],
+                ["5", "Clique em \"Contas\" → adicione sua conta do Instagram ou TikTok (login normal)"],
+                ["6", "Clique em \"Nova automação\", cole o link do canal do YouTube e configure os filtros"],
+                ["7", "Defina o horário de postagem (ex: 08h–22h, a cada 60 min)"],
+                ["8", "Clique em Iniciar — pronto! O PostMaster posta sozinho enquanto o PC estiver ligado"],
               ].map(([n, text]) => (
                 <div key={n} style={{
                   display: "flex", gap: "1rem", alignItems: "flex-start",
