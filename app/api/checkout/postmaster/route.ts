@@ -17,7 +17,7 @@ export async function POST() {
             description: "Aplicativo Windows para postar Reels no Instagram e TikTok automaticamente com IA local.",
             quantity: 1,
             currency_id: "BRL",
-            unit_price: 97,
+            unit_price: 197,
           },
         ],
         back_urls: {
