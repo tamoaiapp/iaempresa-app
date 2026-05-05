@@ -244,6 +244,15 @@ export default function NoveAnos() {
           line-height: 1.1;
         }
 
+        .hero-city {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(11px, 3vw, 14px);
+          color: #5a4a6a;
+          letter-spacing: 0.3em;
+          margin-top: 8px;
+          position: relative;
+          z-index: 1;
+        }
         .hero-date {
           font-family: 'Cormorant Garamond', serif;
           font-size: clamp(11px, 3.2vw, 15px);
@@ -645,6 +654,7 @@ export default function NoveAnos() {
           <div className="hero-div" />
           <div className="hero-names">Tiago &amp; Nathalia</div>
           <div className="hero-date">💑 namoro: 06 · 05 · 2015 &nbsp;·&nbsp; 💍 casamento: 06 · 05 · 2017</div>
+          <div className="hero-city">📍 Umuarama · PR</div>
           <div className="scroll-hint">↓</div>
         </section>
 
