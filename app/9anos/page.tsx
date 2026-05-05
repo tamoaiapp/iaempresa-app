@@ -29,9 +29,9 @@ function calcIdade(nasc: Date): string {
 const make = (prefix: string, n: number) =>
   Array.from({ length: n }, (_, i) => `/9anos/${prefix}${String(i + 1).padStart(2, '0')}.jpg`)
 
-const CAR1 = make('a', 12) // casal / namoro
-const CAR2 = make('b', 12) // família / casamento
-const CAR3 = make('c', 12) // filhas
+const CAR1 = make('a', 20) // casal / namoro
+const CAR2 = make('b', 20) // família / casamento
+const CAR3 = make('c', 17) // filhas
 
 interface Period { years: number; months: number; days: number; totalDays: number }
 interface TimeElapsed { namoro: Period; casamento: Period; hours: number; minutes: number; seconds: number }
