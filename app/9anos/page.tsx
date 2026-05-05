@@ -527,7 +527,7 @@ export default function NoveAnos() {
 
         {/* ── Hero ── */}
         <section className="hero">
-          <div className="hero-nine">9</div>
+          <div className="hero-nine">11</div>
           <div className="hero-anos">Anos de Amor</div>
           <div className="hero-div" />
           <div className="hero-names">Tiago &amp; Nathalia</div>
