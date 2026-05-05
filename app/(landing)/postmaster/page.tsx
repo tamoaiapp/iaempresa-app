@@ -314,11 +314,11 @@ export default function PostmasterPage() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", textAlign: "left" }}>
             {[
               ["Sistema", "Windows 10 ou 11"],
-              ["RAM", "4 GB minimo (8 GB recomendado para IA)"],
-              ["Conexao", "Internet (para baixar e postar)"],
-              ["Ollama", "Gratuito — instalar separadamente"],
-              ["yt-dlp", "Gratuito — instalar separadamente"],
-              ["Espaco", "~500 MB para o app + downloads temporarios"],
+              ["RAM", "4 GB mínimo (8 GB recomendado)"],
+              ["Conexão", "Internet ativa (para baixar e postar)"],
+              ["IA", "Embutida — sem instalar nada"],
+              ["yt-dlp", "Gratuito — guia de instalação incluso"],
+              ["Espaço", "~500 MB para o app + downloads temporários"],
             ].map(([label, text]) => (
               <div key={label} style={{
                 background: "var(--card)", border: "1px solid var(--line)",
@@ -331,7 +331,7 @@ export default function PostmasterPage() {
             ))}
           </div>
           <p style={{ color: "#8394b0", fontSize: "0.85rem", marginTop: "1.5rem", lineHeight: 1.6 }}>
-            O guia de instalacao do Ollama e yt-dlp esta incluido na compra. Sao ferramentas gratuitas e faceis de instalar.
+            O guia de instalação do yt-dlp está incluso na compra. É gratuito e leva menos de 2 minutos para configurar.
           </p>
         </div>
       </section>
