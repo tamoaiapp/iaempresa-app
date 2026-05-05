@@ -110,100 +110,135 @@ export default function PostmasterPage() {
         </button>
       </nav>
 
-      {/* ── Hero 2 colunas ── */}
+      {/* ── Hero ── */}
       <section style={{
         background: "linear-gradient(180deg, #0a0b14 0%, var(--bg) 100%)",
         padding: "5rem 1.5rem 4rem",
       }}>
-        <div style={{
-          maxWidth: 1100, margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "3rem",
-          alignItems: "center",
-        }}>
-          {/* Texto */}
-          <div>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+
+          {/* Badge */}
+          <div style={{ textAlign: "center", marginBottom: "1.75rem" }}>
             <div style={{
               display: "inline-flex", alignItems: "center", gap: "0.5rem",
               background: "rgba(99,102,241,0.12)", border: "1px solid rgba(99,102,241,0.3)",
-              color: "#a78bfa", borderRadius: 20, padding: "0.35rem 1rem",
-              fontSize: "0.85rem", fontWeight: 600, marginBottom: "1.75rem",
+              color: "#a78bfa", borderRadius: 20, padding: "0.35rem 1.1rem",
+              fontSize: "0.85rem", fontWeight: 600,
             }}>
-              App Windows · sem mensalidade · IA gratuita e sem limites
-            </div>
-
-            <h1 style={{
-              fontSize: "clamp(2rem, 4vw, 3.2rem)",
-              fontWeight: 900, lineHeight: 1.1, marginBottom: "1.25rem",
-            }}>
-              Posta todo dia no{" "}
-              <span style={{ background: "linear-gradient(135deg,#f58529,#dd2a7b,#8134af)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                Instagram
-              </span>{" "}
-              e{" "}
-              <span style={{ color: "#69c9d0" }}>TikTok</span>
-              <br />sem gastar nada com IA
-            </h1>
-
-            <p style={{ fontSize: "1.05rem", color: "#8394b0", marginBottom: "2rem", lineHeight: 1.7 }}>
-              Busca videos no YouTube, converte para Reel, gera a legenda com IA embarcada e posta automaticamente nos seus perfis — sem limite de posts, sem custo de API, sem mensalidade.
-            </p>
-
-            <div style={{ display: "flex", gap: "0.875rem", flexWrap: "wrap", marginBottom: "2rem" }}>
-              <button onClick={() => handleCheckout(setLoading)} disabled={loading} style={{
-                display: "inline-flex", alignItems: "center", gap: "0.5rem",
-                background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
-                color: "#fff", padding: "0.875rem 1.75rem", borderRadius: 14,
-                fontWeight: 700, fontSize: "1rem",
-                boxShadow: "0 4px 24px rgba(99,102,241,0.4)",
-                border: "none", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1,
-              }}>
-                {loading ? "Aguarde..." : "Comprar agora — R$ 97"}
-              </button>
-              <a href="#como-funciona" style={{
-                display: "inline-flex", alignItems: "center", gap: "0.5rem",
-                background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
-                color: "#eef2f9", padding: "0.875rem 1.75rem", borderRadius: 14,
-                fontWeight: 600, fontSize: "1rem", textDecoration: "none",
-              }}>
-                Como funciona
-              </a>
-            </div>
-
-            <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap" }}>
-              {["Sem mensalidade", "IA gratuita e sem limites", "Posts ilimitados", "Instagram + TikTok"].map(t => (
-                <span key={t} style={{ color: "#8394b0", fontSize: "0.85rem", fontWeight: 500, display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                  <span style={{ color: "#16c784", fontWeight: 900 }}>+</span> {t}
-                </span>
-              ))}
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#16c784", display: "inline-block" }} />
+              Bot rodando agora em + de 6 contas · 840+ posts hoje
             </div>
           </div>
 
-          {/* Screenshot */}
+          {/* Headline centralizada */}
+          <h1 style={{
+            textAlign: "center",
+            fontSize: "clamp(2.4rem, 5vw, 4rem)",
+            fontWeight: 900, lineHeight: 1.08, marginBottom: "1.25rem",
+          }}>
+            Seu perfil postando sozinho no{" "}
+            <span style={{ background: "linear-gradient(135deg,#f58529,#dd2a7b,#8134af)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              Instagram
+            </span>{" "}
+            e{" "}
+            <span style={{ color: "#69c9d0" }}>TikTok</span>
+            <br />enquanto você faz outra coisa
+          </h1>
+
+          <p style={{ textAlign: "center", fontSize: "1.1rem", color: "#8394b0", marginBottom: "2.25rem", lineHeight: 1.7, maxWidth: 640, margin: "0 auto 2.25rem" }}>
+            Conecta com o YouTube, baixa, converte para Reel, gera legenda com IA e posta automaticamente. Você configura uma vez — ele posta para sempre.
+          </p>
+
+          {/* CTAs */}
+          <div style={{ display: "flex", gap: "0.875rem", flexWrap: "wrap", justifyContent: "center", marginBottom: "1.5rem" }}>
+            <button onClick={() => handleCheckout(setLoading)} disabled={loading} style={{
+              display: "inline-flex", alignItems: "center", gap: "0.5rem",
+              background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
+              color: "#fff", padding: "0.95rem 2rem", borderRadius: 14,
+              fontWeight: 700, fontSize: "1.05rem",
+              boxShadow: "0 4px 32px rgba(99,102,241,0.45)",
+              border: "none", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1,
+            }}>
+              {loading ? "Aguarde..." : "Comprar agora — R$ 97"}
+            </button>
+            <a href="#como-funciona" style={{
+              display: "inline-flex", alignItems: "center", gap: "0.5rem",
+              background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
+              color: "#eef2f9", padding: "0.95rem 2rem", borderRadius: 14,
+              fontWeight: 600, fontSize: "1.05rem", textDecoration: "none",
+            }}>
+              Ver como funciona ↓
+            </a>
+          </div>
+
+          {/* Trust */}
+          <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap", justifyContent: "center", marginBottom: "3.5rem" }}>
+            {["Pagamento único", "Sem mensalidade", "Posts ilimitados", "Instagram + TikTok"].map(t => (
+              <span key={t} style={{ color: "#8394b0", fontSize: "0.85rem", fontWeight: 500, display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                <span style={{ color: "#16c784", fontWeight: 900 }}>✓</span> {t}
+              </span>
+            ))}
+          </div>
+
+          {/* App screenshot full width */}
           <div style={{ position: "relative" }}>
+            {/* Glow */}
             <div style={{
-              position: "absolute", inset: -1,
-              background: "linear-gradient(135deg,rgba(99,102,241,0.4),rgba(168,85,247,0.2))",
-              borderRadius: 18, filter: "blur(20px)", opacity: 0.6,
+              position: "absolute", inset: 0,
+              background: "radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.35) 0%, transparent 70%)",
+              borderRadius: 20, pointerEvents: "none",
             }} />
+            {/* Barra de browser falsa */}
             <div style={{
-              position: "relative",
-              border: "1px solid rgba(99,102,241,0.25)",
-              borderRadius: 16,
+              background: "#161b27",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderBottom: "none",
+              borderRadius: "16px 16px 0 0",
+              padding: "0.6rem 1rem",
+              display: "flex", alignItems: "center", gap: "0.5rem",
+            }}>
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57", display: "inline-block" }} />
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#febc2e", display: "inline-block" }} />
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#28c840", display: "inline-block" }} />
+              <span style={{ flex: 1, background: "rgba(255,255,255,0.06)", borderRadius: 6, padding: "0.2rem 0.75rem", fontSize: "0.75rem", color: "#4e5c72", marginLeft: "0.5rem" }}>
+                PostMaster
+              </span>
+            </div>
+            <div style={{
+              border: "1px solid rgba(99,102,241,0.2)",
+              borderTop: "none",
+              borderRadius: "0 0 16px 16px",
               overflow: "hidden",
-              boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
+              boxShadow: "0 32px 80px rgba(0,0,0,0.6)",
             }}>
               <Image
                 src="/postmaster-app.png"
-                alt="PostMaster — interface do aplicativo"
-                width={775}
-                height={415}
+                alt="PostMaster — dashboard com contas e postagens"
+                width={1100}
+                height={580}
                 style={{ display: "block", width: "100%", height: "auto" }}
                 priority
               />
             </div>
+
+            {/* Stats flutuantes */}
+            <div style={{
+              position: "absolute", bottom: 24, right: 24,
+              background: "rgba(13,17,23,0.92)", backdropFilter: "blur(12px)",
+              border: "1px solid rgba(22,199,132,0.3)",
+              borderRadius: 14, padding: "0.875rem 1.25rem",
+              display: "flex", gap: "1.5rem",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+            }}>
+              {[["6", "contas ativas"], ["840", "posts hoje"], ["0", "custo de API"]].map(([n, l]) => (
+                <div key={l} style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: "1.4rem", fontWeight: 900, color: "#16c784", lineHeight: 1 }}>{n}</div>
+                  <div style={{ fontSize: "0.7rem", color: "#8394b0", marginTop: 2 }}>{l}</div>
+                </div>
+              ))}
+            </div>
           </div>
+
         </div>
       </section>
 
