@@ -22,15 +22,16 @@ function calcIdade(nasc: Date): string {
   return `${years} anos`
 }
 
-// ✏️ Fotos: coloque os arquivos em public/9anos/
-const PHOTOS = [
-  { src: '/9anos/foto1.jpg', year: '2015', label: 'O início do nosso amor' },
-  { src: '/9anos/foto2.jpg', year: '2017', label: 'Nosso casamento' },
-  { src: '/9anos/foto3.jpg', year: '2018 · 2019', label: 'Aventuras a dois' },
-  { src: '/9anos/foto4.jpg', year: '2020 · 2021', label: 'Amor que nunca falha' },
-  { src: '/9anos/foto5.jpg', year: '2022 · 2023', label: 'Nossa família' },
-  { src: '/9anos/foto6.jpg', year: '2024 · 2026', label: 'E muito mais por vir...' },
-]
+// ✏️ Carrosseis — coloque as fotos em public/9anos/
+// Carossel 1 (namoro/casal): a01.jpg … a12.jpg
+// Carossel 2 (família/casamento): b01.jpg … b12.jpg
+// Carossel 3 (filhas): c01.jpg … c12.jpg
+const make = (prefix: string, n: number) =>
+  Array.from({ length: n }, (_, i) => `/9anos/${prefix}${String(i + 1).padStart(2, '0')}.jpg`)
+
+const CAR1 = make('a', 12) // casal / namoro
+const CAR2 = make('b', 12) // família / casamento
+const CAR3 = make('c', 12) // filhas
 
 interface Period { years: number; months: number; days: number; totalDays: number }
 interface TimeElapsed { namoro: Period; casamento: Period; hours: number; minutes: number; seconds: number }
@@ -57,23 +58,28 @@ function calcTime(): TimeElapsed {
   }
 }
 
-function PhotoFrame({ src, year, label }: { src: string; year: string; label: string }) {
+function CarItem({ src }: { src: string }) {
   const [err, setErr] = useState(false)
   return (
-    <div className="photo-frame">
+    <div className="car-item" style={err ? { background: 'rgba(232,160,191,0.04)', display:'flex', alignItems:'center', justifyContent:'center' } : {}}>
       {!err
         // eslint-disable-next-line @next/next/no-img-element
-        ? <img src={src} alt={label} onError={() => setErr(true)} />
-        : (
-          <div className="photo-ph">
-            <span style={{ fontSize: 28 }}>📷</span>
-            <span style={{ fontSize: 11, color: 'rgba(232,160,191,0.4)', textAlign: 'center', padding: '0 8px' }}>{label}</span>
-          </div>
-        )
+        ? <img src={src} alt="" onError={() => setErr(true)} />
+        : <span style={{ fontSize: 24, opacity: 0.2 }}>📷</span>
       }
-      <div className="photo-overlay">
-        <div className="photo-year">{year}</div>
-        <div className="photo-label">{label}</div>
+    </div>
+  )
+}
+
+function Carousel({ srcs, dir, label }: { srcs: string[]; dir: 'left' | 'right'; label: string }) {
+  const all = [...srcs, ...srcs] // duplica para loop infinito
+  return (
+    <div className="car-section fi">
+      <div className="car-label">{label}</div>
+      <div className="car-outer">
+        <div className={`car-track car-${dir}`}>
+          {all.map((src, i) => <CarItem key={i} src={src} />)}
+        </div>
       </div>
     </div>
   )
@@ -426,66 +432,56 @@ export default function NoveAnos() {
           margin-top: 26px;
         }
 
-        /* ── Fotos ── */
-        .photos-sec {
-          padding: 60px 14px;
+        /* ── Carrosseis ── */
+        .carousels-sec {
+          padding: 60px 0 64px;
           background: #0b0818;
-        }
-        .photos-header { text-align: center; margin-bottom: 36px; }
-
-        .photos-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 10px;
-          max-width: 480px;
-          margin: 0 auto;
-        }
-        .photo-frame {
-          aspect-ratio: 1;
-          border-radius: 16px;
           overflow: hidden;
-          position: relative;
-          border: 1px solid rgba(232,160,191,0.18);
-          background: rgba(232,160,191,0.03);
-          cursor: pointer;
         }
-        .photo-frame img {
+        .carousels-sec > .fi { padding: 0 16px; }
+
+        .car-section { margin-bottom: 28px; }
+        .car-label {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(11px, 3vw, 13px);
+          letter-spacing: 0.3em;
+          text-transform: uppercase;
+          color: #3a2a4a;
+          padding: 0 16px;
+          margin-bottom: 12px;
+        }
+        .car-outer {
+          overflow: hidden;
+          width: 100%;
+          -webkit-mask-image: linear-gradient(90deg, transparent 0, black 60px, black calc(100% - 60px), transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, black 60px, black calc(100% - 60px), transparent 100%);
+        }
+        .car-track {
+          display: flex;
+          gap: 10px;
+          width: max-content;
+          padding: 4px 0;
+        }
+        .car-left  { animation: carLeft  28s linear infinite; }
+        .car-right { animation: carRight 28s linear infinite; }
+        @keyframes carLeft  { from { transform: translateX(0);    } to { transform: translateX(-50%); } }
+        @keyframes carRight { from { transform: translateX(-50%); } to { transform: translateX(0);    } }
+
+        .car-item {
+          width: 130px;
+          height: 174px;
+          border-radius: 14px;
+          overflow: hidden;
+          flex-shrink: 0;
+          border: 1px solid rgba(232,160,191,0.15);
+          background: rgba(232,160,191,0.04);
+        }
+        .car-item img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          transition: transform 0.5s ease;
           display: block;
-        }
-        .photo-frame:active img { transform: scale(1.06); }
-        .photo-ph {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          height: 100%;
-          gap: 8px;
-        }
-        .photo-overlay {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          background: linear-gradient(transparent, rgba(7,7,16,0.92));
-          padding: 24px 12px 12px;
           pointer-events: none;
-        }
-        .photo-year {
-          font-size: 9px;
-          color: #f4c95d;
-          letter-spacing: 0.22em;
-          text-transform: uppercase;
-        }
-        .photo-label {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 13.5px;
-          color: #f0e6ff;
-          font-style: italic;
-          margin-top: 2px;
         }
 
         /* ── Final ── */
@@ -749,19 +745,15 @@ export default function NoveAnos() {
           </div>
         </section>
 
-        {/* ── Fotos ── */}
-        <section className="photos-sec">
-          <div className="photos-header fi">
+        {/* ── Carrosseis ── */}
+        <section className="carousels-sec">
+          <div className="fi" style={{ textAlign:'center', marginBottom: 36 }}>
             <span className="sec-script">Nossa história</span>
-            <span className="sec-upper" style={{ display: 'block', textAlign: 'center' }}>em fotos</span>
+            <span className="sec-upper" style={{ display:'block', textAlign:'center' }}>em fotos</span>
           </div>
-          <div className="photos-grid">
-            {PHOTOS.map((p, i) => (
-              <div key={i} className={`fi d${(i % 3) + 1}`}>
-                <PhotoFrame src={p.src} year={p.year} label={p.label} />
-              </div>
-            ))}
-          </div>
+          <Carousel srcs={CAR1} dir="left"  label="💑 Nosso namoro" />
+          <Carousel srcs={CAR2} dir="right" label="💍 Nossa família" />
+          <Carousel srcs={CAR3} dir="left"  label="👧 Nossas princesas" />
         </section>
 
         {/* ── Filhas ── */}
