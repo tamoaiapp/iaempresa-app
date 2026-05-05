@@ -2,8 +2,25 @@
 
 import { useEffect, useState } from 'react'
 
-const TOGETHER_DATE = new Date(2015, 4, 6, 11, 0, 0) // início do namoro: 06/05/2015
-const WEDDING_DATE  = new Date(2017, 4, 6, 11, 0, 0) // casamento: 06/05/2017
+const TOGETHER_DATE = new Date(2015, 4, 6, 11, 0, 0)
+const WEDDING_DATE  = new Date(2017, 4, 6, 11, 0, 0)
+
+const FILHAS = [
+  { nome: 'Helena',     sobrenome: 'Evangelista Oliveira', nascimento: new Date(2018, 4, 1),  foto: '/9anos/filha1.jpg', emoji: '🌸' },
+  { nome: 'Maria Livia', sobrenome: 'Evangelista Oliveira', nascimento: new Date(2020, 2, 6),  foto: '/9anos/filha2.jpg', emoji: '💜' },
+  { nome: 'Maíte',     sobrenome: 'Evangelista Oliveira', nascimento: new Date(2024, 8, 2),  foto: '/9anos/filha3.jpg', emoji: '⭐' },
+]
+
+function calcIdade(nasc: Date): string {
+  const now = new Date()
+  let years = now.getFullYear() - nasc.getFullYear()
+  let months = now.getMonth() - nasc.getMonth()
+  if (now.getDate() < nasc.getDate()) months--
+  if (months < 0) { years--; months += 12 }
+  if (years === 0) return `${months} ${months === 1 ? 'mês' : 'meses'}`
+  if (years < 2)   return `${years} ano e ${months} ${months === 1 ? 'mês' : 'meses'}`
+  return `${years} anos`
+}
 
 // ✏️ Fotos: coloque os arquivos em public/9anos/
 const PHOTOS = [
@@ -58,6 +75,19 @@ function PhotoFrame({ src, year, label }: { src: string; year: string; label: st
         <div className="photo-year">{year}</div>
         <div className="photo-label">{label}</div>
       </div>
+    </div>
+  )
+}
+
+function FilhaFoto({ src, nome }: { src: string; nome: string }) {
+  const [err, setErr] = useState(false)
+  return (
+    <div className="filha-foto">
+      {!err
+        // eslint-disable-next-line @next/next/no-img-element
+        ? <img src={src} alt={nome} onError={() => setErr(true)} />
+        : <div className="filha-foto-ph">👶</div>
+      }
     </div>
   )
 }
@@ -493,6 +523,93 @@ export default function NoveAnos() {
           margin-top: 24px;
         }
 
+        /* ── Filhas ── */
+        .filhas-sec {
+          padding: 60px 16px 64px;
+          background: #070710;
+        }
+        .filhas-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+          max-width: 480px;
+          margin: 0 auto;
+        }
+        .filha-card {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 6px;
+        }
+        .filha-foto-wrap {
+          position: relative;
+          margin-bottom: 4px;
+        }
+        .filha-foto {
+          width: clamp(88px, 26vw, 120px);
+          height: clamp(88px, 26vw, 120px);
+          border-radius: 50%;
+          overflow: hidden;
+          border: 2px solid rgba(232,160,191,0.35);
+          background: rgba(232,160,191,0.05);
+          box-shadow: 0 0 24px rgba(232,160,191,0.15);
+        }
+        .filha-foto img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center top;
+          display: block;
+        }
+        .filha-foto-ph {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 36px;
+        }
+        .filha-emoji {
+          position: absolute;
+          bottom: 2px;
+          right: 2px;
+          font-size: 18px;
+          background: #070710;
+          border-radius: 50%;
+          width: 26px;
+          height: 26px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid rgba(232,160,191,0.2);
+        }
+        .filha-nome {
+          font-family: 'Sacramento', cursive;
+          font-size: clamp(18px, 5.5vw, 26px);
+          color: #e8a0bf;
+          line-height: 1.1;
+        }
+        .filha-sobrenome {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(8px, 2.2vw, 11px);
+          color: #3a2a4a;
+          letter-spacing: 0.05em;
+          line-height: 1.3;
+        }
+        .filha-nasc {
+          font-size: clamp(8px, 2vw, 10px);
+          color: #f4c95d;
+          letter-spacing: 0.05em;
+          margin-top: 2px;
+        }
+        .filha-idade {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(11px, 3vw, 14px);
+          color: #7a6b8a;
+          font-style: italic;
+        }
+
         /* ── Fade in on scroll ── */
         .fi {
           opacity: 0;
@@ -643,6 +760,30 @@ export default function NoveAnos() {
             {PHOTOS.map((p, i) => (
               <div key={i} className={`fi d${(i % 3) + 1}`}>
                 <PhotoFrame src={p.src} year={p.year} label={p.label} />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Filhas ── */}
+        <section className="filhas-sec">
+          <div className="fi" style={{ textAlign: 'center', marginBottom: 36 }}>
+            <span className="sec-script">Nossas filhas</span>
+            <span className="sec-upper" style={{ display: 'block', textAlign: 'center' }}>o maior presente do nosso amor</span>
+          </div>
+          <div className="filhas-grid">
+            {FILHAS.map((f, i) => (
+              <div key={i} className={`filha-card fi d${i + 1}`}>
+                <div className="filha-foto-wrap">
+                  <FilhaFoto src={f.foto} nome={f.nome} />
+                  <span className="filha-emoji">{f.emoji}</span>
+                </div>
+                <div className="filha-nome">{f.nome}</div>
+                <div className="filha-sobrenome">{f.sobrenome}</div>
+                <div className="filha-nasc">
+                  {f.nascimento.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                </div>
+                <div className="filha-idade">{calcIdade(f.nascimento)}</div>
               </div>
             ))}
           </div>
