@@ -75,7 +75,7 @@ function Carousel({ srcs, dir, label }: { srcs: string[]; dir: 'left' | 'right';
   const all = [...srcs, ...srcs] // duplica para loop infinito
   return (
     <div className="car-section fi">
-      <div className="car-label">{label}</div>
+      {label && <div className="car-label">{label}</div>}
       <div className="car-outer">
         <div className={`car-track car-${dir}`}>
           {all.map((src, i) => <CarItem key={i} src={src} />)}
@@ -751,9 +751,9 @@ export default function NoveAnos() {
             <span className="sec-script">Nossa história</span>
             <span className="sec-upper" style={{ display:'block', textAlign:'center' }}>em fotos</span>
           </div>
-          <Carousel srcs={CAR1} dir="left"  label="💑 Nosso namoro" />
-          <Carousel srcs={CAR2} dir="right" label="💍 Nossa família" />
-          <Carousel srcs={CAR3} dir="left"  label="👧 Nossas princesas" />
+          <Carousel srcs={CAR1} dir="left"  label="" />
+          <Carousel srcs={CAR2} dir="right" label="" />
+          <Carousel srcs={CAR3} dir="left"  label="" />
         </section>
 
         {/* ── Filhas ── */}
