@@ -731,22 +731,21 @@ export default function NoveAnos() {
           <div className="letter-card">
             <div className="letter-to">Meu amor, Nathalia,</div>
             <p className="letter-body">
-              Nove anos atrás, eu fiz a melhor escolha da minha vida.
-              Escolhi você. Escolhi acordar todo dia ao seu lado, crescer
-              com você, e construir tudo isso juntos — cada sonho, cada
-              desafio, cada vitória.
+              Desde o começo eu já sabia que queria ter uma família com você.
+              Foi sempre o que pedi a Deus — uma mulher especial — e Ele me deu
+              exatamente isso: você.
               <br /><br />
-              Olho pra trás e vejo o quanto a gente cresceu. Olho pra você
-              e sinto o mesmo frio na barriga do primeiro dia. Esse amor não
-              envelheceu — ele amadureceu.
+              Passamos por tudo juntos. Fomos ao topo, fomos ao fundo...
+              mas o fundo ficou pra trás e lá não voltamos mais.
               <br /><br />
-              Você é minha casa, meu lar, minha melhor amiga e a pessoa que
-              eu escolheria de novo em todas as outras vidas.
+              O tempo passa rápido demais. Daqui alguns anos nossas filhas vão
+              embora fazer suas próprias famílias — e vai sobrar só nós dois,
+              viajando muito, aproveitando os netos e as netas
+              (a Maria já avisou que quer 6 filhos 😂).
               <br /><br />
-              Que venham mais 9, mais 90, e todos os anos que Deus nos der.
-              Obrigado por cada segundo.
+              Te amo para sempre, inha leoa. ❤️
             </p>
-            <div className="letter-sign">Com todo meu amor, Tiago ❤️</div>
+            <div className="letter-sign">Seu Tiago 🦁</div>
           </div>
         </section>
 
