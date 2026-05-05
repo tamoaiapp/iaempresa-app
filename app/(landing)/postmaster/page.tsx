@@ -23,17 +23,35 @@ function useCountdown() {
 const features = [
   {
     platform: "youtube",
-    color: "#ff0000",
-    bg: "rgba(255,0,0,0.08)",
-    border: "rgba(255,0,0,0.2)",
+    color: "#eef2f9",
+    bg: "rgba(255,255,255,0.04)",
+    border: "rgba(255,255,255,0.1)",
     logo: (
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-        <rect width="28" height="28" rx="7" fill="#FF0000"/>
-        <path d="M21.5 9.5s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.4 6.4 14 6.4 14 6.4s-2.4 0-4.7.2c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S6.3 11.1 6.3 12.6v1.4c0 1.5.2 3 .2 3s.2 1.4.8 2c.8.8 1.8.7 2.3.8C11 20 14 20 14 20s2.4 0 4.7-.2c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.5.2-3v-1.4c0-1.5-.2-3-.2-3zm-8.8 6v-5.2l5.4 2.6-5.4 2.6z" fill="white"/>
-      </svg>
+      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="7" fill="#FF0000"/>
+          <path d="M21.5 9.5s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.4 6.4 14 6.4 14 6.4s-2.4 0-4.7.2c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S6.3 11.1 6.3 12.6v1.4c0 1.5.2 3 .2 3s.2 1.4.8 2c.8.8 1.8.7 2.3.8C11 20 14 20 14 20s2.4 0 4.7-.2c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.5.2-3v-1.4c0-1.5-.2-3-.2-3zm-8.8 6v-5.2l5.4 2.6-5.4 2.6z" fill="white"/>
+        </svg>
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="7" fill="url(#ig2)"/>
+          <defs>
+            <linearGradient id="ig2" x1="0" y1="28" x2="28" y2="0">
+              <stop stopColor="#f9a825"/><stop offset="0.4" stopColor="#e1306c"/><stop offset="1" stopColor="#833ab4"/>
+            </linearGradient>
+          </defs>
+          <rect x="7" y="7" width="14" height="14" rx="4" stroke="white" strokeWidth="1.8" fill="none"/>
+          <circle cx="14" cy="14" r="3.5" stroke="white" strokeWidth="1.8" fill="none"/>
+          <circle cx="18.2" cy="9.8" r="1" fill="white"/>
+        </svg>
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="7" fill="#010101"/>
+          <path d="M19.5 7h-2.8v9.4a2.4 2.4 0 0 1-2.4 2.3 2.4 2.4 0 0 1-2.4-2.3 2.4 2.4 0 0 1 2.4-2.3c.2 0 .5 0 .7.1V11a5.2 5.2 0 0 0-.7 0 5.2 5.2 0 0 0-5.2 5.2 5.2 5.2 0 0 0 5.2 5.2 5.2 5.2 0 0 0 5.2-5.2V11.3a7 7 0 0 0 4 1.2V9.7a4.2 4.2 0 0 1-4-2.7z" fill="white"/>
+        </svg>
+        <span style={{ fontSize: "0.78rem", color: "#8394b0", marginLeft: 2 }}>+ qualquer fonte</span>
+      </div>
     ),
-    title: "Busca vídeos no YouTube automaticamente",
-    desc: "Cole o link do canal — o PostMaster encontra, baixa e converte para vertical 9:16 sem você tocar em nada. Roda 24h.",
+    title: "Baixa vídeos do YouTube, Instagram e TikTok",
+    desc: "Cole o link do canal, perfil ou vídeo — de qualquer plataforma. O PostMaster baixa, converte para 9:16 e posta sozinho. Roda 24h.",
   },
   {
     platform: "instagram",
