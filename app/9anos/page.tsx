@@ -741,7 +741,7 @@ export default function NoveAnos() {
               <br /><br />
               Te amo para sempre, inha leoa. ❤️
             </p>
-            <div className="letter-sign">Seu Tiago 🦁</div>
+            <div className="letter-sign">Seu leão 🦁</div>
           </div>
         </section>
 
