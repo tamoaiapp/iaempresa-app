@@ -12,27 +12,27 @@ const categorias = [
   { label: "Vendas", slug: "vendas", emoji: "💰", descricao: "Precificação e propostas automáticas" },
 ];
 
-const ferramentas = [
+const stats = [
   { num: "40", label: "ferramentas" },
-  { num: "R$0", label: "para começar" },
+  { num: "8", label: "categorias" },
   { num: "100%", label: "em português" },
 ];
 
 const comoFunciona = [
   {
     num: "01",
-    titulo: "Escolha uma ferramenta",
-    desc: "40 ferramentas para automatizar vendas, atendimento, marketing e gestão do seu negócio.",
+    titulo: "Escolha sua ferramenta",
+    desc: "40 ferramentas prontas para automatizar vendas, atendimento, marketing e gestão do seu negócio.",
   },
   {
     num: "02",
-    titulo: "Rode grátis no seu PC",
-    desc: "Baixe e instale sem pagar nada. Você tem controle total, funciona offline, sem mensalidade.",
+    titulo: "Assine e acesse agora",
+    desc: "Com uma assinatura você acessa todas as 40 ferramentas online, sem instalar nada.",
   },
   {
     num: "03",
-    titulo: "Ou acesse tudo online",
-    desc: "Prefere sem instalação? Assine e use todas as 40 ferramentas direto no navegador por uma mensalidade.",
+    titulo: "Seu negócio no piloto automático",
+    desc: "Atendimento, cobranças, agendamentos e fidelização rodando sozinhos enquanto você foca no que importa.",
   },
 ];
 
@@ -69,7 +69,7 @@ export default function Home() {
             letterSpacing: "0.4px",
           }}>
             <span>🚀</span>
-            <span>40 ferramentas para o novo empreendedor</span>
+            <span>A plataforma do novo empreendedor</span>
           </div>
 
           <h1 style={{
@@ -85,7 +85,7 @@ export default function Home() {
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
             }}>
-              O novo jeito de<br />empreender chegou.
+              O novo jeito de<br />começar um negócio.
             </span>
           </h1>
 
@@ -96,13 +96,12 @@ export default function Home() {
             maxWidth: 560,
             margin: "0 auto 2.5rem",
           }}>
-            40 ferramentas de IA para automatizar seu negócio e ganhar mais dinheiro.
-            <strong style={{ color: "var(--text)" }}> Começa grátis hoje</strong> — baixa no PC
-            ou usa online.
+            40 ferramentas de IA para automatizar vendas, atendimento e gestão.
+            <strong style={{ color: "var(--text)" }}> Monte seu negócio hoje</strong> e deixe a IA trabalhar por você.
           </p>
 
           <div style={{ display: "flex", gap: "0.875rem", justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/guias" style={{
+            <Link href="/registro" style={{
               background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
               color: "#fff",
               padding: "0.9rem 2.2rem",
@@ -112,9 +111,9 @@ export default function Home() {
               textDecoration: "none",
               boxShadow: "0 0 32px rgba(99,102,241,0.35)",
             }}>
-              Começar grátis →
+              Começar agora →
             </Link>
-            <Link href="/ferramentas" style={{
+            <Link href="/guias" style={{
               background: "rgba(255,255,255,0.05)",
               color: "var(--text)",
               padding: "0.9rem 2.2rem",
@@ -130,7 +129,7 @@ export default function Home() {
 
           {/* Stats */}
           <div style={{ display: "flex", gap: "3rem", justifyContent: "center", marginTop: "3.5rem", flexWrap: "wrap" }}>
-            {ferramentas.map((s) => (
+            {stats.map((s) => (
               <div key={s.label} style={{ textAlign: "center" }}>
                 <div style={{
                   fontSize: "2rem", fontWeight: 900,
@@ -169,71 +168,57 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA gratuito vs pago */}
-      <section style={{ maxWidth: 1100, margin: "0 auto", padding: "1rem 1.25rem 5rem" }}>
+      {/* CTA — assinatura */}
+      <section style={{ maxWidth: 700, margin: "0 auto", padding: "1rem 1.25rem 5rem" }}>
         <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: "1.25rem",
+          background: "linear-gradient(135deg, rgba(99,102,241,0.14), rgba(168,85,247,0.08))",
+          border: "1px solid rgba(99,102,241,0.3)",
+          borderRadius: 24,
+          padding: "2.5rem 2rem",
+          textAlign: "center",
+          position: "relative",
         }}>
-          {/* Grátis */}
           <div style={{
-            background: "var(--card)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 20,
-            padding: "2rem 1.75rem",
-          }}>
-            <div style={{ fontSize: "1.75rem", marginBottom: "1rem" }}>💻</div>
-            <div style={{ fontWeight: 800, fontSize: "1.2rem", marginBottom: "0.5rem" }}>Grátis no PC</div>
-            <div style={{ color: "var(--muted)", fontSize: "0.9rem", lineHeight: 1.7, marginBottom: "1.5rem" }}>
-              Baixe qualquer ferramenta e rode no seu computador. Sem mensalidade, sem limite de uso, você tem controle total.
-            </div>
-            <Link href="/guias" style={{
-              display: "inline-block",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              color: "var(--text)",
-              padding: "0.7rem 1.5rem",
-              borderRadius: 10,
-              fontWeight: 600,
-              fontSize: "0.9rem",
-              textDecoration: "none",
-            }}>
-              Explorar ferramentas →
-            </Link>
+            position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)",
+            background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+            color: "#fff", fontSize: "0.72rem", fontWeight: 800,
+            padding: "4px 16px", borderRadius: 999, letterSpacing: "0.08em", whiteSpace: "nowrap",
+          }}>TUDO INCLUSO</div>
+
+          <div style={{ fontSize: "2.8rem", fontWeight: 900, color: "#a78bfa", marginBottom: 4 }}>R$97</div>
+          <div style={{ color: "var(--muted)", fontSize: "0.9rem", marginBottom: "1.5rem" }}>/mês · cancele quando quiser</div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem", textAlign: "left", maxWidth: 420, margin: "0 auto 2rem" }}>
+            {[
+              "Acesso a todas as 40 ferramentas online",
+              "Chatbot, agenda, CRM, cobranças, fidelidade e mais",
+              "Sem instalar nada — funciona no navegador",
+              "Atualizações automáticas incluídas",
+              "Suporte em português",
+            ].map((item) => (
+              <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: "0.6rem", fontSize: "0.9rem" }}>
+                <span style={{ color: "#16c784", flexShrink: 0, marginTop: 2 }}>✓</span>
+                <span style={{ color: "var(--muted)" }}>{item}</span>
+              </div>
+            ))}
           </div>
 
-          {/* Online */}
-          <div style={{
-            background: "linear-gradient(135deg, rgba(99,102,241,0.12), rgba(168,85,247,0.08))",
-            border: "1px solid rgba(99,102,241,0.3)",
-            borderRadius: 20,
-            padding: "2rem 1.75rem",
-            position: "relative",
+          <Link href="/registro" style={{
+            display: "inline-block",
+            background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+            color: "#fff",
+            padding: "0.9rem 2.5rem",
+            borderRadius: 12,
+            fontWeight: 700,
+            fontSize: "1rem",
+            textDecoration: "none",
+            boxShadow: "0 0 32px rgba(99,102,241,0.35)",
           }}>
-            <div style={{
-              position: "absolute", top: -12, right: 20,
-              background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-              color: "#fff", fontSize: "0.7rem", fontWeight: 800,
-              padding: "3px 12px", borderRadius: 999, letterSpacing: "0.08em",
-            }}>RECOMENDADO</div>
-            <div style={{ fontSize: "1.75rem", marginBottom: "1rem" }}>☁️</div>
-            <div style={{ fontWeight: 800, fontSize: "1.2rem", marginBottom: "0.5rem" }}>Online — tudo incluso</div>
-            <div style={{ color: "var(--muted)", fontSize: "0.9rem", lineHeight: 1.7, marginBottom: "1.5rem" }}>
-              Acesse todas as 40 ferramentas direto no navegador. Sem instalar nada. Atualizações automáticas e suporte incluído.
-            </div>
-            <Link href="/ferramentas" style={{
-              display: "inline-block",
-              background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-              color: "#fff",
-              padding: "0.7rem 1.5rem",
-              borderRadius: 10,
-              fontWeight: 700,
-              fontSize: "0.9rem",
-              textDecoration: "none",
-            }}>
-              Ver planos →
-            </Link>
+            Criar conta e assinar →
+          </Link>
+
+          <div style={{ color: "var(--dim)", fontSize: "0.78rem", marginTop: "1rem" }}>
+            Pagamento seguro via Stripe · Sem fidelidade
           </div>
         </div>
       </section>
