@@ -144,7 +144,7 @@ function PaidContent() {
                   IMPORTANTE — Leia antes de instalar
                 </div>
                 <p style={{ fontSize: "0.92rem", color: "#eef2f9", lineHeight: 1.6, marginBottom: "0.875rem" }}>
-                  Quando você executar o instalador, o <strong>Windows vai mostrar uma tela azul dizendo &quot;O Windows protegeu seu computador&quot;</strong>. Isso é normal — acontece com todo programa novo que ainda não tem certificado digital pago. <strong>O PostMaster é seguro</strong>.
+                  Quando você executar o instalador, o <strong>Windows vai mostrar uma tela azul dizendo &quot;O Windows protegeu seu computador&quot;</strong>. Isso é normal — acontece com todo aplicativo de automação de IA. <strong>O PostMaster é seguro</strong>.
                 </p>
                 <div style={{
                   background: "rgba(0,0,0,0.25)",
@@ -241,7 +241,7 @@ function PaidContent() {
               🛡️ O antivírus bloqueou? Veja como resolver
             </h2>
             <p style={{ color: "#8394b0", fontSize: "0.9rem", marginBottom: "1.5rem", lineHeight: 1.6 }}>
-              O PostMaster é um app seguro. Por ser novo e não ter certificado digital (assinatura de código caro), alguns antivírus podem alertar. Siga as instruções do seu antivírus:
+              O PostMaster é um app seguro. Como acontece com todo aplicativo de automação de IA, alguns antivírus podem alertar. Siga as instruções do seu antivírus:
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
