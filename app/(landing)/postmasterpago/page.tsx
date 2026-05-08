@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 
 const DOWNLOAD_URL = "https://github.com/tamoaiapp/postmaster/releases/latest/download/PostMaster-Setup.exe";
-const VIDEO_EMBED_URL = "https://drive.google.com/file/d/1C_3a1B0S4PQAdQcerZAEhQaNHjXP3VIy/preview";
+const VIDEO_URL = "https://ddpyvdtgxemyxltgtxsh.supabase.co/storage/v1/object/public/videos/como-liberar-postmaster.mp4";
 
 // Token simples — bypass para suporte (clientes que pagaram mas não viram a página de aprovado)
 const BYPASS_KEY = "POSTMASTER2026OK";
@@ -96,29 +96,31 @@ function PaidContent() {
             </p>
           </div>
 
-          {/* Video do Drive embed */}
+          {/* Video player HTML5 — vertical 9:16 */}
           <div style={{
-            position: "relative",
-            paddingBottom: "56.25%", // 16:9
-            height: 0,
-            overflow: "hidden",
-            borderRadius: 16,
-            background: "#000",
+            display: "flex",
+            justifyContent: "center",
             marginBottom: "2rem",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
-            border: "1px solid rgba(255,255,255,0.08)",
           }}>
-            <iframe
-              src={VIDEO_EMBED_URL}
-              allow="autoplay"
-              allowFullScreen
+            <video
+              controls
+              playsInline
+              preload="metadata"
+              poster=""
               style={{
-                position: "absolute",
-                top: 0, left: 0,
-                width: "100%", height: "100%",
-                border: 0,
+                width: "100%",
+                maxWidth: 360,
+                aspectRatio: "9 / 16",
+                borderRadius: 16,
+                background: "#000",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                display: "block",
               }}
-            />
+            >
+              <source src={VIDEO_URL} type="video/mp4" />
+              Seu navegador não suporta vídeo HTML5.
+            </video>
           </div>
 
           {/* Download */}
