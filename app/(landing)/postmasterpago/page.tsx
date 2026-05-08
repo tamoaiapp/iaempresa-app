@@ -1,9 +1,12 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 
 const DOWNLOAD_URL = "https://github.com/tamoaiapp/postmaster/releases/latest/download/PostMaster-Setup.exe";
+
+// Token simples — quem tem essa key bypassa a checagem (uso pós-suporte)
+const BYPASS_KEY = "POSTMASTER2026OK";
 
 const antivirusSteps = [
   {
@@ -50,8 +53,46 @@ const antivirusSteps = [
 
 function PaidContent() {
   const params = useSearchParams();
-  const status = params.get("status");
-  const isPending = status === "pendente";
+  const statusParam = params.get("status");
+  const paymentId = params.get("payment_id") || params.get("collection_id");
+  const bypass = params.get("acesso") === BYPASS_KEY;
+
+  // Status local: começa com o do query param, mas pode ser atualizado pelo polling
+  const [verifiedStatus, setVerifiedStatus] = useState<"pendente" | "aprovado" | "falhou" | null>(
+    bypass ? "aprovado" : (statusParam === "aprovado" ? "aprovado" : statusParam === "falhou" ? "falhou" : statusParam === "pendente" ? "pendente" : null)
+  );
+  const [polling, setPolling] = useState(false);
+  const [tentativas, setTentativas] = useState(0);
+
+  // Polling: quando o status é "pendente" e temos um payment_id, verifica a cada 3s
+  useEffect(() => {
+    if (verifiedStatus !== "pendente" || !paymentId) return;
+    setPolling(true);
+
+    const checkStatus = async () => {
+      try {
+        const res = await fetch(`/api/postmaster/check-payment?id=${paymentId}`, { cache: "no-store" });
+        const data = await res.json();
+        if (data.approved) {
+          setVerifiedStatus("aprovado");
+          setPolling(false);
+        }
+      } catch { /* ignora erro de rede, tenta de novo */ }
+      setTentativas((t) => t + 1);
+    };
+
+    // Primeira checagem imediata
+    checkStatus();
+    const interval = setInterval(checkStatus, 3000);
+
+    // Para de tentar depois de 5 minutos (100 tentativas)
+    const timeout = setTimeout(() => clearInterval(interval), 5 * 60 * 1000);
+
+    return () => { clearInterval(interval); clearTimeout(timeout); };
+  }, [verifiedStatus, paymentId]);
+
+  const isPending = verifiedStatus === "pendente";
+  const isApproved = verifiedStatus === "aprovado";
 
   return (
     <div style={{ maxWidth: 800, margin: "0 auto", padding: "3rem 1.25rem 5rem" }}>
@@ -69,16 +110,25 @@ function PaidContent() {
           {isPending ? "⏳" : "✅"}
         </div>
         <h1 style={{ fontSize: "1.6rem", fontWeight: 800, marginBottom: "0.5rem" }}>
-          {isPending ? "Pagamento em análise" : "Pagamento confirmado!"}
+          {isPending ? "Aguardando confirmação do pagamento" : "Pagamento confirmado!"}
         </h1>
         <p style={{ color: "#8394b0", fontSize: "0.95rem" }}>
           {isPending
-            ? "Seu pagamento está sendo processado. Assim que confirmado, o download ficará disponível. Volte a esta página em instantes."
+            ? polling
+              ? "Estamos verificando seu pagamento automaticamente. Assim que o banco confirmar, o download aparecerá aqui (geralmente em até 30 segundos)."
+              : "Seu pagamento está sendo processado. Atualize a página em alguns instantes para liberar o download."
             : "Obrigado pela compra! Faça o download abaixo e siga o passo a passo de instalação."}
         </p>
+        {isPending && polling && (
+          <div style={{ marginTop: "1rem", display: "inline-flex", alignItems: "center", gap: "0.5rem", color: "#a78bfa", fontSize: "0.85rem" }}>
+            <span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid #a78bfa", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+            Verificando... ({tentativas})
+            <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+          </div>
+        )}
       </div>
 
-      {!isPending && (
+      {isApproved && (
         <>
           {/* Download */}
           <div style={{

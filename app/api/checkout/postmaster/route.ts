@@ -30,6 +30,7 @@ export async function POST() {
           pending: "https://iaempresa.app/postmasterpago?status=pendente",
         },
         auto_return: "approved",
+        notification_url: "https://iaempresa.app/api/webhooks/mercadopago/postmaster",
         statement_descriptor: "IAEMPRESA POSTMASTER",
         payment_methods: {
           excluded_payment_types: [],
