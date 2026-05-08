@@ -130,6 +130,43 @@ function PaidContent() {
 
       {isApproved && (
         <>
+          {/* AVISO IMPORTANTE — Windows SmartScreen */}
+          <div style={{
+            background: "linear-gradient(135deg, rgba(245,158,11,0.14), rgba(245,158,11,0.06))",
+            border: "1.5px solid rgba(245,158,11,0.4)",
+            borderRadius: 16, padding: "1.5rem 1.75rem",
+            marginBottom: "1.5rem",
+          }}>
+            <div style={{ display: "flex", gap: "0.875rem", alignItems: "flex-start" }}>
+              <div style={{ fontSize: "1.75rem", lineHeight: 1, flexShrink: 0 }}>⚠️</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 800, fontSize: "1.05rem", marginBottom: "0.5rem", color: "#f59e0b" }}>
+                  IMPORTANTE — Leia antes de instalar
+                </div>
+                <p style={{ fontSize: "0.92rem", color: "#eef2f9", lineHeight: 1.6, marginBottom: "0.875rem" }}>
+                  Quando você executar o instalador, o <strong>Windows vai mostrar uma tela azul dizendo &quot;O Windows protegeu seu computador&quot;</strong>. Isso é normal — acontece com todo programa novo que ainda não tem certificado digital pago. <strong>O PostMaster é seguro</strong>.
+                </p>
+                <div style={{
+                  background: "rgba(0,0,0,0.25)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: 10,
+                  padding: "0.875rem 1rem",
+                  fontSize: "0.88rem",
+                  color: "#eef2f9",
+                  lineHeight: 1.7,
+                }}>
+                  <div style={{ fontWeight: 700, marginBottom: "0.5rem", color: "#a78bfa" }}>👉 Como destravar (3 cliques):</div>
+                  <div>1. Quando aparecer a tela azul, clique em <strong style={{ color: "#fff" }}>&quot;Mais informações&quot;</strong> (link pequeno embaixo do texto)</div>
+                  <div>2. Clique no botão <strong style={{ color: "#fff" }}>&quot;Executar assim mesmo&quot;</strong> que vai aparecer</div>
+                  <div>3. O instalador abre normalmente — pronto!</div>
+                </div>
+                <p style={{ fontSize: "0.82rem", color: "#8394b0", marginTop: "0.75rem", lineHeight: 1.5 }}>
+                  Se o seu antivírus (Avast, Kaspersky, AVG) também bloquear, role a página para ver as instruções por antivírus.
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Download */}
           <div style={{
             background: "linear-gradient(135deg,rgba(99,102,241,0.12),rgba(168,85,247,0.08))",
@@ -158,6 +195,9 @@ function PaidContent() {
               ⬇ Baixar PostMaster.exe
             </a>
             <p style={{ color: "#4e5c72", fontSize: "0.8rem", marginTop: "1rem" }}>
+              Lembre: ao executar, clique em <strong style={{ color: "#a78bfa" }}>&quot;Mais informações&quot;</strong> → <strong style={{ color: "#a78bfa" }}>&quot;Executar assim mesmo&quot;</strong>
+            </p>
+            <p style={{ color: "#4e5c72", fontSize: "0.8rem", marginTop: "0.5rem" }}>
               Dúvidas? <a href="mailto:contato@iaempresa.app" style={{ color: "#8394b0" }}>contato@iaempresa.app</a>
             </p>
           </div>
