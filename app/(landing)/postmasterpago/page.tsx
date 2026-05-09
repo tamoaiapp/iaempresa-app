@@ -13,14 +13,61 @@ function PaidContent() {
   const params = useSearchParams();
   const statusParam = params.get("status");
   const paymentId = params.get("payment_id") || params.get("collection_id");
+  const tokenParam = params.get("token");
   const bypass = params.get("acesso") === BYPASS_KEY;
 
-  const [verifiedStatus, setVerifiedStatus] = useState<"pendente" | "aprovado" | "falhou" | null>(
-    bypass ? "aprovado" : (statusParam === "aprovado" ? "aprovado" : statusParam === "falhou" ? "falhou" : statusParam === "pendente" ? "pendente" : null)
-  );
+  // Estado inicial:
+  // - token presente → "verificando_token" enquanto bate na API
+  // - bypass / status=aprovado → aprovado direto
+  // - status=pendente → polling
+  const initialStatus: "verificando_token" | "pendente" | "aprovado" | "falhou" | null = tokenParam
+    ? "verificando_token"
+    : bypass
+    ? "aprovado"
+    : statusParam === "aprovado"
+    ? "aprovado"
+    : statusParam === "falhou"
+    ? "falhou"
+    : statusParam === "pendente"
+    ? "pendente"
+    : null;
+
+  const [verifiedStatus, setVerifiedStatus] = useState<typeof initialStatus>(initialStatus);
   const [polling, setPolling] = useState(false);
   const [tentativas, setTentativas] = useState(0);
+  const [accessCount, setAccessCount] = useState<number | null>(null);
+  const [tokenValid, setTokenValid] = useState<boolean | null>(null);
 
+  // 1) Validação de token (?token=XXX)
+  useEffect(() => {
+    if (!tokenParam) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/postmaster/check-token?token=${encodeURIComponent(tokenParam)}`, {
+          cache: "no-store",
+        });
+        const data = await res.json();
+        if (cancelled) return;
+        if (data.valid) {
+          setTokenValid(true);
+          setAccessCount(typeof data.access_count === "number" ? data.access_count : null);
+          setVerifiedStatus("aprovado");
+        } else {
+          setTokenValid(false);
+          setVerifiedStatus("falhou");
+        }
+      } catch {
+        if (!cancelled) {
+          setTokenValid(false);
+          setVerifiedStatus("falhou");
+        }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [tokenParam]);
+
+  // 2) Polling do pagamento (?payment_id=...&status=pendente) — quando aprovar, redireciona pra URL com token
   useEffect(() => {
     if (verifiedStatus !== "pendente" || !paymentId) return;
     setPolling(true);
@@ -30,6 +77,11 @@ function PaidContent() {
         const res = await fetch(`/api/postmaster/check-payment?id=${paymentId}`, { cache: "no-store" });
         const data = await res.json();
         if (data.approved) {
+          // Se já temos token gerado pelo backend → redireciona pra URL definitiva com token
+          if (data.downloadUrl) {
+            window.location.href = data.downloadUrl;
+            return;
+          }
           setVerifiedStatus("aprovado");
           setPolling(false);
         }
@@ -43,27 +95,53 @@ function PaidContent() {
     return () => { clearInterval(interval); clearTimeout(timeout); };
   }, [verifiedStatus, paymentId]);
 
+  const isVerifyingToken = verifiedStatus === "verificando_token";
   const isPending = verifiedStatus === "pendente";
   const isApproved = verifiedStatus === "aprovado";
+  const isFailed = verifiedStatus === "falhou";
+  const isInvalidToken = !!tokenParam && tokenValid === false;
+  const showShareWarning = !!tokenParam && tokenValid === true && (accessCount ?? 0) > 1;
 
   return (
     <div style={{ maxWidth: 760, margin: "0 auto", padding: "2.5rem 1.25rem 5rem" }}>
 
       {/* Status banner */}
       <div style={{
-        background: isPending ? "rgba(210,153,34,0.12)" : "rgba(63,185,80,0.12)",
-        border: `1px solid ${isPending ? "rgba(210,153,34,0.3)" : "rgba(63,185,80,0.3)"}`,
+        background: isPending || isVerifyingToken
+          ? "rgba(210,153,34,0.12)"
+          : isFailed
+          ? "rgba(239,68,68,0.12)"
+          : "rgba(63,185,80,0.12)",
+        border: `1px solid ${
+          isPending || isVerifyingToken
+            ? "rgba(210,153,34,0.3)"
+            : isFailed
+            ? "rgba(239,68,68,0.3)"
+            : "rgba(63,185,80,0.3)"
+        }`,
         borderRadius: 16, padding: "1.25rem 1.75rem",
         marginBottom: "2rem", textAlign: "center",
       }}>
         <div style={{ fontSize: "2.25rem", marginBottom: "0.4rem" }}>
-          {isPending ? "⏳" : "✅"}
+          {isPending || isVerifyingToken ? "⏳" : isFailed ? "⚠️" : "✅"}
         </div>
         <h1 style={{ fontSize: "1.5rem", fontWeight: 800, marginBottom: "0.4rem" }}>
-          {isPending ? "Aguardando confirmação do pagamento" : "Pagamento confirmado!"}
+          {isVerifyingToken
+            ? "Validando seu acesso..."
+            : isPending
+            ? "Aguardando confirmação do pagamento"
+            : isInvalidToken
+            ? "Link inválido ou expirado"
+            : isFailed
+            ? "Não foi possível liberar o acesso"
+            : "Pagamento confirmado!"}
         </h1>
         <p style={{ color: "#8394b0", fontSize: "0.92rem" }}>
-          {isPending
+          {isVerifyingToken
+            ? "Verificando seu token de acesso, isso leva 1 segundo."
+            : isInvalidToken
+            ? "O link que você usou não corresponde a nenhuma compra. Se você comprou, abra o e-mail original ou fale com o suporte."
+            : isPending
             ? polling
               ? "Estamos verificando seu pagamento automaticamente. Assim que o banco confirmar, o download aparecerá aqui."
               : "Seu pagamento está sendo processado. Atualize a página em alguns instantes."
@@ -77,6 +155,19 @@ function PaidContent() {
           </div>
         )}
       </div>
+
+      {/* Aviso discreto de link compartilhado */}
+      {showShareWarning && (
+        <div style={{
+          background: "rgba(245,158,11,0.08)",
+          border: "1px solid rgba(245,158,11,0.25)",
+          borderRadius: 12, padding: "0.85rem 1.1rem",
+          marginBottom: "1.5rem", textAlign: "center",
+          color: "#f59e0b", fontSize: "0.85rem",
+        }}>
+          ⚠️ Esse link foi acessado {accessCount} vezes — se compartilhou, considere baixar e enviar o app direto.
+        </div>
+      )}
 
       {isApproved && (
         <>
