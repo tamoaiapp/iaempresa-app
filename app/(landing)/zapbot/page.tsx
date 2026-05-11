@@ -9,19 +9,25 @@ const LATEST = (asset: string) =>
 
 const DOWNLOADS = {
   win: {
-    url: LATEST("ZapBot-0.1.0-portable-win-x64.zip"),
+    url: LATEST("ZapBot-0.1.0-Setup.exe"),
+    altUrl: LATEST("ZapBot-0.1.0-portable-win-x64.zip"),
+    altLabel: "ou baixar como .zip portátil (120MB)",
     label: "Baixar para Windows",
-    sub: "Windows 10/11 · 64-bit · 120MB portátil",
+    sub: "Windows 10/11 · 64-bit · 88MB",
     available: true,
   },
   mac: {
     url: "#",
+    altUrl: "",
+    altLabel: "",
     label: "macOS — em breve",
     sub: "macOS 12+ · Intel/Apple Silicon",
     available: false,
   },
   linux: {
     url: "#",
+    altUrl: "",
+    altLabel: "",
     label: "Linux — em breve",
     sub: "AppImage · x86_64",
     available: false,
@@ -343,6 +349,20 @@ export default function ZapBotPage() {
                 ({primary.sub})
               </span>
             </a>
+
+            {primary.altUrl && (
+              <a
+                href={primary.altUrl}
+                style={{
+                  color: "#8394b0",
+                  fontSize: "0.85rem",
+                  textDecoration: "underline",
+                  textDecorationColor: "rgba(131,148,176,0.3)",
+                }}
+              >
+                {primary.altLabel}
+              </a>
+            )}
 
             <div
               style={{
