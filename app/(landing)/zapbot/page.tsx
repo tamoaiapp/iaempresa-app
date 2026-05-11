@@ -1,55 +1,26 @@
 "use client";
 import { useEffect, useState } from "react";
 
-// GitHub releases — atualize a versão aqui quando subir nova
 const GH_OWNER = "tamoaiapp";
 const GH_REPO = "zapbot";
-const LATEST = (asset: string) =>
-  `https://github.com/${GH_OWNER}/${GH_REPO}/releases/latest/download/${asset}`;
+const PRICE_BRL = 97;
 
-const DOWNLOADS = {
-  win: {
-    url: LATEST("ZapBot-0.1.0-Setup.exe"),
-    altUrl: LATEST("ZapBot-0.1.0-portable-win-x64.zip"),
-    altLabel: "ou baixar como .zip portátil (120MB)",
-    label: "Baixar para Windows",
-    sub: "Windows 10/11 · 64-bit · 88MB",
-    available: true,
-  },
-  mac: {
-    url: "#",
-    altUrl: "",
-    altLabel: "",
-    label: "macOS — em breve",
-    sub: "macOS 12+ · Intel/Apple Silicon",
-    available: false,
-  },
-  linux: {
-    url: "#",
-    altUrl: "",
-    altLabel: "",
-    label: "Linux — em breve",
-    sub: "AppImage · x86_64",
-    available: false,
-  },
-};
-
-type OS = "win" | "mac" | "linux";
-
-function detectOS(): OS {
-  if (typeof navigator === "undefined") return "win";
-  const ua = navigator.userAgent.toLowerCase();
-  if (ua.includes("mac")) return "mac";
-  if (ua.includes("linux") || ua.includes("x11")) return "linux";
-  return "win";
+async function handleCheckout(setLoading: (v: boolean) => void) {
+  setLoading(true);
+  try {
+    const res = await fetch("/api/checkout/zapbot", { method: "POST" });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert("Erro ao iniciar pagamento. Tente novamente em alguns instantes.");
+    }
+  } catch {
+    alert("Erro de conexão. Tente novamente.");
+  } finally {
+    setLoading(false);
+  }
 }
-
-const DISABLED_STYLE: React.CSSProperties = {
-  background: "rgba(255,255,255,0.04)",
-  color: "#4e5c72",
-  cursor: "not-allowed",
-  border: "1px dashed rgba(255,255,255,0.08)",
-};
 
 const features = [
   {
@@ -192,16 +163,8 @@ const BTN_SECONDARY: React.CSSProperties = {
 };
 
 export default function ZapBotPage() {
-  const [detectedOs, setDetectedOs] = useState<OS>("win");
-
-  useEffect(() => {
-    setDetectedOs(detectOS());
-  }, []);
-
-  // Primary CTA uses detected OS only if available; otherwise falls back to Windows.
-  const primaryOs: OS = DOWNLOADS[detectedOs].available ? detectedOs : "win";
-  const primary = DOWNLOADS[primaryOs];
-  const os = primaryOs;
+  const [loading, setLoading] = useState(false);
+  const buy = () => handleCheckout(setLoading);
 
   return (
     <div
@@ -234,16 +197,18 @@ export default function ZapBotPage() {
         >
           iaempresa<span style={{ color: "#25D366" }}>.app</span>
         </a>
-        <a
-          href={primary.url}
+        <button
+          onClick={buy}
+          disabled={loading}
           style={{
             ...BTN_PRIMARY,
             padding: "0.45rem 1.25rem",
             fontSize: "0.875rem",
+            cursor: loading ? "wait" : "pointer",
           }}
         >
-          ⬇ Baixar
-        </a>
+          {loading ? "..." : `Comprar — R$ ${PRICE_BRL}`}
+        </button>
       </nav>
 
       {/* Hero */}
@@ -278,7 +243,7 @@ export default function ZapBotPage() {
                 display: "inline-block",
               }}
             />
-            100% offline · roda na sua máquina · grátis
+            100% offline · pagamento único · sem mensalidade
           </div>
 
           <h1
@@ -319,86 +284,44 @@ export default function ZapBotPage() {
             regras em português.
           </p>
 
-          {/* Download buttons */}
+          {/* Primary purchase CTA */}
           <div
             style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: "1rem",
+              gap: "0.75rem",
               marginBottom: "1.5rem",
             }}
           >
-            <a
-              href={primary.url}
+            <button
+              onClick={buy}
+              disabled={loading}
               style={{
                 ...BTN_PRIMARY,
                 padding: "1.1rem 2.5rem",
                 fontSize: "1.1rem",
+                cursor: loading ? "wait" : "pointer",
+                opacity: loading ? 0.7 : 1,
               }}
             >
-              ⬇ {primary.label}
-              <span
-                style={{
-                  fontWeight: 500,
-                  opacity: 0.85,
-                  fontSize: "0.85rem",
-                  marginLeft: 4,
-                }}
-              >
-                ({primary.sub})
-              </span>
-            </a>
-
-            {primary.altUrl && (
-              <a
-                href={primary.altUrl}
-                style={{
-                  color: "#8394b0",
-                  fontSize: "0.85rem",
-                  textDecoration: "underline",
-                  textDecorationColor: "rgba(131,148,176,0.3)",
-                }}
-              >
-                {primary.altLabel}
-              </a>
-            )}
-
+              {loading ? "Redirecionando..." : `🚀 Quero o ZapBot agora — R$ ${PRICE_BRL}`}
+            </button>
             <div
               style={{
+                fontSize: "0.85rem",
+                color: "#8394b0",
                 display: "flex",
-                gap: "0.75rem",
+                gap: "1rem",
                 flexWrap: "wrap",
                 justifyContent: "center",
               }}
             >
-              {(Object.keys(DOWNLOADS) as OS[])
-                .filter((k) => k !== os)
-                .map((k) => {
-                  const d = DOWNLOADS[k];
-                  const style = {
-                    ...(d.available ? BTN_SECONDARY : DISABLED_STYLE),
-                    padding: "0.55rem 1.1rem",
-                    fontSize: "0.85rem",
-                    borderRadius: 14,
-                    fontWeight: 600,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  };
-                  if (!d.available) {
-                    return (
-                      <span key={k} style={style}>
-                        {d.label}
-                      </span>
-                    );
-                  }
-                  return (
-                    <a key={k} href={d.url} style={style}>
-                      {d.label}
-                    </a>
-                  );
-                })}
+              <span>💳 Pix, cartão ou boleto</span>
+              <span>·</span>
+              <span>🔒 Pagamento único</span>
+              <span>·</span>
+              <span>🛡️ 7 dias de garantia</span>
             </div>
           </div>
 
@@ -411,11 +334,12 @@ export default function ZapBotPage() {
               fontSize: "0.82rem",
               color: "#8394b0",
               fontWeight: 500,
+              marginBottom: "3.5rem",
             }}
           >
             {[
-              "Grátis e open source",
-              "Sem servidor",
+              "Pagamento único",
+              "Sem mensalidade nunca",
               "Sem ChatGPT/OpenAI",
               "Suas mensagens não saem do PC",
             ].map((t) => (
@@ -424,6 +348,9 @@ export default function ZapBotPage() {
               </span>
             ))}
           </div>
+
+          {/* App mockup — CSS-only replica of ZapBot inbox */}
+          <AppMockup />
         </div>
       </section>
 
@@ -489,6 +416,12 @@ export default function ZapBotPage() {
         </div>
       </section>
 
+      {/* How it works — 3 steps */}
+      <HowItWorks />
+
+      {/* Local vs cloud comparison */}
+      <Comparison />
+
       {/* Final CTA */}
       <section
         style={{
@@ -520,37 +453,30 @@ export default function ZapBotPage() {
             ficam só na sua máquina.
           </p>
 
-          <div
+          <button
+            onClick={buy}
+            disabled={loading}
             style={{
-              display: "flex",
-              gap: "0.75rem",
-              flexWrap: "wrap",
-              justifyContent: "center",
+              ...BTN_PRIMARY,
+              padding: "1.1rem 2.5rem",
+              fontSize: "1.1rem",
+              cursor: loading ? "wait" : "pointer",
+              opacity: loading ? 0.7 : 1,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
             }}
           >
-            {(Object.keys(DOWNLOADS) as OS[]).map((k) => {
-              const d = DOWNLOADS[k];
-              const style = {
-                ...(d.available ? (k === os ? BTN_PRIMARY : BTN_SECONDARY) : DISABLED_STYLE),
-                padding: "0.95rem 1.75rem",
-                fontSize: "0.95rem",
-                borderRadius: 14,
-                fontWeight: d.available ? 800 : 600,
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              };
-              const text = `${d.available ? "⬇ " : ""}${d.label.replace("Baixar para ", "")}`;
-              return d.available ? (
-                <a key={k} href={d.url} style={style}>
-                  {text}
-                </a>
-              ) : (
-                <span key={k} style={style}>
-                  {text}
-                </span>
-              );
-            })}
+            {loading ? "Aguarde..." : `🚀 Comprar agora — R$ ${PRICE_BRL}`}
+          </button>
+          <div
+            style={{
+              marginTop: "1rem",
+              fontSize: "0.82rem",
+              color: "#8394b0",
+            }}
+          >
+            pagamento único · 7 dias de garantia · Pix, cartão ou boleto
           </div>
 
           <p style={{ color: "#4e5c72", fontSize: "0.78rem", marginTop: "2rem" }}>
@@ -573,5 +499,547 @@ export default function ZapBotPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// App mockup — pure-CSS replica of the ZapBot inbox, no images required.
+// Lives at the bottom of the hero to give visitors a sense of the product.
+// ─────────────────────────────────────────────────────────────────────────
+function AppMockup() {
+  return (
+    <div style={{ position: "relative", maxWidth: 980, margin: "0 auto" }}>
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(ellipse at 50% 0%, rgba(37,211,102,0.22) 0%, transparent 65%)",
+          borderRadius: 20,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Window chrome */}
+      <div
+        style={{
+          background: "#161b27",
+          border: "1px solid rgba(255,255,255,0.07)",
+          borderBottom: "none",
+          borderRadius: "16px 16px 0 0",
+          padding: "0.55rem 1rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+        }}
+      >
+        {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
+          <span
+            key={c}
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: "50%",
+              background: c,
+              display: "inline-block",
+            }}
+          />
+        ))}
+        <span
+          style={{
+            flex: 1,
+            background: "rgba(255,255,255,0.05)",
+            borderRadius: 6,
+            padding: "0.18rem 0.75rem",
+            fontSize: "0.74rem",
+            color: "#4e5c72",
+            marginLeft: "0.5rem",
+            textAlign: "center",
+          }}
+        >
+          ZapBot — rodando localmente
+        </span>
+      </div>
+
+      {/* 3-column app body */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "180px 240px 1fr",
+          height: 380,
+          border: "1px solid rgba(37,211,102,0.18)",
+          borderTop: "none",
+          borderRadius: "0 0 16px 16px",
+          overflow: "hidden",
+          boxShadow: "0 32px 80px rgba(0,0,0,0.6)",
+          background: "#0b141a",
+        }}
+      >
+        {/* Sidebar */}
+        <div
+          style={{
+            background: "#075E54",
+            color: "#fff",
+            padding: "1rem 0.75rem",
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.5rem",
+          }}
+        >
+          <div style={{ fontWeight: 800, fontSize: "0.95rem", marginBottom: "0.5rem" }}>
+            <span style={{ color: "#25D366" }}>⏻</span> ZapBot
+            <div style={{ fontSize: "0.65rem", opacity: 0.6, fontWeight: 400 }}>
+              Atendente local
+            </div>
+          </div>
+          {[
+            { l: "Conversas", active: true },
+            { l: "Agendamentos", active: false },
+            { l: "Ajustar IA", active: false },
+            { l: "Configurações", active: false },
+          ].map((it) => (
+            <div
+              key={it.l}
+              style={{
+                padding: "0.4rem 0.6rem",
+                borderRadius: 6,
+                fontSize: "0.78rem",
+                background: it.active ? "rgba(255,255,255,0.1)" : "transparent",
+                color: it.active ? "#fff" : "rgba(255,255,255,0.7)",
+              }}
+            >
+              {it.l}
+            </div>
+          ))}
+          <div style={{ marginTop: "auto", fontSize: "0.7rem", opacity: 0.85 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span
+                style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: "50%",
+                  background: "#22c55e",
+                  display: "inline-block",
+                }}
+              />
+              Conectado
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
+              <span
+                style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: "50%",
+                  background: "#22c55e",
+                  display: "inline-block",
+                }}
+              />
+              IA pronta
+            </div>
+          </div>
+        </div>
+
+        {/* Conversation list */}
+        <div
+          style={{
+            background: "#fff",
+            color: "#111",
+            borderRight: "1px solid #e2e8f0",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              background: "#f0f2f5",
+              padding: "0.55rem 0.75rem",
+              borderBottom: "1px solid #e2e8f0",
+              fontWeight: 700,
+              fontSize: "0.8rem",
+              color: "#111b21",
+            }}
+          >
+            Conversas
+          </div>
+          {[
+            {
+              name: "Maria — cliente",
+              msg: "Vocês entregam hoje?",
+              time: "agora",
+              badge: 2,
+              active: true,
+            },
+            { name: "João Silva", msg: "Beleza, obrigado!", time: "10:14", badge: 0, active: false },
+            {
+              name: "Ana — loja",
+              msg: "Quero falar com atendente",
+              time: "09:42",
+              badge: 0,
+              active: false,
+              escalated: true,
+            },
+            { name: "Pedro", msg: "Como funciona o frete?", time: "ontem", badge: 0, active: false },
+          ].map((c) => (
+            <div
+              key={c.name}
+              style={{
+                padding: "0.6rem 0.75rem",
+                borderBottom: "1px solid #f1f5f9",
+                background: c.active ? "#f1f5f9" : "transparent",
+                cursor: "pointer",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "0.78rem", fontWeight: 600 }}>{c.name}</span>
+                <span style={{ fontSize: "0.66rem", color: "#64748b" }}>{c.time}</span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginTop: 2,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "0.72rem",
+                    color: "#475569",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {c.msg}
+                </span>
+                <span style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: 6 }}>
+                  {c.escalated && (
+                    <span style={{ color: "#ef4444", fontSize: "0.7rem" }}>⚠</span>
+                  )}
+                  <span style={{ color: "#25D366", fontSize: "0.7rem" }}>🤖</span>
+                  {c.badge > 0 && (
+                    <span
+                      style={{
+                        background: "#25D366",
+                        color: "#fff",
+                        fontSize: "0.6rem",
+                        borderRadius: 999,
+                        padding: "1px 6px",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {c.badge}
+                    </span>
+                  )}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Chat */}
+        <div
+          style={{
+            background: "#efeae2",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <div
+            style={{
+              background: "#f0f2f5",
+              padding: "0.6rem 0.85rem",
+              borderBottom: "1px solid #e2e8f0",
+              fontWeight: 700,
+              fontSize: "0.8rem",
+              color: "#111b21",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <span
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 999,
+                background: "#cbd5e1",
+                color: "#475569",
+                fontSize: "0.78rem",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 700,
+              }}
+            >
+              M
+            </span>
+            Maria — cliente
+            <span
+              style={{
+                marginLeft: "auto",
+                background: "rgba(37,211,102,0.12)",
+                color: "#16a34a",
+                fontSize: "0.66rem",
+                padding: "2px 8px",
+                borderRadius: 999,
+                fontWeight: 700,
+              }}
+            >
+              Bot ativo
+            </span>
+          </div>
+          <div
+            style={{
+              flex: 1,
+              padding: "0.8rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: 6,
+            }}
+          >
+            <Bubble side="in">Vocês entregam hoje?</Bubble>
+            <Bubble side="out">
+              Sim! Entregamos no mesmo dia para pedidos feitos até 15h. Qual o seu CEP?
+            </Bubble>
+            <Bubble side="in">04543-000</Bubble>
+            <Bubble side="out">
+              Pra esse CEP o frete é grátis e chega ainda hoje 😊 Quer fechar o pedido?
+            </Bubble>
+            <div style={{ fontSize: "0.65rem", color: "#475569", textAlign: "center" }}>
+              🤖 Bot respondeu em 1.8s · IA local
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Bubble({ side, children }: { side: "in" | "out"; children: React.ReactNode }) {
+  const isOut = side === "out";
+  return (
+    <div
+      style={{
+        alignSelf: isOut ? "flex-end" : "flex-start",
+        maxWidth: "75%",
+        background: isOut ? "#d9fdd3" : "#fff",
+        borderRadius: 8,
+        padding: "0.4rem 0.6rem",
+        fontSize: "0.74rem",
+        color: "#111b21",
+        boxShadow: "0 1px 2px rgba(0,0,0,0.08)",
+      }}
+    >
+      {isOut && (
+        <div style={{ fontSize: "0.6rem", color: "#16a34a", fontWeight: 700, marginBottom: 2 }}>
+          🤖 Bot
+        </div>
+      )}
+      {children}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// How it works — 3 steps
+// ─────────────────────────────────────────────────────────────────────────
+const STEPS = [
+  {
+    n: "1",
+    title: "Baixe e instale em 2 minutos",
+    desc: "Baixa o instalador no botão acima, executa e o app abre. Tudo num arquivo só — não precisa configurar Python, Docker ou servidor.",
+  },
+  {
+    n: "2",
+    title: "Escaneie o QR do WhatsApp",
+    desc: "Abra o WhatsApp do celular → Aparelhos conectados → Conectar aparelho. Escaneou, conectou. O modelo de IA é baixado automaticamente (~2GB, primeira vez).",
+  },
+  {
+    n: "3",
+    title: "Configure as regras e esqueça",
+    desc: "Escreva em português o que o bot deve fazer (ex: \"sempre pergunte o CEP antes de dar preço\"). Ele segue. 24h por dia, sem você precisar tocar.",
+  },
+];
+
+function HowItWorks() {
+  return (
+    <section id="como-funciona" style={{ padding: "5rem 1.5rem", background: "var(--bg)" }}>
+      <div style={{ maxWidth: 740, margin: "0 auto" }}>
+        <h2
+          style={{
+            textAlign: "center",
+            fontSize: "clamp(1.8rem,4vw,2.4rem)",
+            fontWeight: 800,
+            marginBottom: "0.6rem",
+          }}
+        >
+          Do download ao primeiro atendimento em 10 minutos
+        </h2>
+        <p style={{ textAlign: "center", color: "#8394b0", marginBottom: "3.5rem" }}>
+          Sem instalar Ollama, Python, Docker ou nada técnico. Funciona como qualquer app.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", position: "relative" }}>
+          <div
+            style={{
+              position: "absolute",
+              left: 27,
+              top: 48,
+              bottom: 48,
+              width: 2,
+              background: "rgba(37,211,102,0.2)",
+            }}
+          />
+          {STEPS.map((s) => (
+            <div key={s.n} style={{ display: "flex", gap: "1.25rem", alignItems: "flex-start" }}>
+              <div
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg,#25D366,#128C7E)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: 900,
+                  fontSize: "1.1rem",
+                  flexShrink: 0,
+                  color: "#fff",
+                  boxShadow: "0 0 0 4px rgba(37,211,102,0.15)",
+                  position: "relative",
+                  zIndex: 1,
+                }}
+              >
+                {s.n}
+              </div>
+              <div style={{ paddingTop: "0.85rem" }}>
+                <h3 style={{ fontWeight: 700, fontSize: "1.05rem", marginBottom: "0.35rem" }}>
+                  {s.title}
+                </h3>
+                <p style={{ color: "#8394b0", fontSize: "0.9rem", lineHeight: 1.6 }}>{s.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Comparison: ZapBot (local) vs Cloud bots (ChatGPT/Manychat/etc)
+// ─────────────────────────────────────────────────────────────────────────
+const COMPARISON_ROWS: { label: string; zapbot: string; cloud: string }[] = [
+  { label: "Custo mensal", zapbot: "R$ 0 — sem mensalidade", cloud: "R$ 200 a R$ 800/mês" },
+  { label: "Limite de mensagens", zapbot: "Ilimitado", cloud: "Por mensagem / token" },
+  { label: "Onde sua conversa fica", zapbot: "No seu PC, criptografada", cloud: "Em servidor da empresa" },
+  { label: "Precisa de internet sempre?", zapbot: "Só pro WhatsApp funcionar", cloud: "Tudo depende da nuvem" },
+  { label: "Setup técnico", zapbot: "Instala e usa", cloud: "Configurar API, webhook, conta" },
+  { label: "Treinar bot pra seu negócio", zapbot: "Escreve regras em português", cloud: "Fluxos com blocos / programação" },
+  { label: "Banimento se a empresa fechar", zapbot: "Continua funcionando", cloud: "Você perde tudo" },
+];
+
+function Comparison() {
+  return (
+    <section style={{ padding: "5rem 1.5rem", background: "var(--bg2)" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <h2
+          style={{
+            textAlign: "center",
+            fontSize: "clamp(1.8rem,4vw,2.4rem)",
+            fontWeight: 800,
+            marginBottom: "0.6rem",
+          }}
+        >
+          Por que rodar local em vez de na nuvem?
+        </h2>
+        <p style={{ textAlign: "center", color: "#8394b0", marginBottom: "3rem" }}>
+          A maioria dos chatbots cobra mensalidade e guarda suas conversas. O ZapBot não.
+        </p>
+
+        <div
+          style={{
+            background: "var(--card)",
+            border: "1px solid var(--line)",
+            borderRadius: 18,
+            overflow: "hidden",
+          }}
+        >
+          {/* Header row */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.4fr 1fr 1fr",
+              gap: 0,
+              background: "rgba(255,255,255,0.03)",
+              borderBottom: "1px solid var(--line)",
+              fontWeight: 700,
+              fontSize: "0.88rem",
+            }}
+          >
+            <div style={{ padding: "1rem 1.25rem", color: "#8394b0" }}> </div>
+            <div
+              style={{
+                padding: "1rem 1.25rem",
+                color: "#25D366",
+                textAlign: "center",
+                borderLeft: "1px solid var(--line)",
+                borderRight: "1px solid var(--line)",
+              }}
+            >
+              ⏻ ZapBot (local)
+            </div>
+            <div style={{ padding: "1rem 1.25rem", color: "#8394b0", textAlign: "center" }}>
+              ☁ Bots na nuvem
+            </div>
+          </div>
+
+          {COMPARISON_ROWS.map((row, i) => (
+            <div
+              key={row.label}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1.4fr 1fr 1fr",
+                gap: 0,
+                borderTop: i === 0 ? "none" : "1px solid var(--line)",
+                fontSize: "0.88rem",
+              }}
+            >
+              <div style={{ padding: "0.95rem 1.25rem", color: "#c8d4e8", fontWeight: 500 }}>
+                {row.label}
+              </div>
+              <div
+                style={{
+                  padding: "0.95rem 1.25rem",
+                  background: "rgba(37,211,102,0.05)",
+                  color: "#a7f3d0",
+                  textAlign: "center",
+                  borderLeft: "1px solid var(--line)",
+                  borderRight: "1px solid var(--line)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <span style={{ color: "#16c784", fontWeight: 700 }}>✓</span> {row.zapbot}
+              </div>
+              <div
+                style={{
+                  padding: "0.95rem 1.25rem",
+                  color: "#8394b0",
+                  textAlign: "center",
+                }}
+              >
+                {row.cloud}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p style={{ marginTop: "1.25rem", fontSize: "0.78rem", color: "#4e5c72", textAlign: "center" }}>
+          *Tabela comparativa baseada em planos médios de bots na nuvem (Manychat, ChatGPT Plus + API). Valores podem variar.
+        </p>
+      </div>
+    </section>
   );
 }
