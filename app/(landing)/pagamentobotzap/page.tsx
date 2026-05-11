@@ -3,10 +3,11 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 
+// `/releases/latest/download/` always points to the most recent release —
+// once a new version is published on GitHub, this URL serves it automatically.
+// The filename pattern is set in zapbot's electron-builder.yml.
 const DOWNLOAD_URL =
-  "https://github.com/tamoaiapp/zapbot/releases/latest/download/ZapBot-0.1.0-Setup.exe";
-const DOWNLOAD_ZIP_URL =
-  "https://github.com/tamoaiapp/zapbot/releases/latest/download/ZapBot-0.1.0-portable-win-x64.zip";
+  "https://github.com/tamoaiapp/zapbot/releases/latest/download/ZapBot-Setup-0.1.1.exe";
 
 // Bypass token for support (rare cases where someone paid but didn't see the approved page).
 const BYPASS_KEY = "ZAPBOT2026OK";
@@ -249,7 +250,7 @@ function PaidContent() {
               ZapBot — Download
             </h2>
             <p style={{ color: "#8394b0", fontSize: "0.9rem", marginBottom: "1.5rem" }}>
-              Versão 0.1.0 · Windows 10/11 · 88MB
+              Versão 0.1.1 · Windows 10/11 · 88MB · atualiza sozinho
             </p>
             <a
               href={DOWNLOAD_URL}
@@ -267,14 +268,6 @@ function PaidContent() {
             >
               ⬇ Baixar ZapBot-Setup.exe
             </a>
-            <p style={{ marginTop: "1rem" }}>
-              <a
-                href={DOWNLOAD_ZIP_URL}
-                style={{ color: "#8394b0", fontSize: "0.85rem", textDecoration: "underline" }}
-              >
-                ou baixar como .zip portátil (120MB, sem instalar)
-              </a>
-            </p>
             <p style={{ color: "#4e5c72", fontSize: "0.8rem", marginTop: "1.25rem" }}>
               Dúvidas?{" "}
               <a href="mailto:contato@iaempresa.app" style={{ color: "#8394b0" }}>
