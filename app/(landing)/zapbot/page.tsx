@@ -419,6 +419,9 @@ export default function ZapBotPage() {
       {/* How it works — 3 steps */}
       <HowItWorks />
 
+      {/* Savings vs monthly tools */}
+      <Savings />
+
       {/* Local vs cloud comparison */}
       <Comparison />
 
@@ -920,6 +923,302 @@ function HowItWorks() {
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Savings — price comparison vs monthly tools.
+// Big "economia" number is the visual hook.
+// ─────────────────────────────────────────────────────────────────────────
+const MONTHLY_TOOLS: { name: string; monthly: number; note: string }[] = [
+  { name: "Manychat / Chatfuel", monthly: 99, note: "plano Pro" },
+  { name: "ChatGPT Plus + Z-API", monthly: 159, note: "API + WhatsApp" },
+  { name: "Take Blip / Botmaker", monthly: 297, note: "plano inicial" },
+  { name: "WhatsApp Business API", monthly: 449, note: "via provedor" },
+];
+
+const MONTHS_COMPARE = 12;
+
+function formatBRL(n: number): string {
+  return n.toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+function Savings() {
+  const cheapestMonthly = MONTHLY_TOOLS[0].monthly;
+  const yearlyAvg = Math.round(
+    MONTHLY_TOOLS.reduce((s, t) => s + t.monthly * MONTHS_COMPARE, 0) / MONTHLY_TOOLS.length,
+  );
+  const savings = yearlyAvg - 97;
+  const paybackDays = Math.ceil((97 / cheapestMonthly) * 30);
+
+  return (
+    <section style={{ padding: "5rem 1.5rem", background: "var(--bg)" }}>
+      <div style={{ maxWidth: 960, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <div
+            style={{
+              display: "inline-block",
+              background: "rgba(22,199,132,0.1)",
+              border: "1px solid rgba(22,199,132,0.25)",
+              color: "#16c784",
+              borderRadius: 20,
+              padding: "0.3rem 1rem",
+              fontSize: "0.8rem",
+              fontWeight: 700,
+              marginBottom: "1rem",
+            }}
+          >
+            💰 Pague uma vez. Use pra sempre.
+          </div>
+          <h2
+            style={{
+              fontSize: "clamp(1.8rem,4vw,2.4rem)",
+              fontWeight: 800,
+              marginBottom: "0.6rem",
+            }}
+          >
+            Em 12 meses você economiza{" "}
+            <span style={{ color: "#16c784" }}>R$ {formatBRL(savings)}</span>
+          </h2>
+          <p style={{ color: "#8394b0", fontSize: "1rem" }}>
+            A maioria dos chatbots cobra todo mês — pra sempre. O ZapBot é{" "}
+            <strong style={{ color: "#eef2f9" }}>1 pagamento</strong> de{" "}
+            <strong style={{ color: "#16c784" }}>R$ 97</strong> e acabou.
+          </p>
+        </div>
+
+        {/* Table — desktop */}
+        <div
+          style={{
+            background: "var(--card)",
+            border: "1px solid var(--line)",
+            borderRadius: 18,
+            overflow: "hidden",
+          }}
+        >
+          {/* Header */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.8fr 1fr 1.1fr 1.1fr",
+              background: "rgba(255,255,255,0.03)",
+              borderBottom: "1px solid var(--line)",
+              fontWeight: 700,
+              fontSize: "0.85rem",
+              color: "#8394b0",
+            }}
+          >
+            <div style={{ padding: "1rem 1.25rem" }}>Ferramenta</div>
+            <div style={{ padding: "1rem 1.25rem", textAlign: "center" }}>Por mês</div>
+            <div style={{ padding: "1rem 1.25rem", textAlign: "center" }}>Em 12 meses</div>
+            <div style={{ padding: "1rem 1.25rem", textAlign: "center" }}>Em 24 meses</div>
+          </div>
+
+          {/* Monthly rows */}
+          {MONTHLY_TOOLS.map((tool, i) => {
+            const y1 = tool.monthly * 12;
+            const y2 = tool.monthly * 24;
+            return (
+              <div
+                key={tool.name}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1.8fr 1fr 1.1fr 1.1fr",
+                  borderTop: i === 0 ? "none" : "1px solid var(--line)",
+                  fontSize: "0.92rem",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ padding: "0.95rem 1.25rem", color: "#c8d4e8" }}>
+                  <div style={{ fontWeight: 600 }}>{tool.name}</div>
+                  <div style={{ fontSize: "0.75rem", color: "#4e5c72", marginTop: 2 }}>
+                    {tool.note}
+                  </div>
+                </div>
+                <div style={{ padding: "0.95rem 1.25rem", textAlign: "center", color: "#8394b0" }}>
+                  R$ {formatBRL(tool.monthly)}<span style={{ fontSize: "0.75rem" }}>/mês</span>
+                </div>
+                <div
+                  style={{
+                    padding: "0.95rem 1.25rem",
+                    textAlign: "center",
+                    color: "#fb923c",
+                    fontWeight: 600,
+                  }}
+                >
+                  R$ {formatBRL(y1)}
+                </div>
+                <div
+                  style={{
+                    padding: "0.95rem 1.25rem",
+                    textAlign: "center",
+                    color: "#ef4444",
+                    fontWeight: 700,
+                  }}
+                >
+                  R$ {formatBRL(y2)}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* ZapBot highlight row */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.8fr 1fr 1.1fr 1.1fr",
+              borderTop: "2px solid rgba(37,211,102,0.4)",
+              background:
+                "linear-gradient(90deg, rgba(37,211,102,0.10), rgba(22,199,132,0.06))",
+              alignItems: "center",
+              fontSize: "0.95rem",
+            }}
+          >
+            <div style={{ padding: "1.1rem 1.25rem" }}>
+              <div
+                style={{
+                  fontWeight: 800,
+                  color: "#25D366",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.4rem",
+                }}
+              >
+                ⏻ ZapBot
+                <span
+                  style={{
+                    background: "rgba(22,199,132,0.18)",
+                    color: "#16c784",
+                    fontSize: "0.65rem",
+                    padding: "2px 8px",
+                    borderRadius: 999,
+                    fontWeight: 700,
+                  }}
+                >
+                  VITALÍCIO
+                </span>
+              </div>
+              <div style={{ fontSize: "0.78rem", color: "#a7f3d0", marginTop: 2 }}>
+                1 pagamento · sem mensalidade · sem reajuste
+              </div>
+            </div>
+            <div
+              style={{
+                padding: "1.1rem 1.25rem",
+                textAlign: "center",
+                color: "#16c784",
+                fontWeight: 700,
+              }}
+            >
+              R$ 97<span style={{ fontSize: "0.75rem", color: "#a7f3d0" }}> única vez</span>
+            </div>
+            <div
+              style={{
+                padding: "1.1rem 1.25rem",
+                textAlign: "center",
+                color: "#16c784",
+                fontWeight: 800,
+                fontSize: "1.05rem",
+              }}
+            >
+              R$ 97
+            </div>
+            <div
+              style={{
+                padding: "1.1rem 1.25rem",
+                textAlign: "center",
+                color: "#16c784",
+                fontWeight: 800,
+                fontSize: "1.05rem",
+              }}
+            >
+              R$ 97
+            </div>
+          </div>
+        </div>
+
+        {/* Payback */}
+        <div
+          style={{
+            marginTop: "1.75rem",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+            gap: "1rem",
+          }}
+        >
+          <div
+            style={{
+              background: "rgba(22,199,132,0.08)",
+              border: "1px solid rgba(22,199,132,0.2)",
+              borderRadius: 14,
+              padding: "1.25rem",
+              textAlign: "center",
+            }}
+          >
+            <div style={{ fontSize: "0.78rem", color: "#a7f3d0", marginBottom: 4 }}>
+              Você se paga em
+            </div>
+            <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "#16c784" }}>
+              ~{paybackDays} dias
+            </div>
+            <div style={{ fontSize: "0.72rem", color: "#8394b0", marginTop: 4 }}>
+              vs. tool mais barata da lista
+            </div>
+          </div>
+
+          <div
+            style={{
+              background: "rgba(99,102,241,0.08)",
+              border: "1px solid rgba(99,102,241,0.2)",
+              borderRadius: 14,
+              padding: "1.25rem",
+              textAlign: "center",
+            }}
+          >
+            <div style={{ fontSize: "0.78rem", color: "#c4b5fd", marginBottom: 4 }}>
+              Economia média em 1 ano
+            </div>
+            <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "#a78bfa" }}>
+              R$ {formatBRL(savings)}
+            </div>
+            <div style={{ fontSize: "0.72rem", color: "#8394b0", marginTop: 4 }}>
+              média das ferramentas acima
+            </div>
+          </div>
+
+          <div
+            style={{
+              background: "rgba(245,158,11,0.08)",
+              border: "1px solid rgba(245,158,11,0.2)",
+              borderRadius: 14,
+              padding: "1.25rem",
+              textAlign: "center",
+            }}
+          >
+            <div style={{ fontSize: "0.78rem", color: "#fde68a", marginBottom: 4 }}>
+              Em 5 anos pagaria
+            </div>
+            <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "#f59e0b" }}>
+              R$ {formatBRL(yearlyAvg * 5)}+
+            </div>
+            <div style={{ fontSize: "0.72rem", color: "#8394b0", marginTop: 4 }}>
+              continuando na nuvem
+            </div>
+          </div>
+        </div>
+
+        <p
+          style={{
+            marginTop: "1.25rem",
+            fontSize: "0.75rem",
+            color: "#4e5c72",
+            textAlign: "center",
+          }}
+        >
+          *Valores médios dos planos iniciais em maio/2026. Algumas ferramentas têm fee de setup ou cobram por mensagem além da mensalidade.
+        </p>
       </div>
     </section>
   );
