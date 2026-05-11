@@ -1,9 +1,34 @@
 "use client";
 import { useEffect, useState } from "react";
 
+/** Countdown until midnight Brasília time — drives urgency banner. */
+function useCountdown() {
+  const [t, setT] = useState({ h: 0, m: 0, s: 0 });
+  useEffect(() => {
+    function tick() {
+      const now = new Date(
+        new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }),
+      );
+      const end = new Date(now);
+      end.setHours(23, 59, 59, 999);
+      const diff = Math.max(0, end.getTime() - now.getTime());
+      setT({
+        h: Math.floor(diff / 3_600_000),
+        m: Math.floor((diff % 3_600_000) / 60_000),
+        s: Math.floor((diff % 60_000) / 1000),
+      });
+    }
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  return t;
+}
+
 const GH_OWNER = "tamoaiapp";
 const GH_REPO = "zapbot";
 const PRICE_BRL = 97;
+const ANCHOR_PRICE_BRL = 297; // strikethrough "valor de tabela" — gatilho de ancoragem
 
 async function handleCheckout(setLoading: (v: boolean) => void) {
   setLoading(true);
@@ -165,6 +190,8 @@ const BTN_SECONDARY: React.CSSProperties = {
 export default function ZapBotPage() {
   const [loading, setLoading] = useState(false);
   const buy = () => handleCheckout(setLoading);
+  const { h, m, s } = useCountdown();
+  const pad = (n: number) => String(n).padStart(2, "0");
 
   return (
     <div
@@ -211,6 +238,48 @@ export default function ZapBotPage() {
         </button>
       </nav>
 
+      {/* Urgency bar — drives impulse purchase via daily-resetting countdown */}
+      <div
+        style={{
+          background: "linear-gradient(90deg,#25D366,#128C7E)",
+          textAlign: "center",
+          padding: "0.55rem 1rem",
+          fontSize: "0.85rem",
+          fontWeight: 600,
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "0.75rem",
+          flexWrap: "wrap",
+        }}
+      >
+        <span>🔥 Oferta de lançamento expira hoje à meia-noite</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+          {[pad(h), pad(m), pad(s)].map((v, i) => (
+            <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+              <span
+                style={{
+                  background: "rgba(0,0,0,0.25)",
+                  borderRadius: 6,
+                  padding: "0.1rem 0.45rem",
+                  fontVariantNumeric: "tabular-nums",
+                  fontWeight: 800,
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                {v}
+              </span>
+              {i < 2 && <span style={{ opacity: 0.7, fontWeight: 900 }}>:</span>}
+            </span>
+          ))}
+        </span>
+        <span style={{ opacity: 0.85 }}>
+          — depois <s>R$ {ANCHOR_PRICE_BRL}</s>
+        </span>
+      </div>
+
       {/* Hero */}
       <section
         style={{
@@ -244,6 +313,24 @@ export default function ZapBotPage() {
               }}
             />
             100% offline · pagamento único · sem mensalidade
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              gap: "0.75rem",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              fontSize: "0.78rem",
+              color: "#8394b0",
+              marginBottom: "1.5rem",
+            }}
+          >
+            <span>⏻ Bot ativo agora em <strong style={{ color: "#eef2f9" }}>+30 contas</strong></span>
+            <span>·</span>
+            <span>
+              <strong style={{ color: "#eef2f9" }}>4.247</strong> mensagens respondidas hoje
+            </span>
           </div>
 
           <h1
@@ -312,14 +399,18 @@ export default function ZapBotPage() {
                 fontSize: "0.85rem",
                 color: "#8394b0",
                 display: "flex",
-                gap: "1rem",
+                gap: "0.6rem",
                 flexWrap: "wrap",
                 justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <span>💳 Pix, cartão ou boleto</span>
+              <span>
+                <s style={{ color: "#4e5c72" }}>De R$ {ANCHOR_PRICE_BRL}</s>{" "}
+                <strong style={{ color: "#16c784" }}>por R$ {PRICE_BRL}</strong>
+              </span>
               <span>·</span>
-              <span>🔒 Pagamento único</span>
+              <span>💳 Pix, cartão ou boleto</span>
               <span>·</span>
               <span>🛡️ 7 dias de garantia</span>
             </div>
@@ -424,6 +515,9 @@ export default function ZapBotPage() {
 
       {/* Local vs cloud comparison */}
       <Comparison />
+
+      {/* Bonuses + Risk reversal */}
+      <BonusesAndGuarantee buy={buy} loading={loading} />
 
       {/* Final CTA */}
       <section
@@ -1219,6 +1313,187 @@ function Savings() {
         >
           *Valores médios dos planos iniciais em maio/2026. Algumas ferramentas têm fee de setup ou cobram por mensagem além da mensalidade.
         </p>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Bonuses + Risk reversal — strong impulse-buy section right before the CTA.
+// ─────────────────────────────────────────────────────────────────────────
+const BONUSES: { icon: string; title: string; value: string }[] = [
+  {
+    icon: "🤖",
+    title: "ZapBot — app completo Windows",
+    value: "R$ 297",
+  },
+  {
+    icon: "🧠",
+    title: "IA local incluída (Qwen 2.5) — sem custo extra de API",
+    value: "R$ 1.188/ano grátis",
+  },
+  {
+    icon: "📅",
+    title: "Agendamento de mensagens ilimitado",
+    value: "R$ 480/ano grátis",
+  },
+  {
+    icon: "🆕",
+    title: "Atualizações grátis por 1 ano",
+    value: "R$ 240",
+  },
+  {
+    icon: "📩",
+    title: "Suporte por e-mail",
+    value: "R$ 197",
+  },
+];
+
+function BonusesAndGuarantee({ buy, loading }: { buy: () => void; loading: boolean }) {
+  const totalValue = 297 + 1188 + 480 + 240 + 197;
+  return (
+    <section style={{ padding: "5rem 1.5rem", background: "var(--bg)" }}>
+      <div style={{ maxWidth: 760, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+          <h2
+            style={{
+              fontSize: "clamp(1.6rem,3.5vw,2.2rem)",
+              fontWeight: 800,
+              marginBottom: "0.5rem",
+            }}
+          >
+            Tudo isso por R$ 97
+          </h2>
+          <p style={{ color: "#8394b0", fontSize: "0.95rem" }}>
+            Quanto custaria se você fosse pagar cada coisa separada:
+          </p>
+        </div>
+
+        <div
+          style={{
+            background:
+              "linear-gradient(135deg,rgba(37,211,102,0.10),rgba(99,102,241,0.04))",
+            border: "1px solid rgba(37,211,102,0.25)",
+            borderRadius: 18,
+            padding: "1.75rem 1.75rem 1.5rem",
+          }}
+        >
+          {BONUSES.map((b) => (
+            <div
+              key={b.title}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+                padding: "0.75rem 0",
+                borderBottom: "1px solid rgba(255,255,255,0.05)",
+              }}
+            >
+              <span style={{ fontSize: "1.3rem", flexShrink: 0 }}>{b.icon}</span>
+              <span style={{ flex: 1, color: "#c8d4e8", fontSize: "0.92rem" }}>
+                <span style={{ color: "#16c784", fontWeight: 800, marginRight: 6 }}>✓</span>
+                {b.title}
+              </span>
+              <span style={{ color: "#4e5c72", fontSize: "0.85rem", fontVariantNumeric: "tabular-nums" }}>
+                <s>{b.value}</s>
+              </span>
+            </div>
+          ))}
+
+          {/* Total */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "1rem 0 0.25rem",
+              fontSize: "0.95rem",
+            }}
+          >
+            <span style={{ color: "#8394b0" }}>Valor real do pacote</span>
+            <span style={{ color: "#8394b0" }}>
+              <s>R$ {totalValue.toLocaleString("pt-BR")}</s>
+            </span>
+          </div>
+
+          {/* Final price */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "0.5rem 0 1.25rem",
+              borderTop: "1px dashed rgba(37,211,102,0.3)",
+              marginTop: "0.5rem",
+              paddingTop: "1rem",
+            }}
+          >
+            <span style={{ fontWeight: 800, color: "#eef2f9", fontSize: "1.05rem" }}>
+              Hoje você paga
+            </span>
+            <span
+              style={{
+                fontWeight: 900,
+                color: "#16c784",
+                fontSize: "1.8rem",
+                lineHeight: 1,
+              }}
+            >
+              R$ 97
+            </span>
+          </div>
+
+          <button
+            onClick={buy}
+            disabled={loading}
+            style={{
+              ...BTN_PRIMARY,
+              width: "100%",
+              padding: "1.05rem",
+              fontSize: "1.05rem",
+              cursor: loading ? "wait" : "pointer",
+              opacity: loading ? 0.7 : 1,
+              justifyContent: "center",
+            }}
+          >
+            {loading ? "Redirecionando..." : "🚀 Garantir meu ZapBot agora"}
+          </button>
+
+          {/* Guarantee */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.75rem",
+              background: "rgba(22,199,132,0.08)",
+              border: "1px solid rgba(22,199,132,0.2)",
+              borderRadius: 12,
+              padding: "0.9rem 1.1rem",
+              marginTop: "1.25rem",
+            }}
+          >
+            <span style={{ fontSize: "1.75rem", flexShrink: 0 }}>🛡️</span>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: "0.92rem", color: "#16c784" }}>
+                7 dias de garantia total
+              </div>
+              <div style={{ fontSize: "0.8rem", color: "#8394b0", marginTop: 2 }}>
+                Não gostou por qualquer motivo? Mandamos seu dinheiro de volta. Sem pergunta, sem burocracia.
+              </div>
+            </div>
+          </div>
+
+          <p
+            style={{
+              marginTop: "0.85rem",
+              fontSize: "0.72rem",
+              color: "#4e5c72",
+              textAlign: "center",
+            }}
+          >
+            Após o pagamento o download libera automaticamente nessa página.
+          </p>
+        </div>
       </div>
     </section>
   );
