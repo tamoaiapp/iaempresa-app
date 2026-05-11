@@ -8,9 +8,24 @@ const LATEST = (asset: string) =>
   `https://github.com/${GH_OWNER}/${GH_REPO}/releases/latest/download/${asset}`;
 
 const DOWNLOADS = {
-  win: { url: LATEST("ZapBot-Setup.exe"), label: "Baixar para Windows", sub: "Windows 10/11 · 64-bit" },
-  mac: { url: LATEST("ZapBot.dmg"), label: "Baixar para macOS", sub: "macOS 12+ · Intel/Apple Silicon" },
-  linux: { url: LATEST("ZapBot.AppImage"), label: "Baixar para Linux", sub: "AppImage · x86_64" },
+  win: {
+    url: LATEST("ZapBot-0.1.0-portable-win-x64.zip"),
+    label: "Baixar para Windows",
+    sub: "Windows 10/11 · 64-bit · 120MB portátil",
+    available: true,
+  },
+  mac: {
+    url: "#",
+    label: "macOS — em breve",
+    sub: "macOS 12+ · Intel/Apple Silicon",
+    available: false,
+  },
+  linux: {
+    url: "#",
+    label: "Linux — em breve",
+    sub: "AppImage · x86_64",
+    available: false,
+  },
 };
 
 type OS = "win" | "mac" | "linux";
@@ -22,6 +37,13 @@ function detectOS(): OS {
   if (ua.includes("linux") || ua.includes("x11")) return "linux";
   return "win";
 }
+
+const DISABLED_STYLE: React.CSSProperties = {
+  background: "rgba(255,255,255,0.04)",
+  color: "#4e5c72",
+  cursor: "not-allowed",
+  border: "1px dashed rgba(255,255,255,0.08)",
+};
 
 const features = [
   {
@@ -164,13 +186,16 @@ const BTN_SECONDARY: React.CSSProperties = {
 };
 
 export default function ZapBotPage() {
-  const [os, setOs] = useState<OS>("win");
+  const [detectedOs, setDetectedOs] = useState<OS>("win");
 
   useEffect(() => {
-    setOs(detectOS());
+    setDetectedOs(detectOS());
   }, []);
 
-  const primary = DOWNLOADS[os];
+  // Primary CTA uses detected OS only if available; otherwise falls back to Windows.
+  const primaryOs: OS = DOWNLOADS[detectedOs].available ? detectedOs : "win";
+  const primary = DOWNLOADS[primaryOs];
+  const os = primaryOs;
 
   return (
     <div
@@ -329,19 +354,31 @@ export default function ZapBotPage() {
             >
               {(Object.keys(DOWNLOADS) as OS[])
                 .filter((k) => k !== os)
-                .map((k) => (
-                  <a
-                    key={k}
-                    href={DOWNLOADS[k].url}
-                    style={{
-                      ...BTN_SECONDARY,
-                      padding: "0.55rem 1.1rem",
-                      fontSize: "0.85rem",
-                    }}
-                  >
-                    {DOWNLOADS[k].label}
-                  </a>
-                ))}
+                .map((k) => {
+                  const d = DOWNLOADS[k];
+                  const style = {
+                    ...(d.available ? BTN_SECONDARY : DISABLED_STYLE),
+                    padding: "0.55rem 1.1rem",
+                    fontSize: "0.85rem",
+                    borderRadius: 14,
+                    fontWeight: 600,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                  };
+                  if (!d.available) {
+                    return (
+                      <span key={k} style={style}>
+                        {d.label}
+                      </span>
+                    );
+                  }
+                  return (
+                    <a key={k} href={d.url} style={style}>
+                      {d.label}
+                    </a>
+                  );
+                })}
             </div>
           </div>
 
@@ -471,19 +508,29 @@ export default function ZapBotPage() {
               justifyContent: "center",
             }}
           >
-            {(Object.keys(DOWNLOADS) as OS[]).map((k) => (
-              <a
-                key={k}
-                href={DOWNLOADS[k].url}
-                style={{
-                  ...(k === os ? BTN_PRIMARY : BTN_SECONDARY),
-                  padding: "0.95rem 1.75rem",
-                  fontSize: "0.95rem",
-                }}
-              >
-                ⬇ {DOWNLOADS[k].label.replace("Baixar para ", "")}
-              </a>
-            ))}
+            {(Object.keys(DOWNLOADS) as OS[]).map((k) => {
+              const d = DOWNLOADS[k];
+              const style = {
+                ...(d.available ? (k === os ? BTN_PRIMARY : BTN_SECONDARY) : DISABLED_STYLE),
+                padding: "0.95rem 1.75rem",
+                fontSize: "0.95rem",
+                borderRadius: 14,
+                fontWeight: d.available ? 800 : 600,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.5rem",
+              };
+              const text = `${d.available ? "⬇ " : ""}${d.label.replace("Baixar para ", "")}`;
+              return d.available ? (
+                <a key={k} href={d.url} style={style}>
+                  {text}
+                </a>
+              ) : (
+                <span key={k} style={style}>
+                  {text}
+                </span>
+              );
+            })}
           </div>
 
           <p style={{ color: "#4e5c72", fontSize: "0.78rem", marginTop: "2rem" }}>
