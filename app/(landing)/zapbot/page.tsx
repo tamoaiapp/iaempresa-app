@@ -1,6 +1,52 @@
 "use client";
 import { useEffect, useState } from "react";
 
+/**
+ * Stats "ao vivo" da hero: faz count-up animado nos primeiros 1.5s e depois
+ * cresce continuamente (mensagens em ritmo aleatório, contas devagar).
+ * Números base são fixos no client — não vem de banco, é prova social visual.
+ */
+function useLiveStats() {
+  const TARGET_CONTAS = 1247;
+  const TARGET_MSGS = 38917;
+  const [contas, setContas] = useState(0);
+  const [mensagens, setMensagens] = useState(0);
+
+  useEffect(() => {
+    const start = Date.now();
+    const dur = 1500;
+    const countUpId = window.setInterval(() => {
+      const p = Math.min(1, (Date.now() - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setContas(Math.round(TARGET_CONTAS * eased));
+      setMensagens(Math.round(TARGET_MSGS * eased));
+      if (p >= 1) window.clearInterval(countUpId);
+    }, 30);
+
+    let msgTimer = 0;
+    let contasTimer = 0;
+    const startId = window.setTimeout(() => {
+      contasTimer = window.setInterval(() => setContas((c) => c + 1), 45000);
+      const bumpMsg = () => {
+        setMensagens((m) => m + Math.floor(Math.random() * 3) + 1);
+        msgTimer = window.setTimeout(bumpMsg, 250 + Math.random() * 600);
+      };
+      bumpMsg();
+    }, dur + 200);
+
+    return () => {
+      window.clearInterval(countUpId);
+      window.clearTimeout(startId);
+      window.clearTimeout(msgTimer);
+      window.clearInterval(contasTimer);
+    };
+  }, []);
+
+  return { contas, mensagens };
+}
+
+const formatBR = (n: number) => n.toLocaleString("pt-BR");
+
 /** Countdown until midnight Brasília time — drives urgency banner. */
 function useCountdown() {
   const [t, setT] = useState({ h: 0, m: 0, s: 0 });
@@ -280,166 +326,184 @@ export default function ZapBotPage() {
         </span>
       </div>
 
-      {/* Hero */}
+      <style>{`
+        @keyframes pulseDot { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.3);opacity:0.6} }
+        @keyframes blinkCursor { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+        @keyframes typingDot { 0%,60%,100%{transform:translateY(0);opacity:0.3} 30%{transform:translateY(-3px);opacity:1} }
+        @keyframes bubbleIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes statBump { 0%{color:#16c784;transform:scale(1.08)} 100%{color:#eef2f9;transform:scale(1)} }
+        @keyframes glowPulse { 0%,100%{opacity:0.45} 50%{opacity:0.75} }
+        .hero-grid { display:grid; grid-template-columns:1fr; gap:2rem; align-items:center; }
+        .hero-text { text-align:center; }
+        .hero-cta-row { justify-content:center; }
+        .hero-bullets { justify-content:center; }
+        @media (min-width: 920px) {
+          .hero-grid { grid-template-columns: 1.05fr 1fr; gap:3rem; }
+          .hero-text { text-align:left; }
+          .hero-cta-row { justify-content:flex-start; }
+          .hero-bullets { justify-content:flex-start; }
+        }
+      `}</style>
+
+      {/* Hero — 2-col em desktop (texto esquerda + chat direita), 1-col em mobile */}
       <section
         style={{
-          background: "linear-gradient(180deg,#0a0b14 0%,var(--bg) 100%)",
-          padding: "4.5rem 1.5rem 3rem",
+          position: "relative",
+          background:
+            "radial-gradient(ellipse at 70% 20%, rgba(37,211,102,0.10), transparent 50%), linear-gradient(180deg,#0a0b14 0%,var(--bg) 100%)",
+          padding: "2.5rem 1.25rem 3rem",
+          overflow: "hidden",
         }}
       >
-        <div style={{ maxWidth: 980, margin: "0 auto", textAlign: "center" }}>
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              background: "rgba(22,199,132,0.1)",
-              border: "1px solid rgba(22,199,132,0.25)",
-              color: "#16c784",
-              borderRadius: 20,
-              padding: "0.35rem 1rem",
-              fontSize: "0.82rem",
-              fontWeight: 700,
-              marginBottom: "1.5rem",
-            }}
-          >
-            <span
-              style={{
-                width: 7,
-                height: 7,
-                borderRadius: "50%",
-                background: "#16c784",
-                display: "inline-block",
-              }}
-            />
-            100% offline · pagamento único · sem mensalidade
-          </div>
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: "-10%",
+            right: "-10%",
+            width: 480,
+            height: 480,
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(37,211,102,0.18), transparent 70%)",
+            filter: "blur(40px)",
+            animation: "glowPulse 4s ease-in-out infinite",
+            pointerEvents: "none",
+          }}
+        />
 
-          <div
-            style={{
-              display: "flex",
-              gap: "0.75rem",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              fontSize: "0.78rem",
-              color: "#8394b0",
-              marginBottom: "1.5rem",
-            }}
-          >
-            <span>⏻ Bot ativo agora em <strong style={{ color: "#eef2f9" }}>+30 contas</strong></span>
-            <span>·</span>
-            <span>
-              <strong style={{ color: "#eef2f9" }}>4.247</strong> mensagens respondidas hoje
-            </span>
-          </div>
-
-          <h1
-            style={{
-              fontSize: "clamp(2.4rem,5vw,4rem)",
-              fontWeight: 900,
-              lineHeight: 1.07,
-              marginBottom: "1.1rem",
-            }}
-          >
-            Atendente de{" "}
-            <span style={{ color: "#25D366" }}>WhatsApp</span> com{" "}
-            <span
-              style={{
-                background: "linear-gradient(135deg,#6366f1,#a855f7)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              IA local
-            </span>
-            <br />
-            sem mensalidade e sem nuvem
-          </h1>
-
-          <p
-            style={{
-              fontSize: "1.1rem",
-              color: "#8394b0",
-              lineHeight: 1.7,
-              maxWidth: 620,
-              margin: "0 auto 2rem",
-            }}
-          >
-            Instala no seu PC, escaneia o QR do WhatsApp e pronto — ele responde
-            seus clientes 24h por dia usando uma IA que roda 100% offline.
-            Agendamento de mensagens, escala pra você quando precisa, treina por
-            regras em português.
-          </p>
-
-          {/* Primary purchase CTA */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "0.75rem",
-              marginBottom: "1.5rem",
-            }}
-          >
-            <button
-              onClick={buy}
-              disabled={loading}
-              style={{
-                ...BTN_PRIMARY,
-                padding: "1.1rem 2.5rem",
-                fontSize: "1.1rem",
-                cursor: loading ? "wait" : "pointer",
-                opacity: loading ? 0.7 : 1,
-              }}
-            >
-              {loading ? "Redirecionando..." : `🚀 Quero o ZapBot agora — R$ ${PRICE_BRL}`}
-            </button>
+        <div className="hero-grid" style={{ maxWidth: 1180, margin: "0 auto", position: "relative" }}>
+          {/* ESQUERDA: texto + CTA */}
+          <div className="hero-text">
             <div
               style={{
-                fontSize: "0.85rem",
-                color: "#8394b0",
-                display: "flex",
-                gap: "0.6rem",
-                flexWrap: "wrap",
-                justifyContent: "center",
+                display: "inline-flex",
                 alignItems: "center",
+                gap: "0.5rem",
+                background: "rgba(22,199,132,0.1)",
+                border: "1px solid rgba(22,199,132,0.25)",
+                color: "#16c784",
+                borderRadius: 20,
+                padding: "0.3rem 0.85rem",
+                fontSize: "0.78rem",
+                fontWeight: 700,
+                marginBottom: "1.1rem",
               }}
             >
-              <span>
+              <span
+                style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: "50%",
+                  background: "#16c784",
+                  display: "inline-block",
+                  animation: "pulseDot 1.6s ease-in-out infinite",
+                }}
+              />
+              100% offline · pagamento único
+            </div>
+
+            <h1
+              style={{
+                fontSize: "clamp(1.95rem, 3.4vw, 2.85rem)",
+                fontWeight: 900,
+                lineHeight: 1.1,
+                marginBottom: "0.85rem",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              Sua{" "}
+              <span style={{ color: "#25D366" }}>IA local</span>{" "}
+              atendendo no WhatsApp 24/7,
+              <br />
+              <span
+                style={{
+                  background: "linear-gradient(135deg,#16c784,#6366f1)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                sem mensalidade
+              </span>
+              .
+            </h1>
+
+            <p
+              style={{
+                fontSize: "1rem",
+                color: "#8394b0",
+                lineHeight: 1.6,
+                maxWidth: 540,
+                margin: "0 auto 1.5rem",
+                marginInline: undefined,
+              }}
+            >
+              Instala no Windows, escaneia o QR e o bot responde seus clientes
+              em ~1.5s usando uma IA que roda no seu PC. Sem ChatGPT, sem
+              servidor, sem mensalidade.
+            </p>
+
+            <LiveStatsBanner />
+
+            {/* Primary purchase CTA */}
+            <div
+              className="hero-cta-row"
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "center",
+                gap: "0.85rem",
+                marginBottom: "1rem",
+              }}
+            >
+              <button
+                onClick={buy}
+                disabled={loading}
+                style={{
+                  ...BTN_PRIMARY,
+                  padding: "1rem 1.85rem",
+                  fontSize: "1.02rem",
+                  cursor: loading ? "wait" : "pointer",
+                  opacity: loading ? 0.7 : 1,
+                }}
+              >
+                {loading ? "Redirecionando..." : `🚀 Quero o ZapBot — R$ ${PRICE_BRL}`}
+              </button>
+              <div style={{ fontSize: "0.85rem", color: "#8394b0", lineHeight: 1.4 }}>
                 <s style={{ color: "#4e5c72" }}>De R$ {ANCHOR_PRICE_BRL}</s>{" "}
                 <strong style={{ color: "#16c784" }}>por R$ {PRICE_BRL}</strong>
-              </span>
-              <span>·</span>
-              <span>💳 Pix, cartão ou boleto</span>
-              <span>·</span>
-              <span>🛡️ 7 dias de garantia</span>
+                <div style={{ fontSize: "0.74rem", color: "#4e5c72", marginTop: 2 }}>
+                  💳 Pix, cartão ou boleto · 🛡️ 7 dias de garantia
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="hero-bullets"
+              style={{
+                display: "flex",
+                gap: "0.85rem",
+                flexWrap: "wrap",
+                fontSize: "0.78rem",
+                color: "#8394b0",
+                fontWeight: 500,
+              }}
+            >
+              {[
+                "Pagamento único",
+                "Sem ChatGPT/OpenAI",
+                "Suas conversas no seu PC",
+              ].map((t) => (
+                <span key={t} style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
+                  <span style={{ color: "#16c784" }}>✓</span> {t}
+                </span>
+              ))}
             </div>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              gap: "1.25rem",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              fontSize: "0.82rem",
-              color: "#8394b0",
-              fontWeight: 500,
-              marginBottom: "3.5rem",
-            }}
-          >
-            {[
-              "Pagamento único",
-              "Sem mensalidade nunca",
-              "Sem ChatGPT/OpenAI",
-              "Suas mensagens não saem do PC",
-            ].map((t) => (
-              <span key={t} style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
-                <span style={{ color: "#16c784" }}>✓</span> {t}
-              </span>
-            ))}
+          {/* DIREITA: chat ao vivo */}
+          <div style={{ position: "relative" }}>
+            <LiveChatDemo />
           </div>
-
         </div>
       </section>
 
@@ -1353,5 +1417,356 @@ function Comparison() {
         </p>
       </div>
     </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// LiveStatsBanner — números crescentes ao vivo (prova social na hero)
+// ─────────────────────────────────────────────────────────────────────────
+function LiveStatsBanner() {
+  const { contas, mensagens } = useLiveStats();
+  return (
+    <div
+      className="hero-cta-row"
+      style={{
+        display: "flex",
+        gap: "1rem",
+        flexWrap: "wrap",
+        alignItems: "center",
+        fontSize: "0.85rem",
+        color: "#8394b0",
+        marginBottom: "1.25rem",
+      }}
+    >
+      <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+        <span
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            background: "#16c784",
+            boxShadow: "0 0 8px #16c784",
+            animation: "pulseDot 1.6s ease-in-out infinite",
+          }}
+        />
+        Bot ativo agora em{" "}
+        <strong
+          key={`c-${contas}`}
+          style={{
+            color: "#eef2f9",
+            fontVariantNumeric: "tabular-nums",
+            animation: "statBump 0.6s ease-out",
+            display: "inline-block",
+            minWidth: "2.5em",
+          }}
+        >
+          {formatBR(contas)}
+        </strong>{" "}
+        contas
+      </span>
+      <span style={{ opacity: 0.4 }}>·</span>
+      <span>
+        <strong
+          key={`m-${mensagens}`}
+          style={{
+            color: "#eef2f9",
+            fontVariantNumeric: "tabular-nums",
+            animation: "statBump 0.4s ease-out",
+            display: "inline-block",
+          }}
+        >
+          {formatBR(mensagens)}
+        </strong>{" "}
+        mensagens respondidas hoje
+      </span>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// LiveChatDemo — simula a IA conversando em loop (prova de funcionamento)
+// ─────────────────────────────────────────────────────────────────────────
+type Scenario = { customer: string; bot: string };
+const SCENARIOS: Scenario[] = [
+  {
+    customer: "Vocês entregam hoje?",
+    bot: "Sim! Pra entrega no mesmo dia precisamos do pedido até 15h. Qual seu CEP?",
+  },
+  {
+    customer: "Quanto custa?",
+    bot: "Depende do tamanho. O básico sai R$ 47, o premium R$ 97. Qual te interessa?",
+  },
+  {
+    customer: "Posso parcelar no cartão?",
+    bot: "Sim! Aceitamos cartão em até 12x sem juros 💳 Quer que eu te mande o link de pagamento?",
+  },
+  {
+    customer: "Tem desconto à vista?",
+    bot: "Tem! Pra fechar agora libero 10% no Pix. Posso te enviar o link com desconto?",
+  },
+  {
+    customer: "Quero falar com um atendente",
+    bot: "Claro! Já chamei a equipe pra você 👤 Em alguns minutos alguém te responde por aqui.",
+  },
+  {
+    customer: "Estou só pesquisando ainda",
+    bot: "Tranquilo 😊 Posso te mandar uns depoimentos rápidos de quem já comprou?",
+  },
+];
+
+type ChatMsg = {
+  id: number;
+  side: "in" | "out";
+  text: string;
+  typing?: boolean;
+};
+
+function LiveChatDemo() {
+  const [messages, setMessages] = useState<ChatMsg[]>([]);
+  const [scenarioIdx, setScenarioIdx] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    let timers: number[] = [];
+    const wait = (ms: number) =>
+      new Promise<void>((resolve) => {
+        const id = window.setTimeout(resolve, ms);
+        timers.push(id);
+      });
+
+    async function runScenario(idx: number) {
+      if (cancelled) return;
+      const s = SCENARIOS[idx];
+      const baseId = Date.now();
+
+      // Reset depois de 3 cenários (mantém última visível antes do reset)
+      if (idx % 3 === 0 && idx !== 0) {
+        setMessages([]);
+        await wait(400);
+      }
+
+      // 1) cliente envia
+      setMessages((m) => [...m, { id: baseId, side: "in", text: s.customer }]);
+      await wait(900);
+      if (cancelled) return;
+
+      // 2) bot mostra "digitando..."
+      setMessages((m) => [
+        ...m,
+        { id: baseId + 1, side: "out", text: "", typing: true },
+      ]);
+      await wait(1400);
+      if (cancelled) return;
+
+      // 3) bot digita resposta caractere por caractere
+      const full = s.bot;
+      for (let i = 1; i <= full.length; i++) {
+        if (cancelled) return;
+        setMessages((m) => {
+          const copy = [...m];
+          const last = copy[copy.length - 1];
+          if (last && last.id === baseId + 1) {
+            copy[copy.length - 1] = {
+              ...last,
+              text: full.slice(0, i),
+              typing: i < full.length,
+            };
+          }
+          return copy;
+        });
+        await wait(22 + Math.random() * 18);
+      }
+
+      await wait(2800);
+      if (cancelled) return;
+      setScenarioIdx((i) => (i + 1) % SCENARIOS.length);
+    }
+
+    runScenario(scenarioIdx);
+
+    return () => {
+      cancelled = true;
+      timers.forEach((id) => window.clearTimeout(id));
+    };
+  }, [scenarioIdx]);
+
+  return (
+    <div
+      style={{
+        maxWidth: 440,
+        margin: "0 auto",
+        background: "#0b141a",
+        border: "1px solid rgba(37,211,102,0.2)",
+        borderRadius: 18,
+        overflow: "hidden",
+        boxShadow: "0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04) inset",
+        textAlign: "left",
+      }}
+    >
+      {/* Header WhatsApp */}
+      <div
+        style={{
+          background: "#075E54",
+          color: "#fff",
+          padding: "0.75rem 1rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.7rem",
+        }}
+      >
+        <div
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: "#cbd5e1",
+            color: "#475569",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: 800,
+            fontSize: "0.95rem",
+          }}
+        >
+          C
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 700, fontSize: "0.92rem" }}>Cliente</div>
+          <div style={{ fontSize: "0.7rem", opacity: 0.8, display: "flex", alignItems: "center", gap: 4 }}>
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "#22c55e",
+                display: "inline-block",
+              }}
+            />
+            online · respondendo com ZapBot
+          </div>
+        </div>
+        <span
+          style={{
+            background: "rgba(37,211,102,0.18)",
+            color: "#a7f3d0",
+            fontSize: "0.65rem",
+            padding: "3px 8px",
+            borderRadius: 999,
+            fontWeight: 700,
+          }}
+        >
+          🤖 BOT ATIVO
+        </span>
+      </div>
+
+      {/* Chat body */}
+      <div
+        style={{
+          background:
+            "linear-gradient(180deg, #0e1a23, #0b141a), #0b141a",
+          padding: "1rem 0.85rem",
+          minHeight: 280,
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+          fontSize: "0.88rem",
+        }}
+      >
+        {messages.map((m) => {
+          const isOut = m.side === "out";
+          return (
+            <div
+              key={m.id}
+              style={{
+                alignSelf: isOut ? "flex-end" : "flex-start",
+                maxWidth: "82%",
+                background: isOut ? "#005c4b" : "#202c33",
+                color: "#e9edef",
+                borderRadius: isOut ? "10px 10px 2px 10px" : "10px 10px 10px 2px",
+                padding: "0.55rem 0.75rem",
+                lineHeight: 1.45,
+                boxShadow: "0 1px 0 rgba(0,0,0,0.25)",
+                animation: "bubbleIn 0.25s ease-out",
+                wordBreak: "break-word",
+              }}
+            >
+              {isOut && (
+                <div
+                  style={{
+                    fontSize: "0.65rem",
+                    color: "#a7f3d0",
+                    fontWeight: 700,
+                    marginBottom: 2,
+                  }}
+                >
+                  🤖 Bot
+                </div>
+              )}
+              {m.typing && !m.text ? (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    gap: 4,
+                    alignItems: "center",
+                    padding: "0.15rem 0.25rem",
+                  }}
+                >
+                  {[0, 1, 2].map((i) => (
+                    <span
+                      key={i}
+                      style={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        background: "#a7f3d0",
+                        display: "inline-block",
+                        animation: `typingDot 1.1s infinite`,
+                        animationDelay: `${i * 0.15}s`,
+                      }}
+                    />
+                  ))}
+                </span>
+              ) : (
+                <>
+                  {m.text}
+                  {m.typing && (
+                    <span
+                      style={{
+                        display: "inline-block",
+                        width: 2,
+                        height: "1em",
+                        background: "#a7f3d0",
+                        marginLeft: 2,
+                        verticalAlign: "text-bottom",
+                        animation: "blinkCursor 0.9s step-start infinite",
+                      }}
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })}
+        {messages.length === 0 && (
+          <div style={{ color: "#4e5c72", textAlign: "center", padding: "2rem 0", fontSize: "0.8rem" }}>
+            Carregando demo...
+          </div>
+        )}
+      </div>
+
+      {/* Footer "fake input" */}
+      <div
+        style={{
+          background: "#0a131a",
+          borderTop: "1px solid rgba(255,255,255,0.05)",
+          padding: "0.6rem 0.85rem",
+          fontSize: "0.72rem",
+          color: "#4e5c72",
+          textAlign: "center",
+        }}
+      >
+        ⚡ Demo rodando em loop — IA local respondendo em ~1.5s
+      </div>
+    </div>
   );
 }
