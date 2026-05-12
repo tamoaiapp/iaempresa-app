@@ -440,8 +440,84 @@ export default function ZapBotPage() {
             ))}
           </div>
 
-          {/* App mockup — CSS-only replica of ZapBot inbox */}
-          <AppMockup />
+        </div>
+      </section>
+
+      {/* Vídeo explicativo — fora da hero */}
+      <section style={{ padding: "4rem 1.5rem", background: "var(--bg)" }}>
+        <div style={{ position: "relative", maxWidth: 980, margin: "0 auto" }}>
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              background: "rgba(99,102,241,0.1)",
+              border: "1px solid rgba(99,102,241,0.25)",
+              color: "#a78bfa",
+              borderRadius: 20,
+              padding: "0.3rem 1rem",
+              fontSize: "0.8rem",
+              fontWeight: 700,
+              marginBottom: "1.25rem",
+            }}
+          >
+            🎬 Vídeo explicativo · 7 min
+          </div>
+
+          <div
+            style={{
+              position: "relative",
+              aspectRatio: "16 / 9",
+              borderRadius: 16,
+              overflow: "hidden",
+              border: "1px solid rgba(37,211,102,0.18)",
+              boxShadow: "0 32px 80px rgba(0,0,0,0.6)",
+              background: "#0b141a",
+            }}
+          >
+            <video
+              src="/zapbot-demo.mp4"
+              poster="/zapbot-demo-poster.jpg"
+              controls
+              playsInline
+              preload="metadata"
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                background: "#0b141a",
+              }}
+            />
+          </div>
+
+          <div
+            style={{
+              marginTop: "2rem",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "0.6rem",
+            }}
+          >
+            <button
+              onClick={buy}
+              disabled={loading}
+              style={{
+                ...BTN_PRIMARY,
+                padding: "1.15rem 2.75rem",
+                fontSize: "1.15rem",
+                cursor: loading ? "wait" : "pointer",
+                opacity: loading ? 0.7 : 1,
+              }}
+            >
+              {loading ? "Redirecionando..." : `🚀 Quero o ZapBot agora — R$ ${PRICE_BRL}`}
+            </button>
+            <div style={{ fontSize: "0.82rem", color: "#8394b0" }}>
+              pagamento único · Pix, cartão ou boleto · 7 dias de garantia
+            </div>
+          </div>
         </div>
       </section>
 
@@ -595,344 +671,6 @@ export default function ZapBotPage() {
           </p>
         </div>
       </section>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-// App mockup — pure-CSS replica of the ZapBot inbox, no images required.
-// Lives at the bottom of the hero to give visitors a sense of the product.
-// ─────────────────────────────────────────────────────────────────────────
-function AppMockup() {
-  return (
-    <div style={{ position: "relative", maxWidth: 980, margin: "0 auto" }}>
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse at 50% 0%, rgba(37,211,102,0.22) 0%, transparent 65%)",
-          borderRadius: 20,
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* Window chrome */}
-      <div
-        style={{
-          background: "#161b27",
-          border: "1px solid rgba(255,255,255,0.07)",
-          borderBottom: "none",
-          borderRadius: "16px 16px 0 0",
-          padding: "0.55rem 1rem",
-          display: "flex",
-          alignItems: "center",
-          gap: "0.5rem",
-        }}
-      >
-        {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
-          <span
-            key={c}
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: "50%",
-              background: c,
-              display: "inline-block",
-            }}
-          />
-        ))}
-        <span
-          style={{
-            flex: 1,
-            background: "rgba(255,255,255,0.05)",
-            borderRadius: 6,
-            padding: "0.18rem 0.75rem",
-            fontSize: "0.74rem",
-            color: "#4e5c72",
-            marginLeft: "0.5rem",
-            textAlign: "center",
-          }}
-        >
-          ZapBot — rodando localmente
-        </span>
-      </div>
-
-      {/* 3-column app body */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "180px 240px 1fr",
-          height: 380,
-          border: "1px solid rgba(37,211,102,0.18)",
-          borderTop: "none",
-          borderRadius: "0 0 16px 16px",
-          overflow: "hidden",
-          boxShadow: "0 32px 80px rgba(0,0,0,0.6)",
-          background: "#0b141a",
-        }}
-      >
-        {/* Sidebar */}
-        <div
-          style={{
-            background: "#075E54",
-            color: "#fff",
-            padding: "1rem 0.75rem",
-            display: "flex",
-            flexDirection: "column",
-            gap: "0.5rem",
-          }}
-        >
-          <div style={{ fontWeight: 800, fontSize: "0.95rem", marginBottom: "0.5rem" }}>
-            <span style={{ color: "#25D366" }}>⏻</span> ZapBot
-            <div style={{ fontSize: "0.65rem", opacity: 0.6, fontWeight: 400 }}>
-              Atendente local
-            </div>
-          </div>
-          {[
-            { l: "Conversas", active: true },
-            { l: "Agendamentos", active: false },
-            { l: "Ajustar IA", active: false },
-            { l: "Configurações", active: false },
-          ].map((it) => (
-            <div
-              key={it.l}
-              style={{
-                padding: "0.4rem 0.6rem",
-                borderRadius: 6,
-                fontSize: "0.78rem",
-                background: it.active ? "rgba(255,255,255,0.1)" : "transparent",
-                color: it.active ? "#fff" : "rgba(255,255,255,0.7)",
-              }}
-            >
-              {it.l}
-            </div>
-          ))}
-          <div style={{ marginTop: "auto", fontSize: "0.7rem", opacity: 0.85 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span
-                style={{
-                  width: 7,
-                  height: 7,
-                  borderRadius: "50%",
-                  background: "#22c55e",
-                  display: "inline-block",
-                }}
-              />
-              Conectado
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
-              <span
-                style={{
-                  width: 7,
-                  height: 7,
-                  borderRadius: "50%",
-                  background: "#22c55e",
-                  display: "inline-block",
-                }}
-              />
-              IA pronta
-            </div>
-          </div>
-        </div>
-
-        {/* Conversation list */}
-        <div
-          style={{
-            background: "#fff",
-            color: "#111",
-            borderRight: "1px solid #e2e8f0",
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              background: "#f0f2f5",
-              padding: "0.55rem 0.75rem",
-              borderBottom: "1px solid #e2e8f0",
-              fontWeight: 700,
-              fontSize: "0.8rem",
-              color: "#111b21",
-            }}
-          >
-            Conversas
-          </div>
-          {[
-            {
-              name: "Maria — cliente",
-              msg: "Vocês entregam hoje?",
-              time: "agora",
-              badge: 2,
-              active: true,
-            },
-            { name: "João Silva", msg: "Beleza, obrigado!", time: "10:14", badge: 0, active: false },
-            {
-              name: "Ana — loja",
-              msg: "Quero falar com atendente",
-              time: "09:42",
-              badge: 0,
-              active: false,
-              escalated: true,
-            },
-            { name: "Pedro", msg: "Como funciona o frete?", time: "ontem", badge: 0, active: false },
-          ].map((c) => (
-            <div
-              key={c.name}
-              style={{
-                padding: "0.6rem 0.75rem",
-                borderBottom: "1px solid #f1f5f9",
-                background: c.active ? "#f1f5f9" : "transparent",
-                cursor: "pointer",
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: "0.78rem", fontWeight: 600 }}>{c.name}</span>
-                <span style={{ fontSize: "0.66rem", color: "#64748b" }}>{c.time}</span>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginTop: 2,
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: "0.72rem",
-                    color: "#475569",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {c.msg}
-                </span>
-                <span style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: 6 }}>
-                  {c.escalated && (
-                    <span style={{ color: "#ef4444", fontSize: "0.7rem" }}>⚠</span>
-                  )}
-                  <span style={{ color: "#25D366", fontSize: "0.7rem" }}>🤖</span>
-                  {c.badge > 0 && (
-                    <span
-                      style={{
-                        background: "#25D366",
-                        color: "#fff",
-                        fontSize: "0.6rem",
-                        borderRadius: 999,
-                        padding: "1px 6px",
-                        fontWeight: 700,
-                      }}
-                    >
-                      {c.badge}
-                    </span>
-                  )}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Chat */}
-        <div
-          style={{
-            background: "#efeae2",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <div
-            style={{
-              background: "#f0f2f5",
-              padding: "0.6rem 0.85rem",
-              borderBottom: "1px solid #e2e8f0",
-              fontWeight: 700,
-              fontSize: "0.8rem",
-              color: "#111b21",
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <span
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 999,
-                background: "#cbd5e1",
-                color: "#475569",
-                fontSize: "0.78rem",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 700,
-              }}
-            >
-              M
-            </span>
-            Maria — cliente
-            <span
-              style={{
-                marginLeft: "auto",
-                background: "rgba(37,211,102,0.12)",
-                color: "#16a34a",
-                fontSize: "0.66rem",
-                padding: "2px 8px",
-                borderRadius: 999,
-                fontWeight: 700,
-              }}
-            >
-              Bot ativo
-            </span>
-          </div>
-          <div
-            style={{
-              flex: 1,
-              padding: "0.8rem",
-              display: "flex",
-              flexDirection: "column",
-              gap: 6,
-            }}
-          >
-            <Bubble side="in">Vocês entregam hoje?</Bubble>
-            <Bubble side="out">
-              Sim! Entregamos no mesmo dia para pedidos feitos até 15h. Qual o seu CEP?
-            </Bubble>
-            <Bubble side="in">04543-000</Bubble>
-            <Bubble side="out">
-              Pra esse CEP o frete é grátis e chega ainda hoje 😊 Quer fechar o pedido?
-            </Bubble>
-            <div style={{ fontSize: "0.65rem", color: "#475569", textAlign: "center" }}>
-              🤖 Bot respondeu em 1.8s · IA local
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Bubble({ side, children }: { side: "in" | "out"; children: React.ReactNode }) {
-  const isOut = side === "out";
-  return (
-    <div
-      style={{
-        alignSelf: isOut ? "flex-end" : "flex-start",
-        maxWidth: "75%",
-        background: isOut ? "#d9fdd3" : "#fff",
-        borderRadius: 8,
-        padding: "0.4rem 0.6rem",
-        fontSize: "0.74rem",
-        color: "#111b21",
-        boxShadow: "0 1px 2px rgba(0,0,0,0.08)",
-      }}
-    >
-      {isOut && (
-        <div style={{ fontSize: "0.6rem", color: "#16a34a", fontWeight: 700, marginBottom: 2 }}>
-          🤖 Bot
-        </div>
-      )}
-      {children}
     </div>
   );
 }
