@@ -411,8 +411,7 @@ export default function ZapBotPage() {
                 letterSpacing: "-0.01em",
               }}
             >
-              Sua{" "}
-              <span style={{ color: "#25D366" }}>IA local</span>{" "}
+              <span style={{ color: "#25D366" }}>Seu computador</span>{" "}
               atendendo no WhatsApp 24/7,
               <br />
               <span
