@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Stats "ao vivo" da hero: faz count-up animado nos primeiros 1.5s e depois
@@ -93,116 +93,53 @@ async function handleCheckout(setLoading: (v: boolean) => void) {
   }
 }
 
-const features = [
+type StatCard = {
+  stat: string;
+  statSub?: string;
+  color: string;
+  title: string;
+  detail: string;
+};
+
+const STAT_CARDS: StatCard[] = [
   {
+    stat: "R$ 0",
+    statSub: "/mês",
     color: "#16c784",
-    bg: "rgba(22,199,132,0.08)",
-    border: "rgba(22,199,132,0.2)",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="9" fill="rgba(22,199,132,0.15)" />
-        <path
-          d="M16 5l3.4 7 7.6 1.1-5.5 5.3 1.3 7.5L16 22.5l-6.8 3.4 1.3-7.5L5 13.1l7.6-1.1L16 5z"
-          fill="#16c784"
-        />
-      </svg>
-    ),
-    title: "100% local — sem mensalidade de IA",
-    desc:
-      "A IA roda na sua máquina (Ollama + Qwen). Não envia mensagens pra ChatGPT, Claude, OpenAI. Sem custo por token, sem limite de uso.",
+    title: "Sem mensalidade",
+    detail: "Pague R$ 97 uma vez. Outros bots cobram R$ 200-800/mês.",
   },
   {
+    stat: "~1.5s",
     color: "#25D366",
-    bg: "rgba(37,211,102,0.08)",
-    border: "rgba(37,211,102,0.2)",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="9" fill="#25D366" />
-        <path
-          d="M22 18.5c-.3-.2-1.8-.9-2-1s-.5-.2-.7.1c-.2.3-.8 1-1 1.2s-.4.2-.7 0c-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.2 3.3 5.3 4.6 2.6 1.1 3.1.9 3.7.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.1-.3-.2-.6-.4z"
-          fill="white"
-        />
-      </svg>
-    ),
-    title: "Conecta no WhatsApp sem Chromium",
-    desc:
-      "Usa o protocolo WhatsApp Web nativo (Baileys). Não abre navegador, não consome 2GB de RAM, não trava. Escaneia o QR code uma vez e pronto.",
+    title: "Resposta instantânea",
+    detail: "IA roda no seu PC, não precisa esperar fila de API.",
   },
   {
+    stat: "24/7",
     color: "#a855f7",
-    bg: "rgba(168,85,247,0.08)",
-    border: "rgba(168,85,247,0.2)",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="9" fill="rgba(168,85,247,0.15)" />
-        <circle cx="16" cy="16" r="8" stroke="#a855f7" strokeWidth="2.2" fill="none" />
-        <path d="M16 11v5l3.5 2.5" stroke="#a855f7" strokeWidth="2.2" strokeLinecap="round" />
-      </svg>
-    ),
-    title: "Agenda mensagens — únicas ou recorrentes",
-    desc:
-      "Envie lembretes, follow-ups, campanhas. Escolhe data e hora, ou repete toda segunda às 9h. Limite de 30 msgs/hora para não ser banido.",
+    title: "Atende a noite toda",
+    detail: "Bot trabalha enquanto você dorme, dentro do horário que você define.",
   },
   {
-    color: "#f59e0b",
-    bg: "rgba(245,158,11,0.08)",
-    border: "rgba(245,158,11,0.2)",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="9" fill="rgba(245,158,11,0.15)" />
-        <path
-          d="M16 6L4 26h24L16 6z"
-          stroke="#f59e0b"
-          strokeWidth="2.2"
-          fill="none"
-          strokeLinejoin="round"
-        />
-        <path d="M16 13v6M16 22h.01" stroke="#f59e0b" strokeWidth="2.4" strokeLinecap="round" />
-      </svg>
-    ),
-    title: "Escala pra você quando o cliente pede",
-    desc:
-      "Definiu \"atendente\", \"falar com humano\", ou um regex personalizado? O bot pausa, envia uma resposta padrão e te notifica. Você assume o controle.",
-  },
-  {
-    color: "#6366f1",
-    bg: "rgba(99,102,241,0.08)",
-    border: "rgba(99,102,241,0.2)",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="9" fill="rgba(99,102,241,0.15)" />
-        <path
-          d="M8 10h16M8 16h16M8 22h10"
-          stroke="#6366f1"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
-    title: "Treina em linguagem natural",
-    desc:
-      "Sem prompts engineering ou fine-tuning. Você escreve regras como \"sempre pergunte o CEP antes de dar preço\" — o bot segue cada uma na hora de responder.",
-  },
-  {
+    stat: "0",
+    statSub: "dados na nuvem",
     color: "#0ea5e9",
-    bg: "rgba(14,165,233,0.08)",
-    border: "rgba(14,165,233,0.2)",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="9" fill="rgba(14,165,233,0.15)" />
-        <ellipse cx="16" cy="9" rx="9" ry="3" stroke="#0ea5e9" strokeWidth="2.2" fill="none" />
-        <path
-          d="M7 9v14c0 1.7 4 3 9 3s9-1.3 9-3V9"
-          stroke="#0ea5e9"
-          strokeWidth="2.2"
-          fill="none"
-        />
-        <path d="M7 16c0 1.7 4 3 9 3s9-1.3 9-3" stroke="#0ea5e9" strokeWidth="2.2" fill="none" />
-      </svg>
-    ),
-    title: "Suas conversas ficam no seu PC",
-    desc:
-      "Banco SQLite local com histórico de tudo. Nada sobe pra nuvem. Você exporta, faz backup, deleta — sempre seu dado.",
+    title: "100% privado",
+    detail: "Conversas em SQLite local. Nada sobe pra ChatGPT, Claude ou OpenAI.",
+  },
+  {
+    stat: "∞",
+    statSub: "mensagens",
+    color: "#f59e0b",
+    title: "Sem limite por msg",
+    detail: "Não cobra por token. Atende 10 ou 10.000 clientes pelo mesmo preço.",
+  },
+  {
+    stat: "PT-BR",
+    color: "#6366f1",
+    title: "Treina em português",
+    detail: "Escreve \"pergunte o CEP antes do preço\" — bot segue. Sem código.",
   },
 ];
 
@@ -527,33 +464,8 @@ export default function ZapBotPage() {
             🎬 Vídeo explicativo · 7 min
           </div>
 
-          <div
-            style={{
-              position: "relative",
-              aspectRatio: "16 / 9",
-              borderRadius: 16,
-              overflow: "hidden",
-              border: "1px solid rgba(37,211,102,0.18)",
-              boxShadow: "0 32px 80px rgba(0,0,0,0.6)",
-              background: "#0b141a",
-            }}
-          >
-            <video
-              src="/zapbot-demo.mp4"
-              poster="/zapbot-demo-poster.jpg"
-              controls
-              playsInline
-              preload="metadata"
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                background: "#0b141a",
-              }}
-            />
-          </div>
+          <VideoWithPlayCover />
+
 
           <div
             style={{
@@ -584,62 +496,124 @@ export default function ZapBotPage() {
         </div>
       </section>
 
-      {/* Features */}
-      <section style={{ padding: "4rem 1.5rem", background: "var(--bg2)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+      {/* Features — stat cards punchy, escaneáveis em 5 segundos */}
+      <section style={{ padding: "3.5rem 1.25rem", background: "var(--bg2)" }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto" }}>
           <h2
             style={{
               textAlign: "center",
-              fontSize: "clamp(1.8rem,4vw,2.4rem)",
-              fontWeight: 800,
-              marginBottom: "0.6rem",
+              fontSize: "clamp(1.6rem, 3vw, 2.2rem)",
+              fontWeight: 900,
+              marginBottom: "0.5rem",
+              letterSpacing: "-0.01em",
             }}
           >
-            Por que o ZapBot é diferente
+            Tudo que outros chatbots cobram caro.{" "}
+            <span style={{ color: "#16c784" }}>Aqui é grátis.</span>
           </h2>
           <p
             style={{
               textAlign: "center",
               color: "#8394b0",
-              marginBottom: "3rem",
-              fontSize: "1rem",
+              marginBottom: "2.5rem",
+              fontSize: "0.95rem",
             }}
           >
-            Atendente automatizado de verdade — sem aluguel de IA, sem servidor
-            na nuvem, sem mensalidade.
+            Sem mensalidade · sem limite de mensagens · sem nuvem · sem letra miúda.
           </p>
 
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))",
-              gap: "1.1rem",
+              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gap: "0.9rem",
             }}
           >
-            {features.map((f) => (
+            {STAT_CARDS.map((c) => (
               <div
-                key={f.title}
+                key={c.title}
                 style={{
-                  background: f.bg,
-                  border: `1px solid ${f.border}`,
-                  borderRadius: 18,
-                  padding: "1.5rem",
+                  position: "relative",
+                  background: `linear-gradient(180deg, ${c.color}15 0%, ${c.color}03 100%)`,
+                  border: `1px solid ${c.color}38`,
+                  borderRadius: 16,
+                  padding: "1.4rem 1.3rem 1.25rem",
+                  overflow: "hidden",
+                  transition: "transform 0.2s ease, border-color 0.2s ease",
                 }}
               >
-                <div style={{ marginBottom: "0.9rem" }}>{f.icon}</div>
-                <h3
+                {/* Glow no canto pra dar profundidade */}
+                <div
+                  aria-hidden
                   style={{
-                    fontWeight: 700,
-                    fontSize: "1rem",
-                    marginBottom: "0.4rem",
-                    color: f.color,
+                    position: "absolute",
+                    top: -40,
+                    right: -40,
+                    width: 120,
+                    height: 120,
+                    borderRadius: "50%",
+                    background: c.color,
+                    opacity: 0.12,
+                    filter: "blur(30px)",
+                    pointerEvents: "none",
+                  }}
+                />
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: 6,
+                    marginBottom: "0.55rem",
+                    position: "relative",
                   }}
                 >
-                  {f.title}
-                </h3>
-                <p style={{ color: "#8394b0", fontSize: "0.88rem", lineHeight: 1.6 }}>
-                  {f.desc}
-                </p>
+                  <span
+                    style={{
+                      fontSize: "2.4rem",
+                      fontWeight: 900,
+                      color: c.color,
+                      lineHeight: 1,
+                      letterSpacing: "-0.03em",
+                    }}
+                  >
+                    {c.stat}
+                  </span>
+                  {c.statSub && (
+                    <span
+                      style={{
+                        fontSize: "0.85rem",
+                        fontWeight: 700,
+                        color: c.color,
+                        opacity: 0.7,
+                      }}
+                    >
+                      {c.statSub}
+                    </span>
+                  )}
+                </div>
+
+                <div
+                  style={{
+                    fontWeight: 800,
+                    fontSize: "1rem",
+                    color: "#eef2f9",
+                    marginBottom: "0.3rem",
+                    position: "relative",
+                  }}
+                >
+                  {c.title}
+                </div>
+                <div
+                  style={{
+                    color: "#8394b0",
+                    fontSize: "0.82rem",
+                    lineHeight: 1.45,
+                    position: "relative",
+                  }}
+                >
+                  {c.detail}
+                </div>
               </div>
             ))}
           </div>
@@ -1416,6 +1390,109 @@ function Comparison() {
         </p>
       </div>
     </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// VideoWithPlayCover — overlay com botão play customizado sobre o <video>
+// ─────────────────────────────────────────────────────────────────────────
+function VideoWithPlayCover() {
+  const ref = useRef<HTMLVideoElement>(null);
+  const [started, setStarted] = useState(false);
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        aspectRatio: "16 / 9",
+        borderRadius: 16,
+        overflow: "hidden",
+        border: "1px solid rgba(37,211,102,0.18)",
+        boxShadow: "0 32px 80px rgba(0,0,0,0.6)",
+        background: "#0b141a",
+      }}
+    >
+      <video
+        ref={ref}
+        src="/zapbot-demo.mp4"
+        poster="/zapbot-demo-poster.jpg"
+        controls
+        playsInline
+        preload="metadata"
+        onPlay={() => setStarted(true)}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          background: "#0b141a",
+        }}
+      />
+      {!started && (
+        <button
+          onClick={() => {
+            setStarted(true);
+            void ref.current?.play();
+          }}
+          aria-label="Reproduzir vídeo"
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background:
+              "linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.5) 100%)",
+            border: "none",
+            cursor: "pointer",
+            padding: 0,
+          }}
+        >
+          <span
+            style={{
+              width: 96,
+              height: 96,
+              borderRadius: "50%",
+              background: "linear-gradient(135deg,#25D366,#128C7E)",
+              boxShadow:
+                "0 14px 44px rgba(37,211,102,0.55), 0 0 0 10px rgba(37,211,102,0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "transform 0.2s ease",
+            }}
+          >
+            <span
+              style={{
+                width: 0,
+                height: 0,
+                borderTop: "17px solid transparent",
+                borderBottom: "17px solid transparent",
+                borderLeft: "26px solid white",
+                marginLeft: 6,
+              }}
+            />
+          </span>
+          <span
+            style={{
+              position: "absolute",
+              bottom: "1.5rem",
+              left: 0,
+              right: 0,
+              textAlign: "center",
+              color: "#eef2f9",
+              fontWeight: 700,
+              fontSize: "0.95rem",
+              textShadow: "0 2px 8px rgba(0,0,0,0.7)",
+              pointerEvents: "none",
+            }}
+          >
+            ▶ Assistir agora · 7 min
+          </span>
+        </button>
+      )}
+    </div>
   );
 }
 
