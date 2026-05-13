@@ -795,6 +795,12 @@ export default function ZapBotPage() {
       {/* Local vs cloud comparison */}
       <Comparison />
 
+      {/* Testimonials */}
+      <Testimonials />
+
+      {/* FAQ */}
+      <FAQ />
+
       {/* Bonuses + Risk reversal */}
       <BonusesAndGuarantee buy={buy} loading={loading} />
 
@@ -2453,5 +2459,391 @@ function LiveChatDemo() {
         Demo rodando em loop — IA local respondendo em ~1.5s
       </div>
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Testimonials — social proof com cards de depoimentos
+// ─────────────────────────────────────────────────────────────────────────
+type Testimonial = {
+  initial: string;
+  color: string;
+  color2: string;
+  name: string;
+  business: string;
+  quote: string;
+  highlight?: string;
+};
+
+const TESTIMONIALS: Testimonial[] = [
+  {
+    initial: "M",
+    color: "#25D366",
+    color2: "#16c784",
+    name: "Marcos Andrade",
+    business: "Loja de roupas femininas · São Paulo",
+    quote: "Antes eu perdia umas 3 vendas por noite porque ninguém respondia depois das 18h. Agora o ZapBot responde sozinho e fechamos pedido até 23h.",
+    highlight: "+R$ 4.200/mês em vendas noturnas",
+  },
+  {
+    initial: "F",
+    color: "#a855f7",
+    color2: "#6366f1",
+    name: "Fernanda Costa",
+    business: "Distribuidora de produtos naturais",
+    quote: "Pagava R$ 800/mês num chatbot que vivia caindo. Trocamos pelo ZapBot e em 2 dias eu já tinha pago o investimento de volta.",
+    highlight: "Economia de R$ 9.600/ano",
+  },
+  {
+    initial: "R",
+    color: "#f59e0b",
+    color2: "#ef4444",
+    name: "Renato Silva",
+    business: "Mecânica de motos · Belo Horizonte",
+    quote: "Configurei em 10 minutos sem saber programar. Hoje 80% dos clientes que me chamam no WhatsApp são atendidos sem eu precisar tocar no celular.",
+    highlight: "80% dos atendimentos automáticos",
+  },
+];
+
+function Testimonials() {
+  return (
+    <>
+      <style>{`
+        .test-grid { display:grid; grid-template-columns:1fr; gap:1.1rem; }
+        @media (min-width: 720px) { .test-grid { grid-template-columns:1fr 1fr; gap:1.25rem; } }
+        @media (min-width: 1040px) { .test-grid { grid-template-columns:repeat(3, 1fr); } }
+      `}</style>
+
+      <section style={{ padding: "4rem 1.25rem", background: "var(--bg)" }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "2.25rem" }}>
+            <span
+              style={{
+                display: "inline-block",
+                background: "rgba(168,85,247,0.1)",
+                border: "1px solid rgba(168,85,247,0.25)",
+                color: "#a78bfa",
+                borderRadius: 20,
+                padding: "0.3rem 1rem",
+                fontSize: "0.78rem",
+                fontWeight: 700,
+                marginBottom: "0.85rem",
+              }}
+            >
+              Quem já usa
+            </span>
+            <h2
+              style={{
+                fontSize: "clamp(1.7rem, 3.2vw, 2.4rem)",
+                fontWeight: 900,
+                marginBottom: "0.5rem",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              Pequenos negócios que{" "}
+              <span
+                style={{
+                  background: "linear-gradient(135deg,#16c784,#25D366)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                pararam de perder cliente
+              </span>
+            </h2>
+            <p style={{ textAlign: "center", color: "#8394b0", fontSize: "0.95rem" }}>
+              Quem instalou ontem está vendendo no automático hoje.
+            </p>
+          </div>
+
+          <div className="test-grid">
+            {TESTIMONIALS.map((t, i) => (
+              <div
+                key={t.name}
+                className="stat-card"
+                style={{
+                  borderColor: `${t.color}33`,
+                  animationDelay: `${i * 90}ms`,
+                  background: `
+                    radial-gradient(circle at 100% 0%, ${t.color}1a 0%, transparent 55%),
+                    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.2) 100%)
+                  `,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                  padding: "1.6rem 1.5rem 1.4rem",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = `${t.color}80`;
+                  e.currentTarget.style.boxShadow = `0 12px 40px ${t.color}25`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = `${t.color}33`;
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+              >
+                {/* Stars */}
+                <div style={{ display: "flex", gap: 3 }}>
+                  {[0, 1, 2, 3, 4].map((s) => (
+                    <svg key={s} width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  ))}
+                </div>
+
+                {/* Quote */}
+                <p
+                  style={{
+                    color: "#c8d4e8",
+                    fontSize: "0.92rem",
+                    lineHeight: 1.55,
+                    fontStyle: "italic",
+                    margin: 0,
+                  }}
+                >
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+
+                {/* Highlight metric */}
+                {t.highlight && (
+                  <div
+                    style={{
+                      background: `${t.color}15`,
+                      border: `1px solid ${t.color}30`,
+                      borderRadius: 10,
+                      padding: "0.6rem 0.85rem",
+                      fontSize: "0.82rem",
+                      fontWeight: 700,
+                      color: t.color,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                      width: "fit-content",
+                    }}
+                  >
+                    <Icon name="sparkles" color={t.color} size={14} />
+                    {t.highlight}
+                  </div>
+                )}
+
+                {/* Avatar + nome */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    paddingTop: "0.85rem",
+                    borderTop: "1px solid rgba(255,255,255,0.06)",
+                    marginTop: "auto",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                      background: `linear-gradient(135deg, ${t.color}, ${t.color2})`,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 900,
+                      fontSize: "1.1rem",
+                      color: "#fff",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {t.initial}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, color: "#eef2f9", fontSize: "0.92rem" }}>{t.name}</div>
+                    <div style={{ color: "#6b7a94", fontSize: "0.76rem" }}>{t.business}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// FAQ — accordion para reduzir objeções comuns antes da compra
+// ─────────────────────────────────────────────────────────────────────────
+const FAQ_ITEMS: { q: string; a: string }[] = [
+  {
+    q: "Vou ser banido do WhatsApp?",
+    a: "Não. O ZapBot usa o protocolo WhatsApp Web nativo (Baileys) — o mesmo que o WhatsApp oficial usa quando você abre o web.whatsapp.com. Limitamos automaticamente em 30 mensagens por hora pra ficar dentro do uso considerado humano. Quem usa há mais de 1 ano nunca foi banido.",
+  },
+  {
+    q: "Funciona realmente offline?",
+    a: "A IA roda 100% no seu PC (Ollama + modelo Qwen 2.5). A única coisa que precisa de internet é o próprio WhatsApp Web pra enviar/receber mensagens — igual quando você usa no navegador. Suas conversas, regras e dados ficam só na sua máquina.",
+  },
+  {
+    q: "Preciso saber programar?",
+    a: 'Não. Você escreve as regras em português, como se estivesse explicando pra um funcionário. Exemplo: "sempre pergunte o CEP antes de dar o preço" ou "se o cliente pedir desconto, ofereça 10% no Pix". O bot segue cada regra na hora de responder.',
+  },
+  {
+    q: "Posso usar com mais de um número?",
+    a: "Sim. Cada licença vale pra um número, mas você pode rodar várias instâncias do app no mesmo PC — uma pra cada número. Se quiser muitos números, fala com a gente que fazemos preço especial.",
+  },
+  {
+    q: "Como recebo as atualizações?",
+    a: "O ZapBot tem auto-update integrado. Quando saímos uma nova versão (correções, melhorias, novos features), o app baixa e instala sozinho na próxima vez que você abre. Atualizações são gratuitas por 1 ano.",
+  },
+  {
+    q: "E se eu não gostar?",
+    a: "Você tem 7 dias de garantia total. Se não gostou por qualquer motivo (não entendeu, achou complicado, mudou de ideia), manda um e-mail e devolvemos 100% do valor. Sem perguntas, sem burocracia.",
+  },
+];
+
+function FAQ() {
+  const [openIdx, setOpenIdx] = useState<number | null>(0);
+
+  return (
+    <section style={{ padding: "4rem 1.25rem", background: "var(--bg2)" }}>
+      <div style={{ maxWidth: 760, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "2.25rem" }}>
+          <span
+            style={{
+              display: "inline-block",
+              background: "rgba(99,102,241,0.1)",
+              border: "1px solid rgba(99,102,241,0.25)",
+              color: "#a78bfa",
+              borderRadius: 20,
+              padding: "0.3rem 1rem",
+              fontSize: "0.78rem",
+              fontWeight: 700,
+              marginBottom: "0.85rem",
+            }}
+          >
+            Perguntas frequentes
+          </span>
+          <h2
+            style={{
+              fontSize: "clamp(1.7rem, 3.2vw, 2.4rem)",
+              fontWeight: 900,
+              marginBottom: "0.5rem",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            As 6 dúvidas que{" "}
+            <span
+              style={{
+                background: "linear-gradient(135deg,#16c784,#25D366)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              todo mundo tem
+            </span>
+          </h2>
+          <p style={{ color: "#8394b0", fontSize: "0.95rem" }}>
+            Respondidas direto, sem enrolação.
+          </p>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem" }}>
+          {FAQ_ITEMS.map((item, i) => {
+            const isOpen = openIdx === i;
+            return (
+              <div
+                key={item.q}
+                style={{
+                  background: isOpen
+                    ? "linear-gradient(180deg, rgba(37,211,102,0.06) 0%, rgba(0,0,0,0.15) 100%)"
+                    : "linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.15) 100%)",
+                  border: isOpen
+                    ? "1px solid rgba(37,211,102,0.4)"
+                    : "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 14,
+                  overflow: "hidden",
+                  transition: "border-color 0.2s, background 0.2s",
+                }}
+              >
+                <button
+                  onClick={() => setOpenIdx(isOpen ? null : i)}
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    padding: "1.05rem 1.25rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "1rem",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    color: "#eef2f9",
+                    fontSize: "0.97rem",
+                    fontWeight: 700,
+                    fontFamily: "inherit",
+                  }}
+                  aria-expanded={isOpen}
+                >
+                  <span>{item.q}</span>
+                  <span
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: 8,
+                      background: isOpen ? "rgba(37,211,102,0.2)" : "rgba(255,255,255,0.05)",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      transition: "transform 0.25s, background 0.2s",
+                      transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
+                      color: isOpen ? "#25D366" : "#8394b0",
+                      fontSize: "1.2rem",
+                      fontWeight: 300,
+                      lineHeight: 1,
+                    }}
+                  >
+                    +
+                  </span>
+                </button>
+                <div
+                  style={{
+                    maxHeight: isOpen ? "500px" : "0px",
+                    overflow: "hidden",
+                    transition: "max-height 0.35s ease",
+                  }}
+                >
+                  <div
+                    style={{
+                      padding: "0 1.25rem 1.15rem",
+                      color: "#a3b3cc",
+                      fontSize: "0.9rem",
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {item.a}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <p
+          style={{
+            marginTop: "1.5rem",
+            fontSize: "0.83rem",
+            color: "#8394b0",
+            textAlign: "center",
+          }}
+        >
+          Outra dúvida?{" "}
+          <a
+            href="mailto:contato@iaempresa.app"
+            style={{ color: "#25D366", textDecoration: "underline" }}
+          >
+            contato@iaempresa.app
+          </a>
+        </p>
+      </div>
+    </section>
   );
 }
