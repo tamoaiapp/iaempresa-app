@@ -97,8 +97,11 @@ type StatCard = {
   stat: string;
   statSub?: string;
   color: string;
+  color2: string;
   title: string;
   detail: string;
+  vs?: string;
+  emoji: string;
 };
 
 const STAT_CARDS: StatCard[] = [
@@ -106,40 +109,58 @@ const STAT_CARDS: StatCard[] = [
     stat: "R$ 0",
     statSub: "/mês",
     color: "#16c784",
+    color2: "#25D366",
+    emoji: "💸",
     title: "Sem mensalidade",
-    detail: "Pague R$ 97 uma vez. Outros bots cobram R$ 200-800/mês.",
+    detail: "Pague R$ 97 uma vez e use pra sempre.",
+    vs: "Manychat: R$ 99/mês · Take Blip: R$ 297/mês",
   },
   {
     stat: "~1.5s",
     color: "#25D366",
+    color2: "#16c784",
+    emoji: "⚡",
     title: "Resposta instantânea",
-    detail: "IA roda no seu PC, não precisa esperar fila de API.",
+    detail: "IA roda no seu PC, não fica esperando fila de API.",
+    vs: "ChatGPT API: 4-12s · Latência da nuvem: 8-20s",
   },
   {
     stat: "24/7",
     color: "#a855f7",
+    color2: "#6366f1",
+    emoji: "🌙",
     title: "Atende a noite toda",
-    detail: "Bot trabalha enquanto você dorme, dentro do horário que você define.",
+    detail: "Trabalha enquanto você dorme, no horário que você define.",
+    vs: "Atendente humano: 8h/dia · Custo: R$ 1.500+/mês",
   },
   {
     stat: "0",
     statSub: "dados na nuvem",
     color: "#0ea5e9",
+    color2: "#6366f1",
+    emoji: "🔒",
     title: "100% privado",
-    detail: "Conversas em SQLite local. Nada sobe pra ChatGPT, Claude ou OpenAI.",
+    detail: "Conversas em SQLite local — nada sobe pra OpenAI ou Claude.",
+    vs: "Manychat, ChatGPT API: tudo na nuvem deles",
   },
   {
     stat: "∞",
     statSub: "mensagens",
     color: "#f59e0b",
+    color2: "#ef4444",
+    emoji: "📨",
     title: "Sem limite por msg",
-    detail: "Não cobra por token. Atende 10 ou 10.000 clientes pelo mesmo preço.",
+    detail: "Não cobra por token. 10 ou 10.000 clientes, mesmo preço.",
+    vs: "ChatGPT API: ~R$ 0,02 por msg · 10k = R$ 200/mês",
   },
   {
     stat: "PT-BR",
     color: "#6366f1",
+    color2: "#a855f7",
+    emoji: "🇧🇷",
     title: "Treina em português",
-    detail: "Escreve \"pergunte o CEP antes do preço\" — bot segue. Sem código.",
+    detail: 'Escreve "pergunte o CEP antes do preço" — bot segue. Sem código.',
+    vs: "Manychat: fluxos em blocos · Botmaker: setup técnico",
   },
 ];
 
@@ -496,20 +517,63 @@ export default function ZapBotPage() {
         </div>
       </section>
 
-      {/* Features — stat cards punchy, escaneáveis em 5 segundos */}
+      {/* Features — stat cards animados, 3 colunas fixas em desktop */}
+      <style>{`
+        @keyframes cardIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes shimmerStat {
+          0%   { background-position: 0% 50%; }
+          100% { background-position: 200% 50%; }
+        }
+        .stat-grid { display:grid; grid-template-columns:1fr; gap:1rem; }
+        @media (min-width: 640px) { .stat-grid { grid-template-columns: 1fr 1fr; gap:1.1rem; } }
+        @media (min-width: 980px) { .stat-grid { grid-template-columns: repeat(3, 1fr); gap:1.25rem; } }
+        .stat-card {
+          position: relative;
+          border-radius: 18px;
+          padding: 1.6rem 1.5rem 1.4rem;
+          overflow: hidden;
+          background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.15) 100%);
+          border: 1.5px solid rgba(255,255,255,0.08);
+          transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+          opacity: 0;
+          animation: cardIn 0.5s ease-out forwards;
+          will-change: transform;
+        }
+        .stat-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+        }
+        .stat-number {
+          background-size: 200% 100%;
+          animation: shimmerStat 6s linear infinite;
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          color: transparent;
+        }
+      `}</style>
+
       <section style={{ padding: "3.5rem 1.25rem", background: "var(--bg2)" }}>
         <div style={{ maxWidth: 1180, margin: "0 auto" }}>
           <h2
             style={{
               textAlign: "center",
-              fontSize: "clamp(1.6rem, 3vw, 2.2rem)",
+              fontSize: "clamp(1.7rem, 3.2vw, 2.4rem)",
               fontWeight: 900,
               marginBottom: "0.5rem",
               letterSpacing: "-0.01em",
             }}
           >
             Tudo que outros chatbots cobram caro.{" "}
-            <span style={{ color: "#16c784" }}>Aqui é grátis.</span>
+            <span
+              style={{
+                background: "linear-gradient(135deg,#16c784,#25D366)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Aqui é grátis.
+            </span>
           </h2>
           <p
             style={{
@@ -522,59 +586,56 @@ export default function ZapBotPage() {
             Sem mensalidade · sem limite de mensagens · sem nuvem · sem letra miúda.
           </p>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-              gap: "0.9rem",
-            }}
-          >
-            {STAT_CARDS.map((c) => (
+          <div className="stat-grid">
+            {STAT_CARDS.map((c, i) => (
               <div
                 key={c.title}
+                className="stat-card"
                 style={{
-                  position: "relative",
-                  background: `linear-gradient(180deg, ${c.color}15 0%, ${c.color}03 100%)`,
-                  border: `1px solid ${c.color}38`,
-                  borderRadius: 16,
-                  padding: "1.4rem 1.3rem 1.25rem",
-                  overflow: "hidden",
-                  transition: "transform 0.2s ease, border-color 0.2s ease",
+                  borderColor: `${c.color}33`,
+                  animationDelay: `${i * 70}ms`,
+                  background: `
+                    radial-gradient(circle at 100% 0%, ${c.color}22 0%, transparent 55%),
+                    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.2) 100%)
+                  `,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = `${c.color}80`;
+                  e.currentTarget.style.boxShadow = `0 12px 40px ${c.color}25`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = `${c.color}33`;
+                  e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,0,0,0.35)";
                 }}
               >
-                {/* Glow no canto pra dar profundidade */}
+                {/* Emoji topo */}
                 <div
-                  aria-hidden
                   style={{
-                    position: "absolute",
-                    top: -40,
-                    right: -40,
-                    width: 120,
-                    height: 120,
-                    borderRadius: "50%",
-                    background: c.color,
-                    opacity: 0.12,
-                    filter: "blur(30px)",
-                    pointerEvents: "none",
+                    fontSize: "1.5rem",
+                    marginBottom: "0.6rem",
+                    filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.4))",
                   }}
-                />
+                >
+                  {c.emoji}
+                </div>
 
+                {/* STAT GIGANTE */}
                 <div
                   style={{
                     display: "flex",
                     alignItems: "baseline",
                     gap: 6,
-                    marginBottom: "0.55rem",
-                    position: "relative",
+                    marginBottom: "0.7rem",
                   }}
                 >
                   <span
+                    className="stat-number"
                     style={{
-                      fontSize: "2.4rem",
+                      fontSize: "clamp(2.6rem, 4.5vw, 3.4rem)",
                       fontWeight: 900,
-                      color: c.color,
                       lineHeight: 1,
-                      letterSpacing: "-0.03em",
+                      letterSpacing: "-0.04em",
+                      backgroundImage: `linear-gradient(110deg, ${c.color} 30%, ${c.color2} 50%, ${c.color} 70%)`,
                     }}
                   >
                     {c.stat}
@@ -582,10 +643,10 @@ export default function ZapBotPage() {
                   {c.statSub && (
                     <span
                       style={{
-                        fontSize: "0.85rem",
+                        fontSize: "0.95rem",
                         fontWeight: 700,
                         color: c.color,
-                        opacity: 0.7,
+                        opacity: 0.85,
                       }}
                     >
                       {c.statSub}
@@ -596,10 +657,9 @@ export default function ZapBotPage() {
                 <div
                   style={{
                     fontWeight: 800,
-                    fontSize: "1rem",
+                    fontSize: "1.05rem",
                     color: "#eef2f9",
-                    marginBottom: "0.3rem",
-                    position: "relative",
+                    marginBottom: "0.4rem",
                   }}
                 >
                   {c.title}
@@ -607,13 +667,30 @@ export default function ZapBotPage() {
                 <div
                   style={{
                     color: "#8394b0",
-                    fontSize: "0.82rem",
-                    lineHeight: 1.45,
-                    position: "relative",
+                    fontSize: "0.85rem",
+                    lineHeight: 1.5,
+                    marginBottom: c.vs ? "0.85rem" : 0,
                   }}
                 >
                   {c.detail}
                 </div>
+
+                {c.vs && (
+                  <div
+                    style={{
+                      borderTop: "1px dashed rgba(255,255,255,0.08)",
+                      paddingTop: "0.7rem",
+                      fontSize: "0.72rem",
+                      color: "#6b7a94",
+                      lineHeight: 1.45,
+                    }}
+                  >
+                    <span style={{ color: "#ef4444", fontWeight: 700, marginRight: 4 }}>
+                      vs
+                    </span>
+                    {c.vs}
+                  </div>
+                )}
               </div>
             ))}
           </div>
