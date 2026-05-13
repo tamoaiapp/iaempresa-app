@@ -370,7 +370,7 @@ export default function ZapBotPage() {
               }}
             >
               <span style={{ color: "#25D366" }}>Seu computador</span>{" "}
-              atendendo no WhatsApp 24/7,
+              atendendo no WhatsApp 24 horas por 7 dias na semana,
               <br />
               <span
                 style={{
