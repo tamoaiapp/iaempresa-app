@@ -1,267 +1,233 @@
 "use client";
-import { useEffect, useState } from "react";
+import Link from "next/link";
 
-type GrantResponse = {
-  token?: string;
-  url?: string;
-  mp_payment_id?: string;
-  email?: string | null;
-  error?: string;
-};
+const DOWNLOAD_URL =
+  "https://github.com/tamoaiapp/zapbot/releases/latest/download/ZapBot-0.1.0-Setup.exe";
+const DOWNLOAD_ZIP_URL =
+  "https://github.com/tamoaiapp/zapbot/releases/latest/download/ZapBot-0.1.0-portable-win-x64.zip";
 
 export default function ChatBotFreePage() {
-  const [key, setKey] = useState("");
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<GrantResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("zapbot-grant-key");
-    if (saved) setKey(saved);
-  }, []);
-
-  async function generate() {
-    setLoading(true);
-    setError(null);
-    setResult(null);
-    setCopied(false);
-    try {
-      const res = await fetch("/api/admin/zapbot/grant", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${key}`,
-        },
-        body: JSON.stringify({ email: email || undefined }),
-      });
-      const data = (await res.json()) as GrantResponse;
-      if (!res.ok) {
-        setError(data.error || `Erro ${res.status}`);
-      } else {
-        setResult(data);
-        localStorage.setItem("zapbot-grant-key", key);
-      }
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Erro de conexão");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function copyLink() {
-    if (!result?.url) return;
-    await navigator.clipboard.writeText(result.url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  }
-
-  const shareText = result?.url
-    ? `Liberei pra vc um acesso gratuito do ZapBot 👇\n\n${result.url}\n\nÉ um app pra Windows que roda no seu PC e atende clientes no WhatsApp com IA local. Qualquer dúvida me chama.`
-    : "";
-  const whatsappUrl = result?.url
-    ? `https://wa.me/?text=${encodeURIComponent(shareText)}`
-    : "#";
-
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "var(--bg)",
+        background:
+          "radial-gradient(ellipse at 50% 0%, rgba(37,211,102,0.12), transparent 60%), var(--bg)",
         padding: "3rem 1.25rem 5rem",
         fontFamily: "Outfit, sans-serif",
         color: "var(--text)",
       }}
     >
-      <div style={{ maxWidth: 560, margin: "0 auto" }}>
-        <div
-          style={{
-            display: "inline-block",
-            background: "rgba(168,85,247,0.12)",
-            border: "1px solid rgba(168,85,247,0.3)",
-            color: "#a78bfa",
-            borderRadius: 20,
-            padding: "0.3rem 1rem",
-            fontSize: "0.8rem",
-            fontWeight: 700,
-            marginBottom: "1rem",
-          }}
-        >
-          🎁 Acesso gratuito · admin
-        </div>
-
-        <h1 style={{ fontSize: "1.75rem", fontWeight: 900, marginBottom: "0.4rem" }}>
-          Liberar ZapBot de graça
-        </h1>
-        <p style={{ color: "#8394b0", fontSize: "0.95rem", marginBottom: "2rem" }}>
-          Gera um link único de cortesia. A pessoa abre, valida e baixa o app — sem pagar.
-        </p>
-
-        <div
-          style={{
-            background: "var(--card)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 16,
-            padding: "1.5rem",
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-          }}
-        >
-          <label style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
-            <span style={{ fontSize: "0.82rem", color: "#8394b0", fontWeight: 600 }}>
-              Chave admin
-            </span>
-            <input
-              type="password"
-              value={key}
-              onChange={(e) => setKey(e.target.value)}
-              placeholder="ZAPBOT_GRANT_KEY"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 10,
-                padding: "0.7rem 0.9rem",
-                color: "var(--text)",
-                fontSize: "0.92rem",
-                fontFamily: "monospace",
-              }}
-            />
-            <span style={{ fontSize: "0.72rem", color: "#4e5c72" }}>
-              Salva no navegador. Configure em <code>.env.local</code> na Vercel.
-            </span>
-          </label>
-
-          <label style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
-            <span style={{ fontSize: "0.82rem", color: "#8394b0", fontWeight: 600 }}>
-              Email do destinatário (opcional, só pra rastreio)
-            </span>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="amigo@exemplo.com"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 10,
-                padding: "0.7rem 0.9rem",
-                color: "var(--text)",
-                fontSize: "0.92rem",
-              }}
-            />
-          </label>
-
-          <button
-            onClick={generate}
-            disabled={loading || !key.trim()}
+      <div style={{ maxWidth: 720, margin: "0 auto" }}>
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+          <div
             style={{
-              background: loading || !key.trim()
-                ? "rgba(168,85,247,0.3)"
-                : "linear-gradient(135deg,#a855f7,#6366f1)",
-              color: "#fff",
-              border: "none",
-              borderRadius: 12,
-              padding: "0.9rem 1.5rem",
-              fontSize: "1rem",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: "rgba(37,211,102,0.12)",
+              border: "1px solid rgba(37,211,102,0.3)",
+              color: "#25D366",
+              borderRadius: 999,
+              padding: "0.4rem 1.1rem",
+              fontSize: "0.8rem",
               fontWeight: 700,
-              cursor: loading || !key.trim() ? "not-allowed" : "pointer",
-              boxShadow: "0 4px 24px rgba(168,85,247,0.3)",
+              marginBottom: "1.25rem",
             }}
           >
-            {loading ? "Gerando..." : "🎁 Gerar link de cortesia"}
-          </button>
-
-          {error && (
-            <div
+            <span
               style={{
-                background: "rgba(239,68,68,0.1)",
-                border: "1px solid rgba(239,68,68,0.3)",
-                borderRadius: 10,
-                padding: "0.7rem 0.9rem",
-                color: "#fca5a5",
-                fontSize: "0.85rem",
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "#25D366",
+                display: "inline-block",
+              }}
+            />
+            Acesso liberado
+          </div>
+
+          <h1
+            style={{
+              fontSize: "clamp(1.8rem, 4vw, 2.5rem)",
+              fontWeight: 900,
+              marginBottom: "0.6rem",
+              letterSpacing: "-0.01em",
+              lineHeight: 1.1,
+            }}
+          >
+            Seu ZapBot está{" "}
+            <span
+              style={{
+                background: "linear-gradient(135deg,#16c784,#25D366)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
               }}
             >
-              ⚠️ {error}
-            </div>
-          )}
-
-          {result?.url && (
-            <div
-              style={{
-                background: "rgba(22,199,132,0.08)",
-                border: "1px solid rgba(22,199,132,0.3)",
-                borderRadius: 12,
-                padding: "1rem 1.1rem",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.6rem",
-              }}
-            >
-              <div style={{ fontSize: "0.85rem", color: "#16c784", fontWeight: 700 }}>
-                ✅ Link gerado
-              </div>
-              <div
-                style={{
-                  background: "rgba(0,0,0,0.35)",
-                  borderRadius: 8,
-                  padding: "0.6rem 0.8rem",
-                  fontFamily: "monospace",
-                  fontSize: "0.78rem",
-                  color: "#eef2f9",
-                  wordBreak: "break-all",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                }}
-              >
-                {result.url}
-              </div>
-              <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                <button
-                  onClick={copyLink}
-                  style={{
-                    background: "rgba(22,199,132,0.15)",
-                    border: "1px solid rgba(22,199,132,0.3)",
-                    color: "#16c784",
-                    borderRadius: 8,
-                    padding: "0.5rem 0.95rem",
-                    fontSize: "0.82rem",
-                    fontWeight: 700,
-                    cursor: "pointer",
-                  }}
-                >
-                  {copied ? "✓ Copiado!" : "📋 Copiar link"}
-                </button>
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    background: "rgba(37,211,102,0.15)",
-                    border: "1px solid rgba(37,211,102,0.3)",
-                    color: "#25D366",
-                    borderRadius: 8,
-                    padding: "0.5rem 0.95rem",
-                    fontSize: "0.82rem",
-                    fontWeight: 700,
-                    textDecoration: "none",
-                  }}
-                >
-                  💬 Enviar no WhatsApp
-                </a>
-              </div>
-              <div style={{ fontSize: "0.72rem", color: "#4e5c72", marginTop: "0.25rem" }}>
-                ID interno: <code>{result.mp_payment_id}</code>
-                {result.email ? ` · ${result.email}` : ""}
-              </div>
-            </div>
-          )}
+              pronto pra baixar
+            </span>
+          </h1>
+          <p style={{ color: "#8394b0", fontSize: "0.95rem", lineHeight: 1.6 }}>
+            Acesso de cortesia. Sem pagamento, sem cadastro. Só baixar e usar.
+          </p>
         </div>
 
-        <p style={{ marginTop: "2rem", fontSize: "0.78rem", color: "#4e5c72", textAlign: "center" }}>
-          Telemetria de acessos fica em <code>zapbot_tokens</code> no Supabase.
-        </p>
+        {/* SmartScreen warning */}
+        <div
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(245,158,11,0.14), rgba(245,158,11,0.06))",
+            border: "1.5px solid rgba(245,158,11,0.4)",
+            borderRadius: 16,
+            padding: "1.25rem 1.5rem",
+            marginBottom: "1.25rem",
+          }}
+        >
+          <div
+            style={{
+              fontWeight: 800,
+              fontSize: "1.05rem",
+              color: "#f59e0b",
+              marginBottom: "0.5rem",
+            }}
+          >
+            Atenção: o Windows pode mostrar um aviso azul
+          </div>
+          <p style={{ fontSize: "0.88rem", color: "#eef2f9", lineHeight: 1.6 }}>
+            Como o app ainda não tem certificado da Microsoft (eles cobram caro), o SmartScreen mostra um aviso. Pra liberar:
+          </p>
+          <ol
+            style={{
+              fontSize: "0.88rem",
+              color: "#c8d6f0",
+              lineHeight: 1.7,
+              paddingLeft: "1.25rem",
+              marginTop: "0.5rem",
+            }}
+          >
+            <li>Clique no botão de download abaixo</li>
+            <li>
+              Se aparecer o aviso azul: clique em <b>&quot;Mais informações&quot;</b>
+            </li>
+            <li>
+              Depois clique em <b>&quot;Executar assim mesmo&quot;</b>
+            </li>
+          </ol>
+        </div>
+
+        {/* Download card */}
+        <div
+          style={{
+            background:
+              "linear-gradient(135deg,rgba(37,211,102,0.12),rgba(18,140,126,0.08))",
+            border: "1px solid rgba(37,211,102,0.25)",
+            borderRadius: 18,
+            padding: "2rem",
+            textAlign: "center",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "1.4rem",
+              fontWeight: 800,
+              marginBottom: "0.5rem",
+            }}
+          >
+            ZapBot — Download
+          </h2>
+          <p
+            style={{
+              color: "#8394b0",
+              fontSize: "0.9rem",
+              marginBottom: "1.5rem",
+            }}
+          >
+            Versão 0.1.0 · Windows 10/11 · 88 MB
+          </p>
+          <a
+            href={DOWNLOAD_URL}
+            style={{
+              display: "inline-block",
+              background: "linear-gradient(135deg,#25D366,#128C7E)",
+              color: "#fff",
+              padding: "1.05rem 2.75rem",
+              borderRadius: 14,
+              fontWeight: 800,
+              fontSize: "1.05rem",
+              textDecoration: "none",
+              boxShadow: "0 6px 28px rgba(37,211,102,0.4)",
+            }}
+          >
+            Baixar ZapBot-Setup.exe
+          </a>
+          <p style={{ marginTop: "1rem" }}>
+            <a
+              href={DOWNLOAD_ZIP_URL}
+              style={{
+                color: "#8394b0",
+                fontSize: "0.85rem",
+                textDecoration: "underline",
+              }}
+            >
+              ou baixar como .zip portátil (120 MB, sem instalar)
+            </a>
+          </p>
+          <p style={{ color: "#4e5c72", fontSize: "0.78rem", marginTop: "1.25rem" }}>
+            Dúvidas?{" "}
+            <a href="mailto:contato@iaempresa.app" style={{ color: "#8394b0" }}>
+              contato@iaempresa.app
+            </a>
+          </p>
+        </div>
+
+        {/* Next steps */}
+        <div
+          style={{
+            marginTop: "1.5rem",
+            background: "var(--card)",
+            border: "1px solid var(--line)",
+            borderRadius: 14,
+            padding: "1.25rem 1.5rem",
+          }}
+        >
+          <h3
+            style={{
+              fontSize: "0.95rem",
+              fontWeight: 700,
+              marginBottom: "0.5rem",
+            }}
+          >
+            Próximos passos
+          </h3>
+          <ol
+            style={{
+              fontSize: "0.88rem",
+              color: "#c8d6f0",
+              lineHeight: 1.7,
+              paddingLeft: "1.25rem",
+            }}
+          >
+            <li>Execute o ZapBot-Setup.exe (siga o aviso azul se aparecer)</li>
+            <li>Aguarde o ambiente preparar (~10s)</li>
+            <li>A IA local começa a baixar automaticamente (~1.2 GB, primeira vez)</li>
+            <li>Escaneie o QR Code do WhatsApp no seu celular</li>
+            <li>Pronto — o bot responde 24h por dia</li>
+          </ol>
+        </div>
+
+        <div style={{ textAlign: "center", marginTop: "2rem" }}>
+          <Link
+            href="/"
+            style={{
+              color: "#8394b0",
+              fontSize: "0.875rem",
+              textDecoration: "none",
+            }}
+          >
+            ← Voltar pro site
+          </Link>
+        </div>
       </div>
     </div>
   );
