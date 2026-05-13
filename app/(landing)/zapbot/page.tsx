@@ -794,83 +794,208 @@ export default function ZapBotPage() {
 // ─────────────────────────────────────────────────────────────────────────
 const STEPS = [
   {
-    n: "1",
-    title: "Baixe e instale em 2 minutos",
-    desc: "Baixa o instalador no botão acima, executa e o app abre. Tudo num arquivo só — não precisa configurar Python, Docker ou servidor.",
+    n: 1,
+    time: "2 min",
+    emoji: "📥",
+    color: "#25D366",
+    color2: "#16c784",
+    title: "Baixe e instale",
+    desc: "Click no botão acima, executa o instalador e o app abre. Sem Python, Docker ou servidor.",
   },
   {
-    n: "2",
-    title: "Escaneie o QR do WhatsApp",
-    desc: "Abra o WhatsApp do celular → Aparelhos conectados → Conectar aparelho. Escaneou, conectou. O modelo de IA é baixado automaticamente (~2GB, primeira vez).",
+    n: 2,
+    time: "1 min",
+    emoji: "📱",
+    color: "#a855f7",
+    color2: "#6366f1",
+    title: "Escaneie o QR",
+    desc: "WhatsApp do celular → Aparelhos conectados → escanear. Pronto, conectado.",
   },
   {
-    n: "3",
-    title: "Configure as regras e esqueça",
-    desc: "Escreva em português o que o bot deve fazer (ex: \"sempre pergunte o CEP antes de dar preço\"). Ele segue. 24h por dia, sem você precisar tocar.",
+    n: 3,
+    time: "5 min",
+    emoji: "⚙️",
+    color: "#f59e0b",
+    color2: "#ef4444",
+    title: "Configure as regras",
+    desc: "Escreva em português \"sempre pergunte o CEP antes do preço\" — bot segue. 24h por dia.",
   },
 ];
 
 function HowItWorks() {
   return (
-    <section id="como-funciona" style={{ padding: "5rem 1.5rem", background: "var(--bg)" }}>
-      <div style={{ maxWidth: 740, margin: "0 auto" }}>
-        <h2
-          style={{
-            textAlign: "center",
-            fontSize: "clamp(1.8rem,4vw,2.4rem)",
-            fontWeight: 800,
-            marginBottom: "0.6rem",
-          }}
-        >
-          Do download ao primeiro atendimento em 10 minutos
-        </h2>
-        <p style={{ textAlign: "center", color: "#8394b0", marginBottom: "3.5rem" }}>
-          Sem instalar Ollama, Python, Docker ou nada técnico. Funciona como qualquer app.
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", position: "relative" }}>
-          <div
+    <>
+      <style>{`
+        .steps-grid { display:grid; grid-template-columns:1fr; gap:1.1rem; position:relative; }
+        @media (min-width: 880px) {
+          .steps-grid { grid-template-columns: repeat(3, 1fr); gap:1.5rem; }
+        }
+        .step-card {
+          position: relative;
+          border-radius: 18px;
+          padding: 1.5rem 1.4rem 1.4rem;
+          overflow: hidden;
+          background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.2) 100%);
+          border: 1.5px solid rgba(255,255,255,0.08);
+          transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+          opacity: 0;
+          animation: cardIn 0.5s ease-out forwards;
+        }
+        .step-card:hover { transform: translateY(-4px); }
+        .step-arrow {
+          display: none;
+          position: absolute;
+          right: -1.1rem;
+          top: 2.1rem;
+          color: #25D366;
+          font-size: 1.4rem;
+          z-index: 2;
+          opacity: 0.5;
+        }
+        @media (min-width: 880px) {
+          .step-arrow { display: block; }
+        }
+      `}</style>
+
+      <section id="como-funciona" style={{ padding: "4rem 1.25rem", background: "var(--bg)" }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "0.75rem" }}>
+            <span
+              style={{
+                display: "inline-block",
+                background: "rgba(37,211,102,0.1)",
+                border: "1px solid rgba(37,211,102,0.25)",
+                color: "#25D366",
+                borderRadius: 20,
+                padding: "0.3rem 1rem",
+                fontSize: "0.78rem",
+                fontWeight: 700,
+              }}
+            >
+              ⚡ Setup em 8 minutos
+            </span>
+          </div>
+          <h2
             style={{
-              position: "absolute",
-              left: 27,
-              top: 48,
-              bottom: 48,
-              width: 2,
-              background: "rgba(37,211,102,0.2)",
+              textAlign: "center",
+              fontSize: "clamp(1.7rem, 3.2vw, 2.4rem)",
+              fontWeight: 900,
+              marginBottom: "0.5rem",
+              letterSpacing: "-0.01em",
             }}
-          />
-          {STEPS.map((s) => (
-            <div key={s.n} style={{ display: "flex", gap: "1.25rem", alignItems: "flex-start" }}>
+          >
+            Do download ao primeiro{" "}
+            <span
+              style={{
+                background: "linear-gradient(135deg,#25D366,#16c784)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              atendimento automático
+            </span>
+          </h2>
+          <p style={{ textAlign: "center", color: "#8394b0", marginBottom: "2.5rem", fontSize: "0.95rem" }}>
+            Funciona como qualquer app. Você não precisa saber programar.
+          </p>
+
+          <div className="steps-grid">
+            {STEPS.map((s, i) => (
               <div
+                key={s.n}
+                className="step-card"
                 style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: "50%",
-                  background: "linear-gradient(135deg,#25D366,#128C7E)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: 900,
-                  fontSize: "1.1rem",
-                  flexShrink: 0,
-                  color: "#fff",
-                  boxShadow: "0 0 0 4px rgba(37,211,102,0.15)",
-                  position: "relative",
-                  zIndex: 1,
+                  borderColor: `${s.color}33`,
+                  animationDelay: `${i * 90}ms`,
+                  background: `
+                    radial-gradient(circle at 0% 0%, ${s.color}1a 0%, transparent 55%),
+                    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.2) 100%)
+                  `,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = `${s.color}80`;
+                  e.currentTarget.style.boxShadow = `0 12px 40px ${s.color}25`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = `${s.color}33`;
+                  e.currentTarget.style.boxShadow = "none";
                 }}
               >
-                {s.n}
-              </div>
-              <div style={{ paddingTop: "0.85rem" }}>
-                <h3 style={{ fontWeight: 700, fontSize: "1.05rem", marginBottom: "0.35rem" }}>
+                {/* Seta entre cards (só desktop, last não tem) */}
+                {i < STEPS.length - 1 && (
+                  <span className="step-arrow" aria-hidden>
+                    →
+                  </span>
+                )}
+
+                {/* Header: número + tempo badge */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 14,
+                      background: `linear-gradient(135deg, ${s.color}, ${s.color2})`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 900,
+                      fontSize: "1.4rem",
+                      color: "#fff",
+                      boxShadow: `0 8px 24px ${s.color}55`,
+                    }}
+                  >
+                    {s.n}
+                  </div>
+                  <span
+                    style={{
+                      fontSize: "0.72rem",
+                      fontWeight: 700,
+                      color: s.color,
+                      background: `${s.color}1a`,
+                      border: `1px solid ${s.color}40`,
+                      borderRadius: 999,
+                      padding: "0.25rem 0.7rem",
+                    }}
+                  >
+                    ⏱ {s.time}
+                  </span>
+                </div>
+
+                <div style={{ fontSize: "1.8rem", marginBottom: "0.5rem" }}>{s.emoji}</div>
+
+                <div
+                  style={{
+                    fontWeight: 800,
+                    fontSize: "1.1rem",
+                    color: "#eef2f9",
+                    marginBottom: "0.4rem",
+                  }}
+                >
                   {s.title}
-                </h3>
-                <p style={{ color: "#8394b0", fontSize: "0.9rem", lineHeight: 1.6 }}>{s.desc}</p>
+                </div>
+                <div
+                  style={{
+                    color: "#8394b0",
+                    fontSize: "0.87rem",
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {s.desc}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
 
@@ -898,275 +1023,381 @@ function Savings() {
   );
   const savings = yearlyAvg - 97;
   const paybackDays = Math.ceil((97 / cheapestMonthly) * 30);
+  const maxYearly5 = Math.max(...MONTHLY_TOOLS.map((t) => t.monthly * 60));
 
   return (
-    <section style={{ padding: "5rem 1.5rem", background: "var(--bg)" }}>
-      <div style={{ maxWidth: 960, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <div
-            style={{
-              display: "inline-block",
-              background: "rgba(22,199,132,0.1)",
-              border: "1px solid rgba(22,199,132,0.25)",
-              color: "#16c784",
-              borderRadius: 20,
-              padding: "0.3rem 1rem",
-              fontSize: "0.8rem",
-              fontWeight: 700,
-              marginBottom: "1rem",
-            }}
-          >
-            💰 Pague uma vez. Use pra sempre.
-          </div>
-          <h2
-            style={{
-              fontSize: "clamp(1.8rem,4vw,2.4rem)",
-              fontWeight: 800,
-              marginBottom: "0.6rem",
-            }}
-          >
-            Em 12 meses você economiza{" "}
-            <span style={{ color: "#16c784" }}>R$ {formatBRL(savings)}</span>
-          </h2>
-          <p style={{ color: "#8394b0", fontSize: "1rem" }}>
-            A maioria dos chatbots cobra todo mês — pra sempre. O ZapBot é{" "}
-            <strong style={{ color: "#eef2f9" }}>1 pagamento</strong> de{" "}
-            <strong style={{ color: "#16c784" }}>R$ 97</strong> e acabou.
-          </p>
-        </div>
+    <>
+      <style>{`
+        .price-row {
+          display: grid;
+          grid-template-columns: 1.6fr 1fr;
+          gap: 0.75rem;
+          align-items: center;
+          padding: 0.95rem 1.1rem;
+          border-top: 1px solid rgba(255,255,255,0.06);
+          font-size: 0.9rem;
+          transition: background 0.2s;
+        }
+        .price-row:hover { background: rgba(255,255,255,0.02); }
+        @media (min-width: 720px) {
+          .price-row { grid-template-columns: 1.8fr 0.9fr 1fr 1fr; gap:0; }
+        }
+        .price-bar-wrap {
+          height: 6px;
+          background: rgba(255,255,255,0.04);
+          border-radius: 999px;
+          overflow: hidden;
+          margin-top: 4px;
+        }
+        .price-bar {
+          height: 100%;
+          background: linear-gradient(90deg, #fb923c, #ef4444);
+          border-radius: 999px;
+          transition: width 0.6s ease;
+        }
+        .pay-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1rem;
+          margin-top: 1.5rem;
+        }
+        @media (min-width: 760px) {
+          .pay-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+      `}</style>
 
-        {/* Table — desktop */}
-        <div
-          style={{
-            background: "var(--card)",
-            border: "1px solid var(--line)",
-            borderRadius: 18,
-            overflow: "hidden",
-          }}
-        >
+      <section style={{ padding: "4rem 1.25rem", background: "var(--bg)" }}>
+        <div style={{ maxWidth: 1080, margin: "0 auto" }}>
           {/* Header */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1.8fr 1fr 1.1fr 1.1fr",
-              background: "rgba(255,255,255,0.03)",
-              borderBottom: "1px solid var(--line)",
-              fontWeight: 700,
-              fontSize: "0.85rem",
-              color: "#8394b0",
-            }}
-          >
-            <div style={{ padding: "1rem 1.25rem" }}>Ferramenta</div>
-            <div style={{ padding: "1rem 1.25rem", textAlign: "center" }}>Por mês</div>
-            <div style={{ padding: "1rem 1.25rem", textAlign: "center" }}>Em 12 meses</div>
-            <div style={{ padding: "1rem 1.25rem", textAlign: "center" }}>Em 24 meses</div>
-          </div>
-
-          {/* Monthly rows */}
-          {MONTHLY_TOOLS.map((tool, i) => {
-            const y1 = tool.monthly * 12;
-            const y2 = tool.monthly * 24;
-            return (
-              <div
-                key={tool.name}
+          <div style={{ textAlign: "center", marginBottom: "2.25rem" }}>
+            <div
+              style={{
+                display: "inline-block",
+                background: "rgba(22,199,132,0.1)",
+                border: "1px solid rgba(22,199,132,0.25)",
+                color: "#16c784",
+                borderRadius: 20,
+                padding: "0.3rem 1rem",
+                fontSize: "0.78rem",
+                fontWeight: 700,
+                marginBottom: "0.85rem",
+              }}
+            >
+              💰 1 pagamento. Use pra sempre.
+            </div>
+            <h2
+              style={{
+                fontSize: "clamp(1.7rem, 3.2vw, 2.4rem)",
+                fontWeight: 900,
+                marginBottom: "0.6rem",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              Em 12 meses você economiza{" "}
+              <span
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "1.8fr 1fr 1.1fr 1.1fr",
-                  borderTop: i === 0 ? "none" : "1px solid var(--line)",
-                  fontSize: "0.92rem",
-                  alignItems: "center",
+                  background: "linear-gradient(135deg,#16c784,#25D366)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
                 }}
               >
-                <div style={{ padding: "0.95rem 1.25rem", color: "#c8d4e8" }}>
-                  <div style={{ fontWeight: 600 }}>{tool.name}</div>
-                  <div style={{ fontSize: "0.75rem", color: "#4e5c72", marginTop: 2 }}>
-                    {tool.note}
+                R$ {formatBRL(savings)}
+              </span>
+            </h2>
+            <p style={{ color: "#8394b0", fontSize: "0.95rem" }}>
+              A maioria cobra todo mês, pra sempre. ZapBot é{" "}
+              <strong style={{ color: "#eef2f9" }}>R$ 97 uma vez</strong> e acabou.
+            </p>
+          </div>
+
+          {/* Tabela visual com barras de preço */}
+          <div
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.15) 100%)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 18,
+              overflow: "hidden",
+            }}
+          >
+            {/* Header desktop */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1.8fr 0.9fr 1fr 1fr",
+                background: "rgba(255,255,255,0.03)",
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
+                fontWeight: 700,
+                fontSize: "0.78rem",
+                color: "#6b7a94",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+              }}
+            >
+              <div style={{ padding: "0.85rem 1.1rem" }}>Ferramenta</div>
+              <div style={{ padding: "0.85rem 1.1rem", textAlign: "center" }}>Por mês</div>
+              <div style={{ padding: "0.85rem 1.1rem", textAlign: "center" }}>12 meses</div>
+              <div style={{ padding: "0.85rem 1.1rem", textAlign: "center" }}>5 anos</div>
+            </div>
+
+            {MONTHLY_TOOLS.map((tool) => {
+              const y1 = tool.monthly * 12;
+              const y5 = tool.monthly * 60;
+              const barPct = (y5 / maxYearly5) * 100;
+              return (
+                <div key={tool.name} className="price-row">
+                  <div>
+                    <div style={{ fontWeight: 700, color: "#c8d4e8", fontSize: "0.95rem" }}>
+                      {tool.name}
+                    </div>
+                    <div style={{ fontSize: "0.72rem", color: "#4e5c72", marginTop: 2 }}>
+                      {tool.note}
+                    </div>
+                    <div className="price-bar-wrap">
+                      <div className="price-bar" style={{ width: `${barPct}%` }} />
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      textAlign: "center",
+                      color: "#a3b3cc",
+                      fontWeight: 600,
+                      fontSize: "0.92rem",
+                    }}
+                  >
+                    R$ {formatBRL(tool.monthly)}
+                    <span style={{ fontSize: "0.7rem", opacity: 0.7 }}>/mês</span>
+                  </div>
+                  <div
+                    style={{
+                      textAlign: "center",
+                      color: "#fb923c",
+                      fontWeight: 700,
+                      fontSize: "0.95rem",
+                    }}
+                  >
+                    R$ {formatBRL(y1)}
+                  </div>
+                  <div
+                    style={{
+                      textAlign: "center",
+                      color: "#ef4444",
+                      fontWeight: 800,
+                      fontSize: "1rem",
+                    }}
+                  >
+                    R$ {formatBRL(y5)}
                   </div>
                 </div>
-                <div style={{ padding: "0.95rem 1.25rem", textAlign: "center", color: "#8394b0" }}>
-                  R$ {formatBRL(tool.monthly)}<span style={{ fontSize: "0.75rem" }}>/mês</span>
-                </div>
+              );
+            })}
+
+            {/* ZapBot row destacada */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1.8fr 0.9fr 1fr 1fr",
+                background:
+                  "linear-gradient(90deg, rgba(37,211,102,0.18) 0%, rgba(22,199,132,0.10) 100%)",
+                borderTop: "2px solid rgba(37,211,102,0.5)",
+                alignItems: "center",
+                fontSize: "0.95rem",
+                position: "relative",
+              }}
+            >
+              <div
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  pointerEvents: "none",
+                  background:
+                    "radial-gradient(circle at 0% 50%, rgba(37,211,102,0.15), transparent 70%)",
+                }}
+              />
+              <div style={{ padding: "1.15rem 1.1rem", position: "relative" }}>
                 <div
                   style={{
-                    padding: "0.95rem 1.25rem",
-                    textAlign: "center",
-                    color: "#fb923c",
-                    fontWeight: 600,
+                    fontWeight: 900,
+                    color: "#25D366",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.45rem",
+                    fontSize: "1.05rem",
                   }}
                 >
-                  R$ {formatBRL(y1)}
+                  ⏻ ZapBot
+                  <span
+                    style={{
+                      background: "linear-gradient(135deg,#16c784,#25D366)",
+                      color: "#0a0b14",
+                      fontSize: "0.62rem",
+                      padding: "3px 8px",
+                      borderRadius: 999,
+                      fontWeight: 900,
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    VITALÍCIO
+                  </span>
                 </div>
-                <div
-                  style={{
-                    padding: "0.95rem 1.25rem",
-                    textAlign: "center",
-                    color: "#ef4444",
-                    fontWeight: 700,
-                  }}
-                >
-                  R$ {formatBRL(y2)}
+                <div style={{ fontSize: "0.74rem", color: "#a7f3d0", marginTop: 3 }}>
+                  1 pagamento · sem reajuste · sem letra miúda
                 </div>
               </div>
-            );
-          })}
-
-          {/* ZapBot highlight row */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1.8fr 1fr 1.1fr 1.1fr",
-              borderTop: "2px solid rgba(37,211,102,0.4)",
-              background:
-                "linear-gradient(90deg, rgba(37,211,102,0.10), rgba(22,199,132,0.06))",
-              alignItems: "center",
-              fontSize: "0.95rem",
-            }}
-          >
-            <div style={{ padding: "1.1rem 1.25rem" }}>
               <div
                 style={{
+                  padding: "1.15rem 1.1rem",
+                  textAlign: "center",
+                  color: "#16c784",
                   fontWeight: 800,
-                  color: "#25D366",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.4rem",
+                  position: "relative",
                 }}
               >
-                ⏻ ZapBot
-                <span
+                R$ 97
+                <div style={{ fontSize: "0.65rem", color: "#a7f3d0", opacity: 0.8 }}>única vez</div>
+              </div>
+              <div
+                style={{
+                  padding: "1.15rem 1.1rem",
+                  textAlign: "center",
+                  color: "#16c784",
+                  fontWeight: 900,
+                  fontSize: "1.1rem",
+                  position: "relative",
+                }}
+              >
+                R$ 97
+              </div>
+              <div
+                style={{
+                  padding: "1.15rem 1.1rem",
+                  textAlign: "center",
+                  color: "#16c784",
+                  fontWeight: 900,
+                  fontSize: "1.1rem",
+                  position: "relative",
+                }}
+              >
+                R$ 97
+              </div>
+            </div>
+          </div>
+
+          {/* Payback cards — mesmo estilo dos stat cards */}
+          <div className="pay-grid">
+            {[
+              {
+                emoji: "⚡",
+                color: "#16c784",
+                color2: "#25D366",
+                label: "Você se paga em",
+                stat: `~${paybackDays}`,
+                statSub: "dias",
+                detail: "vs. ferramenta mais barata da lista",
+              },
+              {
+                emoji: "💰",
+                color: "#a78bfa",
+                color2: "#6366f1",
+                label: "Economia média em 1 ano",
+                stat: `R$ ${formatBRL(savings)}`,
+                detail: "média das ferramentas comparadas acima",
+              },
+              {
+                emoji: "🔥",
+                color: "#f59e0b",
+                color2: "#ef4444",
+                label: "Em 5 anos pagaria",
+                stat: `R$ ${formatBRL(yearlyAvg * 5)}+`,
+                detail: "continuando em ferramenta na nuvem",
+              },
+            ].map((c, i) => (
+              <div
+                key={c.label}
+                className="stat-card"
+                style={{
+                  borderColor: `${c.color}33`,
+                  animationDelay: `${i * 80}ms`,
+                  background: `
+                    radial-gradient(circle at 100% 0%, ${c.color}22 0%, transparent 55%),
+                    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.2) 100%)
+                  `,
+                  textAlign: "center",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = `${c.color}80`;
+                  e.currentTarget.style.boxShadow = `0 12px 40px ${c.color}25`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = `${c.color}33`;
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+              >
+                <div style={{ fontSize: "1.4rem", marginBottom: "0.4rem" }}>{c.emoji}</div>
+                <div
                   style={{
-                    background: "rgba(22,199,132,0.18)",
-                    color: "#16c784",
-                    fontSize: "0.65rem",
-                    padding: "2px 8px",
-                    borderRadius: 999,
-                    fontWeight: 700,
+                    fontSize: "0.78rem",
+                    color: "#8394b0",
+                    fontWeight: 600,
+                    marginBottom: "0.5rem",
                   }}
                 >
-                  VITALÍCIO
-                </span>
+                  {c.label}
+                </div>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "baseline",
+                    gap: 4,
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  <span
+                    className="stat-number"
+                    style={{
+                      fontSize: "clamp(2rem, 3.6vw, 2.6rem)",
+                      fontWeight: 900,
+                      lineHeight: 1,
+                      letterSpacing: "-0.03em",
+                      backgroundImage: `linear-gradient(110deg, ${c.color} 30%, ${c.color2} 50%, ${c.color} 70%)`,
+                    }}
+                  >
+                    {c.stat}
+                  </span>
+                  {c.statSub && (
+                    <span
+                      style={{
+                        fontSize: "0.95rem",
+                        fontWeight: 700,
+                        color: c.color,
+                        opacity: 0.8,
+                      }}
+                    >
+                      {c.statSub}
+                    </span>
+                  )}
+                </div>
+                <div style={{ fontSize: "0.78rem", color: "#6b7a94", lineHeight: 1.4 }}>
+                  {c.detail}
+                </div>
               </div>
-              <div style={{ fontSize: "0.78rem", color: "#a7f3d0", marginTop: 2 }}>
-                1 pagamento · sem mensalidade · sem reajuste
-              </div>
-            </div>
-            <div
-              style={{
-                padding: "1.1rem 1.25rem",
-                textAlign: "center",
-                color: "#16c784",
-                fontWeight: 700,
-              }}
-            >
-              R$ 97<span style={{ fontSize: "0.75rem", color: "#a7f3d0" }}> única vez</span>
-            </div>
-            <div
-              style={{
-                padding: "1.1rem 1.25rem",
-                textAlign: "center",
-                color: "#16c784",
-                fontWeight: 800,
-                fontSize: "1.05rem",
-              }}
-            >
-              R$ 97
-            </div>
-            <div
-              style={{
-                padding: "1.1rem 1.25rem",
-                textAlign: "center",
-                color: "#16c784",
-                fontWeight: 800,
-                fontSize: "1.05rem",
-              }}
-            >
-              R$ 97
-            </div>
+            ))}
           </div>
+
+          <p
+            style={{
+              marginTop: "1.25rem",
+              fontSize: "0.74rem",
+              color: "#4e5c72",
+              textAlign: "center",
+            }}
+          >
+            *Valores médios dos planos iniciais em maio/2026. Algumas ferramentas têm fee de setup ou cobram por mensagem além da mensalidade.
+          </p>
         </div>
-
-        {/* Payback */}
-        <div
-          style={{
-            marginTop: "1.75rem",
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-            gap: "1rem",
-          }}
-        >
-          <div
-            style={{
-              background: "rgba(22,199,132,0.08)",
-              border: "1px solid rgba(22,199,132,0.2)",
-              borderRadius: 14,
-              padding: "1.25rem",
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontSize: "0.78rem", color: "#a7f3d0", marginBottom: 4 }}>
-              Você se paga em
-            </div>
-            <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "#16c784" }}>
-              ~{paybackDays} dias
-            </div>
-            <div style={{ fontSize: "0.72rem", color: "#8394b0", marginTop: 4 }}>
-              vs. tool mais barata da lista
-            </div>
-          </div>
-
-          <div
-            style={{
-              background: "rgba(99,102,241,0.08)",
-              border: "1px solid rgba(99,102,241,0.2)",
-              borderRadius: 14,
-              padding: "1.25rem",
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontSize: "0.78rem", color: "#c4b5fd", marginBottom: 4 }}>
-              Economia média em 1 ano
-            </div>
-            <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "#a78bfa" }}>
-              R$ {formatBRL(savings)}
-            </div>
-            <div style={{ fontSize: "0.72rem", color: "#8394b0", marginTop: 4 }}>
-              média das ferramentas acima
-            </div>
-          </div>
-
-          <div
-            style={{
-              background: "rgba(245,158,11,0.08)",
-              border: "1px solid rgba(245,158,11,0.2)",
-              borderRadius: 14,
-              padding: "1.25rem",
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontSize: "0.78rem", color: "#fde68a", marginBottom: 4 }}>
-              Em 5 anos pagaria
-            </div>
-            <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "#f59e0b" }}>
-              R$ {formatBRL(yearlyAvg * 5)}+
-            </div>
-            <div style={{ fontSize: "0.72rem", color: "#8394b0", marginTop: 4 }}>
-              continuando na nuvem
-            </div>
-          </div>
-        </div>
-
-        <p
-          style={{
-            marginTop: "1.25rem",
-            fontSize: "0.75rem",
-            color: "#4e5c72",
-            textAlign: "center",
-          }}
-        >
-          *Valores médios dos planos iniciais em maio/2026. Algumas ferramentas têm fee de setup ou cobram por mensagem além da mensalidade.
-        </p>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
 
