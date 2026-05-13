@@ -47,6 +47,71 @@ function useLiveStats() {
 
 const formatBR = (n: number) => n.toLocaleString("pt-BR");
 
+/** Mini biblioteca de ícones SVG inline — sem emoji, escaláveis, cor controlada via prop. */
+type IconName =
+  | "money" | "bolt" | "moon" | "lock" | "infinity" | "flag" | "download"
+  | "qr" | "gear" | "coins" | "fire" | "arrow" | "rocket" | "send"
+  | "shield" | "check" | "x" | "cloud" | "computer" | "clock" | "sparkles";
+
+function Icon({ name, color, size = 24, fill = false }: { name: IconName; color: string; size?: number; fill?: boolean }) {
+  const stroke = fill ? "none" : color;
+  const fillCol = fill ? color : "none";
+  const common = {
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    fill: fillCol,
+    stroke,
+    strokeWidth: 2,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+  switch (name) {
+    case "money":
+      return (<svg {...common}><path d="M12 1v22M17 5H9.5a3.5 3.5 0 100 7h5a3.5 3.5 0 110 7H6"/></svg>);
+    case "bolt":
+      return (<svg {...common} fill={color} stroke="none"><path d="M13 2L3 14h7l-1 8 11-13h-7l0-7z"/></svg>);
+    case "moon":
+      return (<svg {...common}><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>);
+    case "lock":
+      return (<svg {...common}><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>);
+    case "infinity":
+      return (<svg {...common}><path d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.585 0-4.585 8 0 8 5.606 0 7.644-8 12.739-8z"/></svg>);
+    case "flag":
+      return (<svg {...common}><path d="M4 22V4M4 16h13l-2-3 2-3H4"/></svg>);
+    case "download":
+      return (<svg {...common}><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>);
+    case "qr":
+      return (<svg {...common}><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 21v-7M14 21h3"/></svg>);
+    case "gear":
+      return (<svg {...common}><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>);
+    case "coins":
+      return (<svg {...common}><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1110.34 18M7 6h1v4M16.71 13.88l.7.71-2.82 2.82"/></svg>);
+    case "fire":
+      return (<svg {...common} fill={color} stroke="none"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/></svg>);
+    case "arrow":
+      return (<svg {...common}><path d="M5 12h14M12 5l7 7-7 7"/></svg>);
+    case "rocket":
+      return (<svg {...common}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09zM12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2zM9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>);
+    case "send":
+      return (<svg {...common}><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>);
+    case "shield":
+      return (<svg {...common}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>);
+    case "check":
+      return (<svg {...common}><path d="M20 6L9 17l-5-5"/></svg>);
+    case "x":
+      return (<svg {...common}><path d="M18 6L6 18M6 6l12 12"/></svg>);
+    case "cloud":
+      return (<svg {...common}><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/></svg>);
+    case "computer":
+      return (<svg {...common}><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>);
+    case "clock":
+      return (<svg {...common}><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>);
+    case "sparkles":
+      return (<svg {...common}><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3zM5 16l.7 2.1L8 19l-2.3.9L5 22l-.7-2.1L2 19l2.3-.9L5 16zM19 14l.7 2.1L22 17l-2.3.9L19 20l-.7-2.1L16 17l2.3-.9L19 14z"/></svg>);
+  }
+}
+
 /** Countdown until midnight Brasília time — drives urgency banner. */
 function useCountdown() {
   const [t, setT] = useState({ h: 0, m: 0, s: 0 });
@@ -101,7 +166,7 @@ type StatCard = {
   title: string;
   detail: string;
   vs?: string;
-  emoji: string;
+  icon: IconName;
 };
 
 const STAT_CARDS: StatCard[] = [
@@ -110,7 +175,7 @@ const STAT_CARDS: StatCard[] = [
     statSub: "/mês",
     color: "#16c784",
     color2: "#25D366",
-    emoji: "💸",
+    icon: "money",
     title: "Sem mensalidade",
     detail: "Pague R$ 97 uma vez e use pra sempre.",
     vs: "Manychat: R$ 99/mês · Take Blip: R$ 297/mês",
@@ -119,16 +184,16 @@ const STAT_CARDS: StatCard[] = [
     stat: "~1.5s",
     color: "#25D366",
     color2: "#16c784",
-    emoji: "⚡",
+    icon: "bolt",
     title: "Resposta instantânea",
     detail: "IA roda no seu PC, não fica esperando fila de API.",
     vs: "ChatGPT API: 4-12s · Latência da nuvem: 8-20s",
   },
   {
-    stat: "24/7",
+    stat: "24h/7d",
     color: "#a855f7",
     color2: "#6366f1",
-    emoji: "🌙",
+    icon: "moon",
     title: "Atende a noite toda",
     detail: "Trabalha enquanto você dorme, no horário que você define.",
     vs: "Atendente humano: 8h/dia · Custo: R$ 1.500+/mês",
@@ -138,7 +203,7 @@ const STAT_CARDS: StatCard[] = [
     statSub: "dados na nuvem",
     color: "#0ea5e9",
     color2: "#6366f1",
-    emoji: "🔒",
+    icon: "lock",
     title: "100% privado",
     detail: "Conversas em SQLite local — nada sobe pra OpenAI ou Claude.",
     vs: "Manychat, ChatGPT API: tudo na nuvem deles",
@@ -148,7 +213,7 @@ const STAT_CARDS: StatCard[] = [
     statSub: "mensagens",
     color: "#f59e0b",
     color2: "#ef4444",
-    emoji: "📨",
+    icon: "infinity",
     title: "Sem limite por msg",
     detail: "Não cobra por token. 10 ou 10.000 clientes, mesmo preço.",
     vs: "ChatGPT API: ~R$ 0,02 por msg · 10k = R$ 200/mês",
@@ -157,7 +222,7 @@ const STAT_CARDS: StatCard[] = [
     stat: "PT-BR",
     color: "#6366f1",
     color2: "#a855f7",
-    emoji: "🇧🇷",
+    icon: "flag",
     title: "Treina em português",
     detail: 'Escreve "pergunte o CEP antes do preço" — bot segue. Sem código.',
     vs: "Manychat: fluxos em blocos · Botmaker: setup técnico",
@@ -258,7 +323,10 @@ export default function ZapBotPage() {
           flexWrap: "wrap",
         }}
       >
-        <span>🔥 Oferta de lançamento expira hoje à meia-noite</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <Icon name="fire" color="#fff" size={14} />
+          Oferta de lançamento expira hoje à meia-noite
+        </span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
           {[pad(h), pad(m), pad(s)].map((v, i) => (
             <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
@@ -423,13 +491,20 @@ export default function ZapBotPage() {
                   opacity: loading ? 0.7 : 1,
                 }}
               >
-                {loading ? "Redirecionando..." : `🚀 Quero o ZapBot — R$ ${PRICE_BRL}`}
+                {loading ? (
+                  "Redirecionando..."
+                ) : (
+                  <>
+                    Quero o ZapBot — R$ {PRICE_BRL}
+                    <Icon name="arrow" color="#fff" size={18} />
+                  </>
+                )}
               </button>
               <div style={{ fontSize: "0.85rem", color: "#8394b0", lineHeight: 1.4 }}>
                 <s style={{ color: "#4e5c72" }}>De R$ {ANCHOR_PRICE_BRL}</s>{" "}
                 <strong style={{ color: "#16c784" }}>por R$ {PRICE_BRL}</strong>
                 <div style={{ fontSize: "0.74rem", color: "#4e5c72", marginTop: 2 }}>
-                  💳 Pix, cartão ou boleto · 🛡️ 7 dias de garantia
+                  Pix, cartão ou boleto · 7 dias de garantia
                 </div>
               </div>
             </div>
@@ -508,7 +583,14 @@ export default function ZapBotPage() {
                 opacity: loading ? 0.7 : 1,
               }}
             >
-              {loading ? "Redirecionando..." : `🚀 Quero o ZapBot agora — R$ ${PRICE_BRL}`}
+              {loading ? (
+                "Redirecionando..."
+              ) : (
+                <>
+                  Quero o ZapBot agora — R$ {PRICE_BRL}
+                  <Icon name="arrow" color="#fff" size={18} />
+                </>
+              )}
             </button>
             <div style={{ fontSize: "0.82rem", color: "#8394b0" }}>
               pagamento único · Pix, cartão ou boleto · 7 dias de garantia
@@ -608,15 +690,22 @@ export default function ZapBotPage() {
                   e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,0,0,0.35)";
                 }}
               >
-                {/* Emoji topo */}
+                {/* Icon topo */}
                 <div
                   style={{
-                    fontSize: "1.5rem",
-                    marginBottom: "0.6rem",
-                    filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.4))",
+                    width: 44,
+                    height: 44,
+                    borderRadius: 12,
+                    background: `linear-gradient(135deg, ${c.color}25, ${c.color2}10)`,
+                    border: `1px solid ${c.color}40`,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "0.85rem",
+                    boxShadow: `0 4px 16px ${c.color}25`,
                   }}
                 >
-                  {c.emoji}
+                  <Icon name={c.icon} color={c.color} size={22} />
                 </div>
 
                 {/* STAT GIGANTE */}
@@ -712,32 +801,78 @@ export default function ZapBotPage() {
       {/* Final CTA */}
       <section
         style={{
-          padding: "5rem 1.5rem",
+          position: "relative",
+          padding: "5rem 1.25rem",
           textAlign: "center",
-          background: "var(--bg)",
+          background:
+            "radial-gradient(ellipse at 50% 0%, rgba(37,211,102,0.12), transparent 60%), var(--bg)",
+          overflow: "hidden",
         }}
       >
-        <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>📲</div>
-          <h2
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: "-20%",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: 600,
+            height: 600,
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(37,211,102,0.08), transparent 70%)",
+            filter: "blur(60px)",
+            pointerEvents: "none",
+          }}
+        />
+        <div style={{ maxWidth: 640, margin: "0 auto", position: "relative" }}>
+          <div
             style={{
-              fontSize: "clamp(1.8rem,4vw,2.5rem)",
-              fontWeight: 900,
-              marginBottom: "0.75rem",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: "rgba(37,211,102,0.1)",
+              border: "1px solid rgba(37,211,102,0.3)",
+              color: "#25D366",
+              borderRadius: 999,
+              padding: "0.4rem 1.1rem",
+              fontSize: "0.78rem",
+              fontWeight: 700,
+              marginBottom: "1.25rem",
             }}
           >
-            Pronto pra atender no automático?
+            <Icon name="sparkles" color="#25D366" size={14} />
+            Pronto em 8 minutos
+          </div>
+          <h2
+            style={{
+              fontSize: "clamp(1.9rem, 4vw, 2.7rem)",
+              fontWeight: 900,
+              marginBottom: "0.85rem",
+              letterSpacing: "-0.01em",
+              lineHeight: 1.1,
+            }}
+          >
+            Pare de pagar mensalidade pra{" "}
+            <span
+              style={{
+                background: "linear-gradient(135deg,#16c784,#25D366)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              atender clientes.
+            </span>
           </h2>
           <p
             style={{
               color: "#8394b0",
               marginBottom: "2rem",
               fontSize: "1rem",
-              lineHeight: 1.7,
+              lineHeight: 1.65,
             }}
           >
-            Instala em 5 minutos. Funciona offline. Suas conversas e configurações
-            ficam só na sua máquina.
+            Instala em 5 minutos, funciona offline, conversas ficam só no seu PC.
+            Pagamento único de R$ 97 — sem letra miúda.
           </p>
 
           <button
@@ -751,18 +886,31 @@ export default function ZapBotPage() {
               opacity: loading ? 0.7 : 1,
               display: "inline-flex",
               alignItems: "center",
-              gap: "0.5rem",
+              gap: "0.6rem",
             }}
           >
-            {loading ? "Aguarde..." : `🚀 Comprar agora — R$ ${PRICE_BRL}`}
+            {loading ? (
+              "Aguarde..."
+            ) : (
+              <>
+                Comprar agora — R$ {PRICE_BRL}
+                <Icon name="arrow" color="#fff" size={18} />
+              </>
+            )}
           </button>
           <div
             style={{
               marginTop: "1rem",
               fontSize: "0.82rem",
               color: "#8394b0",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              flexWrap: "wrap",
+              justifyContent: "center",
             }}
           >
+            <Icon name="shield" color="#16c784" size={14} />
             pagamento único · 7 dias de garantia · Pix, cartão ou boleto
           </div>
 
@@ -792,11 +940,11 @@ export default function ZapBotPage() {
 // ─────────────────────────────────────────────────────────────────────────
 // How it works — 3 steps
 // ─────────────────────────────────────────────────────────────────────────
-const STEPS = [
+const STEPS: { n: number; time: string; icon: IconName; color: string; color2: string; title: string; desc: string }[] = [
   {
     n: 1,
     time: "2 min",
-    emoji: "📥",
+    icon: "download",
     color: "#25D366",
     color2: "#16c784",
     title: "Baixe e instale",
@@ -805,7 +953,7 @@ const STEPS = [
   {
     n: 2,
     time: "1 min",
-    emoji: "📱",
+    icon: "qr",
     color: "#a855f7",
     color2: "#6366f1",
     title: "Escaneie o QR",
@@ -814,7 +962,7 @@ const STEPS = [
   {
     n: 3,
     time: "5 min",
-    emoji: "⚙️",
+    icon: "gear",
     color: "#f59e0b",
     color2: "#ef4444",
     title: "Configure as regras",
@@ -872,7 +1020,7 @@ function HowItWorks() {
                 fontWeight: 700,
               }}
             >
-              ⚡ Setup em 8 minutos
+              Setup em 8 minutos
             </span>
           </div>
           <h2
@@ -956,6 +1104,9 @@ function HowItWorks() {
                   </div>
                   <span
                     style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
                       fontSize: "0.72rem",
                       fontWeight: 700,
                       color: s.color,
@@ -965,11 +1116,26 @@ function HowItWorks() {
                       padding: "0.25rem 0.7rem",
                     }}
                   >
-                    ⏱ {s.time}
+                    <Icon name="clock" color={s.color} size={12} />
+                    {s.time}
                   </span>
                 </div>
 
-                <div style={{ fontSize: "1.8rem", marginBottom: "0.5rem" }}>{s.emoji}</div>
+                <div
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 14,
+                    background: `linear-gradient(135deg, ${s.color}25, ${s.color2}10)`,
+                    border: `1px solid ${s.color}40`,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "0.85rem",
+                  }}
+                >
+                  <Icon name={s.icon} color={s.color} size={24} />
+                </div>
 
                 <div
                   style={{
@@ -1083,7 +1249,7 @@ function Savings() {
                 marginBottom: "0.85rem",
               }}
             >
-              💰 1 pagamento. Use pra sempre.
+              1 pagamento. Use pra sempre.
             </div>
             <h2
               style={{
@@ -1226,7 +1392,7 @@ function Savings() {
                     fontSize: "1.05rem",
                   }}
                 >
-                  ⏻ ZapBot
+                  <Icon name="computer" color="#25D366" size={18} /> ZapBot
                   <span
                     style={{
                       background: "linear-gradient(135deg,#16c784,#25D366)",
@@ -1288,7 +1454,7 @@ function Savings() {
           <div className="pay-grid">
             {[
               {
-                emoji: "⚡",
+                icon: "bolt" as IconName,
                 color: "#16c784",
                 color2: "#25D366",
                 label: "Você se paga em",
@@ -1297,7 +1463,7 @@ function Savings() {
                 detail: "vs. ferramenta mais barata da lista",
               },
               {
-                emoji: "💰",
+                icon: "coins" as IconName,
                 color: "#a78bfa",
                 color2: "#6366f1",
                 label: "Economia média em 1 ano",
@@ -1305,7 +1471,7 @@ function Savings() {
                 detail: "média das ferramentas comparadas acima",
               },
               {
-                emoji: "🔥",
+                icon: "fire" as IconName,
                 color: "#f59e0b",
                 color2: "#ef4444",
                 label: "Em 5 anos pagaria",
@@ -1334,7 +1500,21 @@ function Savings() {
                   e.currentTarget.style.boxShadow = "none";
                 }}
               >
-                <div style={{ fontSize: "1.4rem", marginBottom: "0.4rem" }}>{c.emoji}</div>
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 12,
+                    background: `linear-gradient(135deg, ${c.color}25, ${c.color2}10)`,
+                    border: `1px solid ${c.color}40`,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto 0.65rem",
+                  }}
+                >
+                  <Icon name={c.icon} color={c.color} size={22} />
+                </div>
                 <div
                   style={{
                     fontSize: "0.78rem",
@@ -1404,29 +1584,34 @@ function Savings() {
 // ─────────────────────────────────────────────────────────────────────────
 // Bonuses + Risk reversal — strong impulse-buy section right before the CTA.
 // ─────────────────────────────────────────────────────────────────────────
-const BONUSES: { icon: string; title: string; value: string }[] = [
+const BONUSES: { icon: IconName; color: string; title: string; value: string }[] = [
   {
-    icon: "🤖",
+    icon: "computer",
+    color: "#25D366",
     title: "ZapBot — app completo Windows",
     value: "R$ 297",
   },
   {
-    icon: "🧠",
+    icon: "sparkles",
+    color: "#a855f7",
     title: "IA local incluída (Qwen 2.5) — sem custo extra de API",
     value: "R$ 1.188/ano grátis",
   },
   {
-    icon: "📅",
+    icon: "clock",
+    color: "#0ea5e9",
     title: "Agendamento de mensagens ilimitado",
     value: "R$ 480/ano grátis",
   },
   {
-    icon: "🆕",
+    icon: "download",
+    color: "#16c784",
     title: "Atualizações grátis por 1 ano",
     value: "R$ 240",
   },
   {
-    icon: "📩",
+    icon: "send",
+    color: "#f59e0b",
     title: "Suporte por e-mail",
     value: "R$ 197",
   },
@@ -1472,9 +1657,23 @@ function BonusesAndGuarantee({ buy, loading }: { buy: () => void; loading: boole
                 borderBottom: "1px solid rgba(255,255,255,0.05)",
               }}
             >
-              <span style={{ fontSize: "1.3rem", flexShrink: 0 }}>{b.icon}</span>
-              <span style={{ flex: 1, color: "#c8d4e8", fontSize: "0.92rem" }}>
-                <span style={{ color: "#16c784", fontWeight: 800, marginRight: 6 }}>✓</span>
+              <span
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 9,
+                  background: `${b.color}20`,
+                  border: `1px solid ${b.color}40`,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <Icon name={b.icon} color={b.color} size={18} />
+              </span>
+              <span style={{ flex: 1, color: "#c8d4e8", fontSize: "0.92rem", display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <Icon name="check" color="#16c784" size={14} />
                 {b.title}
               </span>
               <span style={{ color: "#4e5c72", fontSize: "0.85rem", fontVariantNumeric: "tabular-nums" }}>
@@ -1539,7 +1738,14 @@ function BonusesAndGuarantee({ buy, loading }: { buy: () => void; loading: boole
               justifyContent: "center",
             }}
           >
-            {loading ? "Redirecionando..." : "🚀 Garantir meu ZapBot agora"}
+            {loading ? (
+              "Redirecionando..."
+            ) : (
+              <>
+                Garantir meu ZapBot agora
+                <Icon name="arrow" color="#fff" size={18} />
+              </>
+            )}
           </button>
 
           {/* Guarantee */}
@@ -1555,7 +1761,21 @@ function BonusesAndGuarantee({ buy, loading }: { buy: () => void; loading: boole
               marginTop: "1.25rem",
             }}
           >
-            <span style={{ fontSize: "1.75rem", flexShrink: 0 }}>🛡️</span>
+            <span
+              style={{
+                width: 38,
+                height: 38,
+                borderRadius: 10,
+                background: "rgba(22,199,132,0.15)",
+                border: "1px solid rgba(22,199,132,0.35)",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <Icon name="shield" color="#16c784" size={20} />
+            </span>
             <div>
               <div style={{ fontWeight: 700, fontSize: "0.92rem", color: "#16c784" }}>
                 7 dias de garantia total
@@ -1597,107 +1817,188 @@ const COMPARISON_ROWS: { label: string; zapbot: string; cloud: string }[] = [
 
 function Comparison() {
   return (
-    <section style={{ padding: "5rem 1.5rem", background: "var(--bg2)" }}>
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
-        <h2
-          style={{
-            textAlign: "center",
-            fontSize: "clamp(1.8rem,4vw,2.4rem)",
-            fontWeight: 800,
-            marginBottom: "0.6rem",
-          }}
-        >
-          Por que rodar local em vez de na nuvem?
-        </h2>
-        <p style={{ textAlign: "center", color: "#8394b0", marginBottom: "3rem" }}>
-          A maioria dos chatbots cobra mensalidade e guarda suas conversas. O ZapBot não.
-        </p>
+    <>
+      <style>{`
+        .vs-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.25rem;
+          position: relative;
+        }
+        @media (min-width: 880px) {
+          .vs-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        }
+        .vs-row {
+          display: grid;
+          grid-template-columns: 24px 1fr;
+          gap: 0.7rem;
+          align-items: flex-start;
+          padding: 0.7rem 0;
+          border-top: 1px dashed rgba(255,255,255,0.06);
+          font-size: 0.92rem;
+        }
+        .vs-row:first-child { border-top: none; padding-top: 0; }
+      `}</style>
 
-        <div
-          style={{
-            background: "var(--card)",
-            border: "1px solid var(--line)",
-            borderRadius: 18,
-            overflow: "hidden",
-          }}
-        >
-          {/* Header row */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1.4fr 1fr 1fr",
-              gap: 0,
-              background: "rgba(255,255,255,0.03)",
-              borderBottom: "1px solid var(--line)",
-              fontWeight: 700,
-              fontSize: "0.88rem",
-            }}
-          >
-            <div style={{ padding: "1rem 1.25rem", color: "#8394b0" }}> </div>
-            <div
+      <section style={{ padding: "4rem 1.25rem", background: "var(--bg2)" }}>
+        <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "2.25rem" }}>
+            <span
               style={{
-                padding: "1rem 1.25rem",
+                display: "inline-block",
+                background: "rgba(37,211,102,0.1)",
+                border: "1px solid rgba(37,211,102,0.25)",
                 color: "#25D366",
-                textAlign: "center",
-                borderLeft: "1px solid var(--line)",
-                borderRight: "1px solid var(--line)",
+                borderRadius: 20,
+                padding: "0.3rem 1rem",
+                fontSize: "0.78rem",
+                fontWeight: 700,
+                marginBottom: "0.85rem",
               }}
             >
-              ⏻ ZapBot (local)
+              Local vs Nuvem
+            </span>
+            <h2
+              style={{
+                fontSize: "clamp(1.7rem, 3.2vw, 2.4rem)",
+                fontWeight: 900,
+                marginBottom: "0.5rem",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              Por que rodar{" "}
+              <span
+                style={{
+                  background: "linear-gradient(135deg,#16c784,#25D366)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                no seu PC
+              </span>
+              {" "}em vez da nuvem?
+            </h2>
+            <p style={{ textAlign: "center", color: "#8394b0", fontSize: "0.95rem" }}>
+              A maioria dos chatbots cobra mensalidade e guarda suas conversas. O ZapBot não.
+            </p>
+          </div>
+
+          <div className="vs-grid">
+            {/* ZAPBOT card (winner) */}
+            <div
+              className="stat-card"
+              style={{
+                borderColor: "rgba(37,211,102,0.5)",
+                background: `
+                  radial-gradient(circle at 0% 0%, rgba(37,211,102,0.18) 0%, transparent 55%),
+                  linear-gradient(180deg, rgba(37,211,102,0.08) 0%, rgba(0,0,0,0.2) 100%)
+                `,
+                animationDelay: "0ms",
+                padding: "1.75rem 1.6rem",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(37,211,102,0.8)"; e.currentTarget.style.boxShadow = "0 12px 40px rgba(37,211,102,0.25)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(37,211,102,0.5)"; e.currentTarget.style.boxShadow = "none"; }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.25rem" }}>
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 12,
+                    background: "linear-gradient(135deg,#25D366,#16c784)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 8px 24px rgba(37,211,102,0.35)",
+                  }}
+                >
+                  <Icon name="computer" color="#fff" size={22} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 900, color: "#25D366", fontSize: "1.15rem", display: "flex", alignItems: "center", gap: 8 }}>
+                    ZapBot
+                    <span style={{ background: "linear-gradient(135deg,#16c784,#25D366)", color: "#0a0b14", fontSize: "0.6rem", padding: "3px 8px", borderRadius: 999, fontWeight: 900, letterSpacing: "0.04em" }}>
+                      RECOMENDADO
+                    </span>
+                  </div>
+                  <div style={{ fontSize: "0.78rem", color: "#a7f3d0" }}>roda no seu PC</div>
+                </div>
+              </div>
+              <div>
+                {COMPARISON_ROWS.map((row) => (
+                  <div key={row.label} className="vs-row">
+                    <div style={{ marginTop: 2, display: "inline-flex" }}>
+                      <Icon name="check" color="#16c784" size={18} />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 700, color: "#eef2f9", fontSize: "0.88rem" }}>{row.label}</div>
+                      <div style={{ color: "#a7f3d0", fontSize: "0.82rem", marginTop: 2 }}>{row.zapbot}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div style={{ padding: "1rem 1.25rem", color: "#8394b0", textAlign: "center" }}>
-              ☁ Bots na nuvem
+
+            {/* CLOUD card (loser) */}
+            <div
+              className="stat-card"
+              style={{
+                borderColor: "rgba(239,68,68,0.25)",
+                background: `
+                  radial-gradient(circle at 100% 0%, rgba(239,68,68,0.10) 0%, transparent 55%),
+                  linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.2) 100%)
+                `,
+                animationDelay: "100ms",
+                padding: "1.75rem 1.6rem",
+                opacity: 0.92,
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(239,68,68,0.5)"; e.currentTarget.style.boxShadow = "0 12px 40px rgba(239,68,68,0.15)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(239,68,68,0.25)"; e.currentTarget.style.boxShadow = "none"; }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.25rem" }}>
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 12,
+                    background: "linear-gradient(135deg, rgba(239,68,68,0.2), rgba(251,146,60,0.1))",
+                    border: "1px solid rgba(239,68,68,0.3)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Icon name="cloud" color="#ef4444" size={22} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 800, color: "#fca5a5", fontSize: "1.15rem" }}>
+                    Bots na nuvem
+                  </div>
+                  <div style={{ fontSize: "0.78rem", color: "#6b7a94" }}>Manychat, ChatGPT, Take Blip…</div>
+                </div>
+              </div>
+              <div>
+                {COMPARISON_ROWS.map((row) => (
+                  <div key={row.label} className="vs-row">
+                    <div style={{ marginTop: 2, display: "inline-flex" }}>
+                      <Icon name="x" color="#ef4444" size={18} />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 700, color: "#c8d4e8", fontSize: "0.88rem", opacity: 0.85 }}>{row.label}</div>
+                      <div style={{ color: "#8394b0", fontSize: "0.82rem", marginTop: 2 }}>{row.cloud}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          {COMPARISON_ROWS.map((row, i) => (
-            <div
-              key={row.label}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1.4fr 1fr 1fr",
-                gap: 0,
-                borderTop: i === 0 ? "none" : "1px solid var(--line)",
-                fontSize: "0.88rem",
-              }}
-            >
-              <div style={{ padding: "0.95rem 1.25rem", color: "#c8d4e8", fontWeight: 500 }}>
-                {row.label}
-              </div>
-              <div
-                style={{
-                  padding: "0.95rem 1.25rem",
-                  background: "rgba(37,211,102,0.05)",
-                  color: "#a7f3d0",
-                  textAlign: "center",
-                  borderLeft: "1px solid var(--line)",
-                  borderRight: "1px solid var(--line)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "0.5rem",
-                }}
-              >
-                <span style={{ color: "#16c784", fontWeight: 700 }}>✓</span> {row.zapbot}
-              </div>
-              <div
-                style={{
-                  padding: "0.95rem 1.25rem",
-                  color: "#8394b0",
-                  textAlign: "center",
-                }}
-              >
-                {row.cloud}
-              </div>
-            </div>
-          ))}
+          <p style={{ marginTop: "1.5rem", fontSize: "0.74rem", color: "#4e5c72", textAlign: "center" }}>
+            *Comparação baseada em planos médios de bots na nuvem (Manychat, ChatGPT Plus + API). Valores podem variar.
+          </p>
         </div>
-
-        <p style={{ marginTop: "1.25rem", fontSize: "0.78rem", color: "#4e5c72", textAlign: "center" }}>
-          *Tabela comparativa baseada em planos médios de bots na nuvem (Manychat, ChatGPT Plus + API). Valores podem variar.
-        </p>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
 
@@ -1882,7 +2183,7 @@ const SCENARIOS: Scenario[] = [
   },
   {
     customer: "Posso parcelar no cartão?",
-    bot: "Sim! Aceitamos cartão em até 12x sem juros 💳 Quer que eu te mande o link de pagamento?",
+    bot: "Sim! Aceitamos cartão em até 12x sem juros. Quer que eu te mande o link de pagamento?",
   },
   {
     customer: "Tem desconto à vista?",
@@ -1890,11 +2191,11 @@ const SCENARIOS: Scenario[] = [
   },
   {
     customer: "Quero falar com um atendente",
-    bot: "Claro! Já chamei a equipe pra você 👤 Em alguns minutos alguém te responde por aqui.",
+    bot: "Claro! Já chamei a equipe pra você. Em alguns minutos alguém te responde por aqui.",
   },
   {
     customer: "Estou só pesquisando ainda",
-    bot: "Tranquilo 😊 Posso te mandar uns depoimentos rápidos de quem já comprou?",
+    bot: "Tranquilo. Posso te mandar uns depoimentos rápidos de quem já comprou?",
   },
 ];
 
@@ -2039,7 +2340,7 @@ function LiveChatDemo() {
             fontWeight: 700,
           }}
         >
-          🤖 BOT ATIVO
+          BOT ATIVO
         </span>
       </div>
 
@@ -2083,7 +2384,7 @@ function LiveChatDemo() {
                     marginBottom: 2,
                   }}
                 >
-                  🤖 Bot
+                  Bot
                 </div>
               )}
               {m.typing && !m.text ? (
@@ -2149,7 +2450,7 @@ function LiveChatDemo() {
           textAlign: "center",
         }}
       >
-        ⚡ Demo rodando em loop — IA local respondendo em ~1.5s
+        Demo rodando em loop — IA local respondendo em ~1.5s
       </div>
     </div>
   );
