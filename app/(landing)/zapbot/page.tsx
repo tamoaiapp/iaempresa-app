@@ -539,28 +539,36 @@ export default function ZapBotPage() {
         </div>
       </section>
 
+      {/* Pain points — gatilho emocional logo após a hero */}
+      <PainPoints />
+
       {/* Vídeo explicativo — fora da hero */}
       <section style={{ padding: "4rem 1.5rem", background: "var(--bg)" }}>
         <div style={{ position: "relative", maxWidth: 980, margin: "0 auto" }}>
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              background: "rgba(99,102,241,0.1)",
-              border: "1px solid rgba(99,102,241,0.25)",
-              color: "#a78bfa",
-              borderRadius: 20,
-              padding: "0.3rem 1rem",
-              fontSize: "0.8rem",
-              fontWeight: 700,
-              marginBottom: "1.25rem",
-            }}
-          >
-            🎬 Vídeo explicativo · 7 min
-          </div>
+          <Reveal>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                background: "rgba(99,102,241,0.1)",
+                border: "1px solid rgba(99,102,241,0.25)",
+                color: "#a78bfa",
+                borderRadius: 20,
+                padding: "0.3rem 1rem",
+                fontSize: "0.8rem",
+                fontWeight: 700,
+                marginBottom: "1.25rem",
+              }}
+            >
+              <Icon name="sparkles" color="#a78bfa" size={13} />
+              Vídeo explicativo · 7 min
+            </div>
+          </Reveal>
 
-          <VideoWithPlayCover />
+          <Reveal delay={120}>
+            <VideoWithPlayCover />
+          </Reveal>
 
 
           <div
@@ -598,6 +606,9 @@ export default function ZapBotPage() {
           </div>
         </div>
       </section>
+
+      {/* App preview — mockup CSS do produto rodando (mostra a tecnologia) */}
+      <AppPreview />
 
       {/* Features — stat cards animados, 3 colunas fixas em desktop */}
       <style>{`
@@ -2458,6 +2469,592 @@ function LiveChatDemo() {
       >
         Demo rodando em loop — IA local respondendo em ~1.5s
       </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Reveal — fade + slide-up quando entra no viewport (scroll animation)
+// ─────────────────────────────────────────────────────────────────────────
+function Reveal({ children, delay = 0, as: Tag = "div" }: { children: React.ReactNode; delay?: number; as?: "div" | "section" }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setVisible(true);
+            obs.disconnect();
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -50px 0px" },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <Tag
+      ref={ref as React.RefObject<HTMLDivElement & HTMLElement>}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(28px)",
+        transition: `opacity 0.7s ease ${delay}ms, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
+        willChange: "opacity, transform",
+      }}
+    >
+      {children}
+    </Tag>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// PainPoints — mensagens não respondidas = vendas perdidas (emocional)
+// ─────────────────────────────────────────────────────────────────────────
+type PainMessage = {
+  customer: string;
+  initial: string;
+  color: string;
+  msg: string;
+  time: string;
+  loss: string;
+};
+
+const PAIN_MESSAGES: PainMessage[] = [
+  {
+    customer: "Cliente · Maria",
+    initial: "M",
+    color: "#f59e0b",
+    msg: "Bom dia, vocês entregam hoje? Preciso até as 17h",
+    time: "visto há 3h",
+    loss: "Venda de R$ 240 perdida",
+  },
+  {
+    customer: "Cliente · João",
+    initial: "J",
+    color: "#a855f7",
+    msg: "Quanto fica esse modelo no Pix?",
+    time: "visto há 8h",
+    loss: "Venda de R$ 580 perdida",
+  },
+  {
+    customer: "Cliente · Renata",
+    initial: "R",
+    color: "#ef4444",
+    msg: "Tô com o cartão na mão, ainda dá pra hoje?",
+    time: "visto ontem",
+    loss: "Venda de R$ 1.290 perdida",
+  },
+  {
+    customer: "Cliente · Pedro",
+    initial: "P",
+    color: "#fb923c",
+    msg: "Posso parcelar em 6x sem juros?",
+    time: "visto há 14h",
+    loss: "Venda de R$ 890 perdida",
+  },
+];
+
+function PainPoints() {
+  return (
+    <>
+      <style>{`
+        .pain-grid { display:grid; grid-template-columns:1fr; gap:1rem; }
+        @media (min-width: 640px) { .pain-grid { grid-template-columns: 1fr 1fr; } }
+        @media (min-width: 980px) { .pain-grid { grid-template-columns: repeat(4, 1fr); gap:0.9rem; } }
+      `}</style>
+
+      <section style={{ padding: "4.5rem 1.25rem 4rem", background: "var(--bg2)", position: "relative", overflow: "hidden" }}>
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: "20%",
+            left: "-15%",
+            width: 500,
+            height: 500,
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(239,68,68,0.07), transparent 70%)",
+            filter: "blur(60px)",
+            pointerEvents: "none",
+          }}
+        />
+
+        <div style={{ maxWidth: 1180, margin: "0 auto", position: "relative" }}>
+          <Reveal>
+            <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  background: "rgba(239,68,68,0.08)",
+                  border: "1px solid rgba(239,68,68,0.25)",
+                  color: "#fca5a5",
+                  borderRadius: 20,
+                  padding: "0.3rem 1rem",
+                  fontSize: "0.78rem",
+                  fontWeight: 700,
+                  marginBottom: "1rem",
+                }}
+              >
+                <Icon name="x" color="#ef4444" size={12} />
+                A dor real do pequeno negócio
+              </span>
+              <h2
+                style={{
+                  fontSize: "clamp(1.7rem, 3.4vw, 2.5rem)",
+                  fontWeight: 900,
+                  marginBottom: "0.6rem",
+                  letterSpacing: "-0.01em",
+                  lineHeight: 1.1,
+                }}
+              >
+                Toda mensagem não respondida{" "}
+                <span style={{ background: "linear-gradient(135deg,#ef4444,#fb923c)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                  é dinheiro indo embora
+                </span>
+              </h2>
+              <p style={{ color: "#8394b0", fontSize: "0.98rem", maxWidth: 620, margin: "0 auto", lineHeight: 1.55 }}>
+                Você fecha o app pra dormir, almoçar ou cuidar de outra coisa — e o cliente que tava prestes a comprar simplesmente desiste.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="pain-grid">
+            {PAIN_MESSAGES.map((p, i) => (
+              <Reveal key={p.customer} delay={i * 90}>
+                <div
+                  style={{
+                    background: "linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.2) 100%)",
+                    border: "1px solid rgba(239,68,68,0.18)",
+                    borderRadius: 14,
+                    padding: "1rem 1.1rem 1.1rem",
+                    transition: "transform 0.25s ease, border-color 0.25s ease",
+                  }}
+                >
+                  {/* Header chat */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "0.7rem" }}>
+                    <div
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: "50%",
+                        background: `linear-gradient(135deg, ${p.color}, ${p.color}aa)`,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: 800,
+                        color: "#fff",
+                        fontSize: "0.88rem",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {p.initial}
+                    </div>
+                    <div style={{ flex: 1, fontSize: "0.78rem", color: "#8394b0", fontWeight: 600 }}>
+                      {p.customer}
+                    </div>
+                  </div>
+
+                  {/* Mensagem em bolha WhatsApp */}
+                  <div
+                    style={{
+                      background: "#202c33",
+                      color: "#e9edef",
+                      borderRadius: "10px 10px 10px 2px",
+                      padding: "0.6rem 0.75rem",
+                      fontSize: "0.86rem",
+                      lineHeight: 1.4,
+                      marginBottom: "0.6rem",
+                      boxShadow: "0 1px 0 rgba(0,0,0,0.25)",
+                    }}
+                  >
+                    {p.msg}
+                  </div>
+
+                  {/* Footer "visto há" + perda */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 8,
+                      fontSize: "0.74rem",
+                    }}
+                  >
+                    <span style={{ color: "#6b7a94", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                      <Icon name="clock" color="#6b7a94" size={11} />
+                      {p.time}
+                    </span>
+                    <span
+                      style={{
+                        color: "#fca5a5",
+                        fontWeight: 700,
+                        background: "rgba(239,68,68,0.1)",
+                        border: "1px solid rgba(239,68,68,0.25)",
+                        padding: "2px 8px",
+                        borderRadius: 999,
+                      }}
+                    >
+                      {p.loss}
+                    </span>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal delay={400}>
+            <div
+              style={{
+                marginTop: "2rem",
+                textAlign: "center",
+                fontSize: "1.05rem",
+                color: "#eef2f9",
+                fontWeight: 700,
+                padding: "1.15rem 1.5rem",
+                background: "linear-gradient(135deg, rgba(239,68,68,0.08), rgba(251,146,60,0.04))",
+                border: "1px solid rgba(239,68,68,0.2)",
+                borderRadius: 14,
+                maxWidth: 640,
+                margin: "2rem auto 0",
+              }}
+            >
+              <span style={{ color: "#fca5a5" }}>R$ 3.000+ por mês</span> escorrendo pelos dedos por falta de atendimento fora de hora.{" "}
+              <span style={{ color: "#25D366" }}>Resolvemos isso por R$ 97.</span>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+    </>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// AppPreview — mockup CSS rico do app rodando (mostra a tecnologia)
+// ─────────────────────────────────────────────────────────────────────────
+function AppPreview() {
+  return (
+    <>
+      <style>{`
+        .app-mockup-grid {
+          display: grid;
+          grid-template-columns: 60px 200px 1fr 240px;
+          height: 460px;
+          background: #0b141a;
+        }
+        @media (max-width: 880px) {
+          .app-mockup-grid { grid-template-columns: 50px 1fr; height: 380px; }
+          .app-mockup-conv, .app-mockup-rules { display: none !important; }
+        }
+      `}</style>
+
+      <section style={{ padding: "4.5rem 1.25rem", background: "var(--bg)", position: "relative", overflow: "hidden" }}>
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: "10%",
+            right: "-15%",
+            width: 500,
+            height: 500,
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(37,211,102,0.12), transparent 70%)",
+            filter: "blur(60px)",
+            pointerEvents: "none",
+          }}
+        />
+
+        <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative" }}>
+          <Reveal>
+            <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  background: "rgba(37,211,102,0.1)",
+                  border: "1px solid rgba(37,211,102,0.25)",
+                  color: "#25D366",
+                  borderRadius: 20,
+                  padding: "0.3rem 1rem",
+                  fontSize: "0.78rem",
+                  fontWeight: 700,
+                  marginBottom: "1rem",
+                }}
+              >
+                <Icon name="computer" color="#25D366" size={12} />
+                Por dentro do app
+              </span>
+              <h2
+                style={{
+                  fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)",
+                  fontWeight: 900,
+                  marginBottom: "0.6rem",
+                  letterSpacing: "-0.01em",
+                  lineHeight: 1.1,
+                }}
+              >
+                Tudo em{" "}
+                <span style={{ background: "linear-gradient(135deg,#16c784,#25D366)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                  uma tela só
+                </span>
+                . Sem código.
+              </h2>
+              <p style={{ color: "#8394b0", fontSize: "0.98rem", maxWidth: 620, margin: "0 auto", lineHeight: 1.55 }}>
+                Conversas à esquerda, IA respondendo no centro, suas regras de atendimento à direita.
+                Você vê tudo o que o bot fez em tempo real.
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={200}>
+            <div
+              style={{
+                position: "relative",
+                borderRadius: 14,
+                overflow: "hidden",
+                border: "1px solid rgba(37,211,102,0.25)",
+                boxShadow: "0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04) inset",
+                background: "#0b141a",
+              }}
+            >
+              {/* Window chrome */}
+              <div
+                style={{
+                  background: "#161b27",
+                  padding: "0.6rem 0.9rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.6rem",
+                  borderBottom: "1px solid rgba(255,255,255,0.05)",
+                }}
+              >
+                {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
+                  <span key={c} style={{ width: 11, height: 11, borderRadius: "50%", background: c, display: "inline-block" }} />
+                ))}
+                <span
+                  style={{
+                    flex: 1,
+                    background: "rgba(255,255,255,0.04)",
+                    borderRadius: 6,
+                    padding: "0.22rem 0.85rem",
+                    fontSize: "0.76rem",
+                    color: "#6b7a94",
+                    marginLeft: "0.5rem",
+                    textAlign: "center",
+                    fontFamily: "ui-monospace, monospace",
+                  }}
+                >
+                  ZapBot · localhost — atendendo 1.247 contas
+                </span>
+                <span style={{ fontSize: "0.7rem", color: "#16c784", display: "inline-flex", alignItems: "center", gap: 4, fontWeight: 700 }}>
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#16c784", display: "inline-block", animation: "pulseDot 1.6s ease-in-out infinite" }} />
+                  conectado
+                </span>
+              </div>
+
+              {/* Grid principal: nav | conversas | chat | regras */}
+              <div className="app-mockup-grid">
+                {/* Nav icons */}
+                <div style={{ background: "#075E54", padding: "1rem 0", display: "flex", flexDirection: "column", alignItems: "center", gap: "1.2rem" }}>
+                  {[
+                    { i: "send", on: true },
+                    { i: "clock", on: false },
+                    { i: "gear", on: false },
+                    { i: "shield", on: false },
+                  ].map((it, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: 9,
+                        background: it.on ? "rgba(255,255,255,0.15)" : "transparent",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Icon name={it.i as IconName} color={it.on ? "#fff" : "rgba(255,255,255,0.6)"} size={20} />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Lista de conversas */}
+                <div className="app-mockup-conv" style={{ background: "#fff", color: "#111", overflow: "hidden" }}>
+                  <div style={{ background: "#f0f2f5", padding: "0.65rem 0.85rem", borderBottom: "1px solid #e2e8f0", fontWeight: 700, fontSize: "0.82rem", color: "#111b21" }}>
+                    Conversas
+                  </div>
+                  {[
+                    { name: "Maria Costa", msg: "Vocês entregam ainda hoje?", time: "agora", badge: 1, active: true, bot: true },
+                    { name: "João Silva", msg: "Beleza, obrigado pela ajuda!", time: "10:14", badge: 0, active: false, bot: true },
+                    { name: "Ana Souza", msg: "Quero falar com atendente", time: "09:42", badge: 0, active: false, bot: false, esc: true },
+                    { name: "Pedro Lima", msg: "Como é o frete pro RJ?", time: "ontem", badge: 0, active: false, bot: true },
+                    { name: "Carla R.", msg: "Tem desconto à vista?", time: "ontem", badge: 0, active: false, bot: true },
+                  ].map((c) => (
+                    <div
+                      key={c.name}
+                      style={{
+                        padding: "0.65rem 0.85rem",
+                        borderBottom: "1px solid #f1f5f9",
+                        background: c.active ? "#f1f5f9" : "transparent",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontSize: "0.78rem", fontWeight: 600 }}>{c.name}</span>
+                        <span style={{ fontSize: "0.66rem", color: "#64748b" }}>{c.time}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 2 }}>
+                        <span style={{ fontSize: "0.72rem", color: "#475569", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 130 }}>{c.msg}</span>
+                        <span style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: 6 }}>
+                          {c.esc && <span style={{ color: "#ef4444", fontSize: "0.66rem", fontWeight: 700 }}>ESC</span>}
+                          {c.bot && <span style={{ color: "#16a34a", fontSize: "0.6rem", fontWeight: 700, background: "rgba(22,199,132,0.15)", padding: "1px 5px", borderRadius: 4 }}>BOT</span>}
+                          {c.badge > 0 && (
+                            <span style={{ background: "#25D366", color: "#fff", fontSize: "0.6rem", borderRadius: 999, padding: "1px 6px", fontWeight: 800 }}>{c.badge}</span>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Chat principal */}
+                <div style={{ background: "#0b141a", display: "flex", flexDirection: "column" }}>
+                  <div style={{ background: "#1f2c34", padding: "0.65rem 0.9rem", borderBottom: "1px solid rgba(255,255,255,0.05)", fontWeight: 700, fontSize: "0.84rem", color: "#e9edef", display: "flex", alignItems: "center", gap: 10 }}>
+                    <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg,#f59e0b,#fb923c)", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 800, fontSize: "0.85rem" }}>M</div>
+                    <div style={{ flex: 1 }}>
+                      <div>Maria Costa</div>
+                      <div style={{ fontSize: "0.7rem", opacity: 0.75, color: "#8696a0", fontWeight: 500 }}>online · bot ativo</div>
+                    </div>
+                    <span style={{ background: "rgba(37,211,102,0.18)", color: "#a7f3d0", fontSize: "0.65rem", padding: "3px 8px", borderRadius: 999, fontWeight: 700 }}>BOT RESPONDENDO</span>
+                  </div>
+                  <div style={{ flex: 1, padding: "0.85rem 1rem", display: "flex", flexDirection: "column", gap: 7, background: "linear-gradient(180deg, #0b141a 0%, #07111a 100%)" }}>
+                    <ChatBubble side="in" text="Oi! Vocês entregam ainda hoje?" />
+                    <ChatBubble side="out" bot text="Olá Maria! Pra entrega hoje precisamos do pedido confirmado até 15h. Qual o CEP da entrega?" />
+                    <ChatBubble side="in" text="04543-000" />
+                    <ChatBubble side="out" bot text="Pra esse CEP o frete é grátis e chega ainda hoje. Quer que eu te mande o link de pagamento?" meta="• respondido em 1.4s · IA local" />
+                  </div>
+                </div>
+
+                {/* Regras */}
+                <div className="app-mockup-rules" style={{ background: "#0a1219", borderLeft: "1px solid rgba(255,255,255,0.05)", padding: "0.85rem", overflow: "hidden" }}>
+                  <div style={{ fontSize: "0.7rem", color: "#6b7a94", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.7rem" }}>
+                    Regras ativas
+                  </div>
+                  {[
+                    "Sempre pergunte o CEP antes de dar o preço final.",
+                    "Se cliente pedir desconto, ofereça 10% no Pix.",
+                    'Se cliente disser "atendente" ou "humano", pause o bot.',
+                    "Não fale de produtos da concorrência.",
+                    "Sempre confirme o pedido antes de gerar o link.",
+                  ].map((r, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        background: "rgba(37,211,102,0.06)",
+                        border: "1px solid rgba(37,211,102,0.18)",
+                        borderRadius: 8,
+                        padding: "0.5rem 0.65rem",
+                        marginBottom: "0.45rem",
+                        fontSize: "0.74rem",
+                        color: "#c8d4e8",
+                        lineHeight: 1.4,
+                        display: "flex",
+                        gap: 6,
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <span style={{ flexShrink: 0, marginTop: 1 }}>
+                        <Icon name="check" color="#16c784" size={12} />
+                      </span>
+                      <span>{r}</span>
+                    </div>
+                  ))}
+                  <button
+                    style={{
+                      width: "100%",
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px dashed rgba(255,255,255,0.15)",
+                      borderRadius: 8,
+                      padding: "0.5rem",
+                      color: "#8394b0",
+                      fontSize: "0.74rem",
+                      cursor: "pointer",
+                      marginTop: 4,
+                    }}
+                  >
+                    + Adicionar regra
+                  </button>
+                </div>
+              </div>
+
+              {/* Footer status bar */}
+              <div
+                style={{
+                  background: "#0a1219",
+                  padding: "0.45rem 0.9rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  fontSize: "0.7rem",
+                  color: "#6b7a94",
+                  borderTop: "1px solid rgba(255,255,255,0.05)",
+                  fontFamily: "ui-monospace, monospace",
+                }}
+              >
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#16c784", display: "inline-block" }} />
+                  Qwen 2.5 · 7B · 4.2GB carregado
+                </span>
+                <span>respondidas hoje: 38.917 · tempo médio: 1.4s</span>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function ChatBubble({ side, text, bot = false, meta }: { side: "in" | "out"; text: string; bot?: boolean; meta?: string }) {
+  const isOut = side === "out";
+  return (
+    <div style={{ alignSelf: isOut ? "flex-end" : "flex-start", maxWidth: "78%" }}>
+      <div
+        style={{
+          background: isOut ? "#005c4b" : "#202c33",
+          color: "#e9edef",
+          borderRadius: isOut ? "10px 10px 2px 10px" : "10px 10px 10px 2px",
+          padding: "0.5rem 0.7rem",
+          fontSize: "0.84rem",
+          lineHeight: 1.4,
+          boxShadow: "0 1px 0 rgba(0,0,0,0.25)",
+        }}
+      >
+        {bot && (
+          <div style={{ fontSize: "0.62rem", color: "#a7f3d0", fontWeight: 700, marginBottom: 2 }}>
+            BOT
+          </div>
+        )}
+        {text}
+      </div>
+      {meta && (
+        <div style={{ fontSize: "0.62rem", color: "#6b7a94", marginTop: 3, textAlign: isOut ? "right" : "left", paddingInline: 4 }}>
+          {meta}
+        </div>
+      )}
     </div>
   );
 }
