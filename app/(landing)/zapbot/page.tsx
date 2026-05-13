@@ -542,6 +542,9 @@ export default function ZapBotPage() {
       {/* Pain points — gatilho emocional logo após a hero */}
       <PainPoints />
 
+      {/* Toast de prova social — fixed canto inferior esquerdo */}
+      <LiveNotificationToast />
+
       {/* Vídeo explicativo — fora da hero */}
       <section style={{ padding: "4rem 1.5rem", background: "var(--bg)" }}>
         <div style={{ position: "relative", maxWidth: 980, margin: "0 auto" }}>
@@ -617,6 +620,14 @@ export default function ZapBotPage() {
           0%   { background-position: 0% 50%; }
           100% { background-position: 200% 50%; }
         }
+        @keyframes spinBorder {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        @keyframes floatY {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-6px); }
+        }
         .stat-grid { display:grid; grid-template-columns:1fr; gap:1rem; }
         @media (min-width: 640px) { .stat-grid { grid-template-columns: 1fr 1fr; gap:1.1rem; } }
         @media (min-width: 980px) { .stat-grid { grid-template-columns: repeat(3, 1fr); gap:1.25rem; } }
@@ -627,14 +638,32 @@ export default function ZapBotPage() {
           overflow: hidden;
           background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.15) 100%);
           border: 1.5px solid rgba(255,255,255,0.08);
-          transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+          transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.35s ease;
           opacity: 0;
           animation: cardIn 0.5s ease-out forwards;
           will-change: transform;
+          transform-style: preserve-3d;
         }
+        .stat-card::before {
+          content: "";
+          position: absolute;
+          inset: -2px;
+          padding: 2px;
+          border-radius: 18px;
+          background: conic-gradient(from var(--angle, 0deg),
+            transparent 0deg, var(--c, #25D366) 60deg, transparent 120deg, transparent 360deg);
+          -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          opacity: 0;
+          transition: opacity 0.35s ease;
+          pointer-events: none;
+          animation: spinBorder 4s linear infinite;
+        }
+        .stat-card:hover::before { opacity: 1; }
         .stat-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+          transform: translateY(-8px) scale(1.015);
+          box-shadow: 0 20px 60px rgba(0,0,0,0.4);
         }
         .stat-number {
           background-size: 200% 100%;
@@ -643,6 +672,12 @@ export default function ZapBotPage() {
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           color: transparent;
+        }
+        /* Suporte CSS Houdini @property pra animar gradient angle */
+        @property --angle {
+          syntax: "<angle>";
+          initial-value: 0deg;
+          inherits: false;
         }
       `}</style>
 
@@ -691,14 +726,15 @@ export default function ZapBotPage() {
                     radial-gradient(circle at 100% 0%, ${c.color}22 0%, transparent 55%),
                     linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.2) 100%)
                   `,
-                }}
+                  ["--c" as string]: c.color,
+                } as React.CSSProperties}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = `${c.color}80`;
-                  e.currentTarget.style.boxShadow = `0 12px 40px ${c.color}25`;
+                  e.currentTarget.style.boxShadow = `0 20px 60px ${c.color}30`;
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = `${c.color}33`;
-                  e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,0,0,0.35)";
+                  e.currentTarget.style.boxShadow = "0 20px 60px rgba(0,0,0,0.4)";
                 }}
               >
                 {/* Icon topo */}
@@ -1002,11 +1038,31 @@ function HowItWorks() {
           overflow: hidden;
           background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.2) 100%);
           border: 1.5px solid rgba(255,255,255,0.08);
-          transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+          transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.35s ease;
           opacity: 0;
           animation: cardIn 0.5s ease-out forwards;
         }
-        .step-card:hover { transform: translateY(-4px); }
+        .step-card::before {
+          content: "";
+          position: absolute;
+          inset: -2px;
+          padding: 2px;
+          border-radius: 18px;
+          background: conic-gradient(from var(--angle, 0deg),
+            transparent 0deg, var(--c, #25D366) 60deg, transparent 120deg, transparent 360deg);
+          -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          opacity: 0;
+          transition: opacity 0.35s ease;
+          pointer-events: none;
+          animation: spinBorder 4s linear infinite;
+        }
+        .step-card:hover::before { opacity: 1; }
+        .step-card:hover {
+          transform: translateY(-8px) scale(1.015);
+          box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
         .step-arrow {
           display: none;
           position: absolute;
@@ -1076,7 +1132,8 @@ function HowItWorks() {
                     radial-gradient(circle at 0% 0%, ${s.color}1a 0%, transparent 55%),
                     linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.2) 100%)
                   `,
-                }}
+                  ["--c" as string]: s.color,
+                } as React.CSSProperties}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = `${s.color}80`;
                   e.currentTarget.style.boxShadow = `0 12px 40px ${s.color}25`;
@@ -1507,7 +1564,8 @@ function Savings() {
                     linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.2) 100%)
                   `,
                   textAlign: "center",
-                }}
+                  ["--c" as string]: c.color,
+                } as React.CSSProperties}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = `${c.color}80`;
                   e.currentTarget.style.boxShadow = `0 12px 40px ${c.color}25`;
@@ -1912,7 +1970,8 @@ function Comparison() {
                 `,
                 animationDelay: "0ms",
                 padding: "1.75rem 1.6rem",
-              }}
+                ["--c" as string]: "#25D366",
+              } as React.CSSProperties}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(37,211,102,0.8)"; e.currentTarget.style.boxShadow = "0 12px 40px rgba(37,211,102,0.25)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(37,211,102,0.5)"; e.currentTarget.style.boxShadow = "none"; }}
             >
@@ -1968,7 +2027,8 @@ function Comparison() {
                 animationDelay: "100ms",
                 padding: "1.75rem 1.6rem",
                 opacity: 0.92,
-              }}
+                ["--c" as string]: "#ef4444",
+              } as React.CSSProperties}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(239,68,68,0.5)"; e.currentTarget.style.boxShadow = "0 12px 40px rgba(239,68,68,0.15)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(239,68,68,0.25)"; e.currentTarget.style.boxShadow = "none"; }}
             >
@@ -2474,7 +2534,7 @@ function LiveChatDemo() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// Reveal — fade + slide-up quando entra no viewport (scroll animation)
+// Reveal — fade + scale + blur removal mais punchy
 // ─────────────────────────────────────────────────────────────────────────
 function Reveal({ children, delay = 0, as: Tag = "div" }: { children: React.ReactNode; delay?: number; as?: "div" | "section" }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -2496,7 +2556,7 @@ function Reveal({ children, delay = 0, as: Tag = "div" }: { children: React.Reac
           }
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -50px 0px" },
+      { threshold: 0.12, rootMargin: "0px 0px -60px 0px" },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -2507,13 +2567,162 @@ function Reveal({ children, delay = 0, as: Tag = "div" }: { children: React.Reac
       ref={ref as React.RefObject<HTMLDivElement & HTMLElement>}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(28px)",
-        transition: `opacity 0.7s ease ${delay}ms, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
-        willChange: "opacity, transform",
+        transform: visible ? "translateY(0) scale(1)" : "translateY(40px) scale(0.96)",
+        filter: visible ? "blur(0)" : "blur(8px)",
+        transition: `opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, filter 0.7s ease ${delay}ms`,
+        willChange: "opacity, transform, filter",
       }}
     >
       {children}
     </Tag>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// CountUp — número que conta de 0 até target quando entra no viewport
+// ─────────────────────────────────────────────────────────────────────────
+function CountUp({ to, prefix = "", suffix = "", duration = 1800, decimals = 0 }: { to: number; prefix?: string; suffix?: string; duration?: number; decimals?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [val, setVal] = useState(0);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let started = false;
+    let raf = 0;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting && !started) {
+            started = true;
+            const start = performance.now();
+            const tick = (now: number) => {
+              const p = Math.min(1, (now - start) / duration);
+              const eased = 1 - Math.pow(1 - p, 3);
+              setVal(to * eased);
+              if (p < 1) raf = requestAnimationFrame(tick);
+            };
+            raf = requestAnimationFrame(tick);
+            obs.disconnect();
+          }
+        });
+      },
+      { threshold: 0.4 },
+    );
+    obs.observe(el);
+    return () => {
+      obs.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, [to, duration]);
+
+  const formatted = decimals > 0 ? val.toFixed(decimals) : Math.round(val).toLocaleString("pt-BR");
+  return <span ref={ref}>{prefix}{formatted}{suffix}</span>;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// LiveNotificationToast — toast "alguém comprou em SP agora" no canto
+// ─────────────────────────────────────────────────────────────────────────
+const PURCHASE_NOTIFS = [
+  { name: "Carlos M.", city: "São Paulo, SP", time: "agora" },
+  { name: "Juliana S.", city: "Belo Horizonte, MG", time: "há 2 min" },
+  { name: "Rafael L.", city: "Curitiba, PR", time: "há 5 min" },
+  { name: "Patrícia A.", city: "Recife, PE", time: "há 8 min" },
+  { name: "Bruno T.", city: "Porto Alegre, RS", time: "há 12 min" },
+  { name: "Daniela C.", city: "Salvador, BA", time: "há 18 min" },
+  { name: "Marcelo F.", city: "Rio de Janeiro, RJ", time: "há 23 min" },
+  { name: "Luana P.", city: "Fortaleza, CE", time: "há 31 min" },
+];
+
+function LiveNotificationToast() {
+  const [idx, setIdx] = useState(0);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const firstShow = window.setTimeout(() => setVisible(true), 4000);
+
+    const cycle = window.setInterval(() => {
+      setVisible(false);
+      window.setTimeout(() => {
+        setIdx((i) => (i + 1) % PURCHASE_NOTIFS.length);
+        setVisible(true);
+      }, 600);
+    }, 9000);
+
+    return () => {
+      clearTimeout(firstShow);
+      clearInterval(cycle);
+    };
+  }, []);
+
+  const n = PURCHASE_NOTIFS[idx];
+
+  return (
+    <div
+      aria-hidden
+      style={{
+        position: "fixed",
+        bottom: "1.25rem",
+        left: "1.25rem",
+        zIndex: 200,
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateX(0)" : "translateX(-30px)",
+        transition: "opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+        pointerEvents: "none",
+        maxWidth: 320,
+      }}
+    >
+      <div
+        style={{
+          background: "linear-gradient(135deg, rgba(37,211,102,0.95), rgba(22,199,132,0.95))",
+          color: "#0a0b14",
+          borderRadius: 14,
+          padding: "0.7rem 1rem 0.75rem",
+          boxShadow: "0 14px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.15) inset",
+          backdropFilter: "blur(10px)",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+        }}
+      >
+        <div
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: "rgba(10,11,20,0.18)",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#0a0b14",
+            fontWeight: 900,
+            fontSize: "0.95rem",
+            flexShrink: 0,
+          }}
+        >
+          {n.name[0]}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: "0.82rem", fontWeight: 800, lineHeight: 1.2 }}>
+            {n.name} acabou de garantir o ZapBot
+          </div>
+          <div style={{ fontSize: "0.7rem", color: "rgba(10,11,20,0.7)", marginTop: 2 }}>
+            {n.city} · {n.time}
+          </div>
+        </div>
+        <span
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            background: "#0a0b14",
+            display: "inline-block",
+            animation: "pulseDot 1.4s ease-in-out infinite",
+            flexShrink: 0,
+          }}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -3165,6 +3374,7 @@ function Testimonials() {
                     radial-gradient(circle at 100% 0%, ${t.color}1a 0%, transparent 55%),
                     linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.2) 100%)
                   `,
+                  ["--c" as string]: t.color,
                   display: "flex",
                   flexDirection: "column",
                   gap: "1rem",
