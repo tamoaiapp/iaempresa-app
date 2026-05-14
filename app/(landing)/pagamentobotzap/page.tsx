@@ -7,6 +7,8 @@ import Link from "next/link";
 // recente em github.com/tamoaiapp/zapbot/releases/latest. Não precisa atualizar
 // o filename aqui a cada release nova (0.1.1 → 0.1.2 → ...).
 const DOWNLOAD_URL = "/api/download/zapbot";
+const VIDEO_URL =
+  "https://ddpyvdtgxemyxltgtxsh.supabase.co/storage/v1/object/public/videos/como-liberar-postmaster.mp4";
 
 // Bypass token for support (rare cases where someone paid but didn't see the approved page).
 const BYPASS_KEY = "ZAPBOT2026OK";
@@ -203,7 +205,7 @@ function PaidContent() {
 
       {isApproved && (
         <>
-          {/* SmartScreen warning — Windows tip */}
+          {/* Chamada do vídeo */}
           <div
             style={{
               background: "linear-gradient(135deg, rgba(245,158,11,0.14), rgba(245,158,11,0.06))",
@@ -211,27 +213,38 @@ function PaidContent() {
               borderRadius: 16,
               padding: "1.25rem 1.5rem",
               marginBottom: "1.25rem",
+              textAlign: "center",
             }}
           >
-            <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#f59e0b", marginBottom: "0.5rem" }}>
-              ⚠️ O Windows pode mostrar um aviso azul (SmartScreen)
+            <div style={{ fontWeight: 800, fontSize: "1.1rem", color: "#f59e0b", marginBottom: "0.4rem" }}>
+              Assista esse vídeo antes de instalar
             </div>
-            <p style={{ fontSize: "0.88rem", color: "#eef2f9", lineHeight: 1.6 }}>
-              Como o app ainda não tem certificado da Microsoft (eles cobram caro), o Windows mostra um aviso. Pra liberar:
+            <p style={{ fontSize: "0.88rem", color: "#eef2f9", lineHeight: 1.5 }}>
+              Mostro como liberar a instalação no Windows (SmartScreen e antivírus) em menos de 1 minuto.
             </p>
-            <ol
+          </div>
+
+          {/* Video player HTML5 — vertical 9:16 */}
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "2rem" }}>
+            <video
+              controls
+              playsInline
+              preload="metadata"
+              poster=""
               style={{
-                fontSize: "0.88rem",
-                color: "#c8d6f0",
-                lineHeight: 1.7,
-                paddingLeft: "1.25rem",
-                marginTop: "0.5rem",
+                width: "100%",
+                maxWidth: 360,
+                aspectRatio: "9 / 16",
+                borderRadius: 16,
+                background: "#000",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                display: "block",
               }}
             >
-              <li>Clique no botão de download abaixo</li>
-              <li>Se aparecer o aviso azul: clique em <b>&quot;Mais informações&quot;</b></li>
-              <li>Depois clique em <b>&quot;Executar assim mesmo&quot;</b></li>
-            </ol>
+              <source src={VIDEO_URL} type="video/mp4" />
+              Seu navegador não suporta vídeo HTML5.
+            </video>
           </div>
 
           {/* Download */}
