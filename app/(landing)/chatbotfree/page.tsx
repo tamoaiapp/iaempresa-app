@@ -1,10 +1,7 @@
 "use client";
 import Link from "next/link";
 
-const DOWNLOAD_URL =
-  "https://github.com/tamoaiapp/zapbot/releases/latest/download/ZapBot-0.1.0-Setup.exe";
-const DOWNLOAD_ZIP_URL =
-  "https://github.com/tamoaiapp/zapbot/releases/latest/download/ZapBot-0.1.0-portable-win-x64.zip";
+const DOWNLOAD_URL = "/api/download/zapbot";
 
 export default function ChatBotFreePage() {
   return (
@@ -143,7 +140,7 @@ export default function ChatBotFreePage() {
               marginBottom: "1.5rem",
             }}
           >
-            Versão 0.1.0 · Windows 10/11 · 88 MB
+            Última versão · Windows 10/11 · ~92 MB
           </p>
           <a
             href={DOWNLOAD_URL}
@@ -161,18 +158,6 @@ export default function ChatBotFreePage() {
           >
             Baixar ZapBot-Setup.exe
           </a>
-          <p style={{ marginTop: "1rem" }}>
-            <a
-              href={DOWNLOAD_ZIP_URL}
-              style={{
-                color: "#8394b0",
-                fontSize: "0.85rem",
-                textDecoration: "underline",
-              }}
-            >
-              ou baixar como .zip portátil (120 MB, sem instalar)
-            </a>
-          </p>
           <p style={{ color: "#4e5c72", fontSize: "0.78rem", marginTop: "1.25rem" }}>
             Dúvidas?{" "}
             <a href="mailto:contato@iaempresa.app" style={{ color: "#8394b0" }}>

@@ -3,11 +3,10 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 
-// `/releases/latest/download/` always points to the most recent release —
-// once a new version is published on GitHub, this URL serves it automatically.
-// The filename pattern is set in zapbot's electron-builder.yml.
-const DOWNLOAD_URL =
-  "https://github.com/tamoaiapp/zapbot/releases/latest/download/ZapBot-Setup-0.1.1.exe";
+// Resolve dinamicamente via /api/download/zapbot — busca o asset .exe mais
+// recente em github.com/tamoaiapp/zapbot/releases/latest. Não precisa atualizar
+// o filename aqui a cada release nova (0.1.1 → 0.1.2 → ...).
+const DOWNLOAD_URL = "/api/download/zapbot";
 
 // Bypass token for support (rare cases where someone paid but didn't see the approved page).
 const BYPASS_KEY = "ZAPBOT2026OK";
