@@ -372,20 +372,29 @@ export default function PostmasterPage() {
             Configure em 10 minutos. Posta até 6 vídeos por dia, com legenda e hashtag por IA local, sem mensalidade nem limite — você não toca em nada.
           </p>
 
-          {/* CTA principal */}
+          {/* CTA principal — duas opções: testar antes ou comprar direto */}
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem", marginBottom: "1.75rem" }}>
-            <button onClick={buy} disabled={loading} style={{
-              ...BTN,
-              padding: "1.05rem 2.5rem", fontSize: "1.1rem",
-              cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1,
-              display: "inline-flex", alignItems: "center", gap: "0.5rem",
-            }}>
-              {loading ? "Redirecionando..." : "🚀 Automatizar meu perfil agora"}
-            </button>
+            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center" }}>
+              <a href="/postmaster/teste-24h" style={{
+                ...BTN, padding: "1.05rem 2rem", fontSize: "1.05rem",
+                textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.5rem",
+                background: "linear-gradient(135deg,#16c784,#10b981)",
+                boxShadow: "0 4px 32px rgba(22,199,132,0.4)",
+              }}>
+                🚀 Testar 24h grátis
+              </a>
+              <button onClick={buy} disabled={loading} style={{
+                ...BTN_GHOST, padding: "1.05rem 2rem", fontSize: "1.05rem",
+                cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1,
+                display: "inline-flex", alignItems: "center", gap: "0.5rem",
+              }}>
+                {loading ? "Redirecionando..." : "Comprar agora — R$ 197"}
+              </button>
+            </div>
             <div style={{ display: "flex", alignItems: "center", gap: "1rem", fontSize: "0.82rem", color: "#4e5c72", flexWrap: "wrap", justifyContent: "center" }}>
-              <span><s style={{ color: "#4e5c72" }}>R$ 297</s> <strong style={{ color: "#16c784" }}>R$ 197</strong> — pagamento único</span>
+              <span>Sem cartão · Tudo liberado · Sem cadastro</span>
               <span>·</span>
-              <span>🔒 7 dias de garantia</span>
+              <span>🔒 7 dias de garantia ao comprar</span>
               <span>·</span>
               <a href="#como-funciona" style={{ color: "#8394b0", textDecoration: "none" }}>Ver como funciona ↓</a>
             </div>
@@ -661,13 +670,24 @@ export default function PostmasterPage() {
               {loading ? "Redirecionando..." : "🚀 Quero automatizar meu perfil"}
             </button>
 
+            <a href="/postmaster/teste-24h" style={{
+              ...BTN_GHOST, display: "flex", justifyContent: "center", alignItems: "center",
+              gap: "0.5rem", padding: "0.85rem", fontSize: "0.93rem",
+              textDecoration: "none", marginBottom: "0.6rem",
+              background: "rgba(22,199,132,0.08)",
+              borderColor: "rgba(22,199,132,0.25)",
+              color: "#16c784",
+            }}>
+              🚀 Antes, testar 24h grátis (sem cartão)
+            </a>
+
             <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" style={{
               ...BTN_GHOST, display: "flex", justifyContent: "center", alignItems: "center",
               gap: "0.5rem", padding: "0.85rem", fontSize: "0.93rem",
               textDecoration: "none", marginBottom: "1.25rem",
             }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="#16c784"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.74.46 3.42 1.31 4.93L2 22l5.21-1.29C8.7 21.55 10.31 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z" /></svg>
-              Antes, quero tirar uma dúvida
+              Tirar dúvida no WhatsApp
             </a>
 
             <div style={{
