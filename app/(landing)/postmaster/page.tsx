@@ -1,23 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
-
-/* ── Hook scroll reveal (intersection observer) ──────────────────────────── */
-function useReveal<T extends HTMLElement>() {
-  const ref = useRef<T | null>(null);
-  const [seen, setSeen] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || seen) return;
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) { setSeen(true); io.disconnect(); } }),
-      { threshold: 0.18, rootMargin: "0px 0px -60px 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [seen]);
-  return { ref, seen };
-}
+import { useState } from "react";
 
 /* ── Feature flags pra esconder seções sem material real ────────────────── */
 const HAS_TESTIMONIALS = false; // ativar quando tiver 4+ depoimentos reais
@@ -292,16 +275,13 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   );
 }
 
+// RevealSection: agora um simples wrapper que sempre renderiza visivel.
+// Anteriormente fazia scroll reveal com IntersectionObserver, mas isso escondia
+// a pagina inteira quando o observer nao disparava (SSR/Playwright/JS lento).
+// Conteudo > animacao. Se quiser animar de volta, fazer com CSS only que
+// termina visivel (animation-fill-mode: forwards).
 function RevealSection({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
-  const { ref, seen } = useReveal<HTMLDivElement>();
-  return (
-    <div ref={ref} style={{
-      ...(style ?? {}),
-      opacity: seen ? 1 : 0,
-      transform: seen ? "translateY(0)" : "translateY(24px)",
-      transition: "opacity 0.7s ease, transform 0.7s ease",
-    }}>{children}</div>
-  );
+  return <div style={style}>{children}</div>;
 }
 
 export default function PostmasterPage() {
