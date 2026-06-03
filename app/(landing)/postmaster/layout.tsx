@@ -21,6 +21,44 @@ export const metadata: Metadata = {
   alternates: { canonical: "/postmaster" },
 };
 
+// Schema.org Product JSON-LD pro Google reconhecer como produto vendido
+// (vai aparecer com preço, disponibilidade e título destacado em SERP).
+const productJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "PostMaster",
+  applicationCategory: "BusinessApplication",
+  applicationSubCategory: "Social Media Automation",
+  operatingSystem: "Windows 10, Windows 11",
+  description:
+    "Software desktop que automatiza postagens em Instagram e TikTok. Baixa vídeos do YouTube/IG/TikTok, converte pra 9:16, gera legenda com IA local e posta sozinho. Sem mensalidade.",
+  image: "https://iaempresa.app/postmaster-app.png",
+  url: "https://iaempresa.app/postmaster",
+  brand: { "@type": "Brand", name: "iaempresa.app" },
+  offers: {
+    "@type": "Offer",
+    url: "https://iaempresa.app/postmaster",
+    priceCurrency: "BRL",
+    price: "197.00",
+    priceValidUntil: "2026-12-31",
+    availability: "https://schema.org/InStock",
+    itemCondition: "https://schema.org/NewCondition",
+  },
+  featureList: [
+    "Baixa vídeos do YouTube, Instagram e TikTok",
+    "Posta Reels no Instagram sozinho",
+    "Posta no TikTok em múltiplas contas",
+    "Legenda com IA embutida — sem pagar API",
+    "Posta no horário certo, todo dia",
+    "Filtra e nunca repete o mesmo vídeo",
+  ],
+};
+
 export default function PostmasterLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
+      {children}
+    </>
+  );
 }
