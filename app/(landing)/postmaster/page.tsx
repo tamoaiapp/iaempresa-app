@@ -408,12 +408,81 @@ export default function PostmasterPage() {
                 PostMaster — dashboard
               </span>
             </div>
-            <div style={{ border: "1px solid rgba(99,102,241,0.18)", borderTop: "none", borderRadius: "0 0 16px 16px", overflow: "hidden", boxShadow: "0 32px 80px rgba(0,0,0,0.6)" }}>
+            <div style={{ border: "1px solid rgba(99,102,241,0.18)", borderTop: "none", borderRadius: "0 0 16px 16px", overflow: "hidden", boxShadow: "0 32px 80px rgba(0,0,0,0.6)", position: "relative" }}>
               <Image src="/postmaster-app.png" alt="PostMaster — dashboard" width={1100} height={580} style={{ display: "block", width: "100%", height: "auto" }} priority />
-            </div>
 
-            {/* Placeholder pra demo video (vai entrar quando gravarmos) */}
-            {/* <video autoPlay muted loop playsInline ... /> */}
+              {/* Live Activity overlay — mostra app trabalhando.
+                  Eh CSS puro, sem JS, com animacao staggered nas linhas
+                  pra criar sensacao de "logs chegando ao vivo". */}
+              <style>{`
+                @keyframes pm-pulse-dot {
+                  0%, 100% { opacity: 1; transform: scale(1); }
+                  50% { opacity: 0.55; transform: scale(0.85); }
+                }
+                @keyframes pm-log-fade {
+                  0%, 18% { opacity: 0; transform: translateX(-4px); }
+                  22%, 90% { opacity: 1; transform: translateX(0); }
+                  100% { opacity: 0.4; transform: translateX(0); }
+                }
+                @keyframes pm-bar-progress {
+                  0% { width: 0%; }
+                  90%, 100% { width: 100%; }
+                }
+                .pm-live-dot { animation: pm-pulse-dot 1.4s ease-in-out infinite; }
+                .pm-live-log { animation: pm-log-fade 6s ease-out infinite; opacity: 0; }
+                .pm-live-log:nth-child(1) { animation-delay: 0s; }
+                .pm-live-log:nth-child(2) { animation-delay: 1.5s; }
+                .pm-live-log:nth-child(3) { animation-delay: 3s; }
+                .pm-live-log:nth-child(4) { animation-delay: 4.5s; }
+                .pm-live-bar { animation: pm-bar-progress 6s ease-out infinite; }
+                @media (prefers-reduced-motion: reduce) {
+                  .pm-live-dot, .pm-live-log, .pm-live-bar { animation: none !important; opacity: 1 !important; }
+                }
+                @media (max-width: 720px) {
+                  .pm-live-overlay { display: none !important; }
+                }
+              `}</style>
+              <div className="pm-live-overlay" style={{
+                position: "absolute", bottom: 16, right: 16,
+                background: "rgba(10,12,18,0.96)",
+                backdropFilter: "blur(12px)",
+                border: "1px solid rgba(22,199,132,0.3)",
+                borderRadius: 12,
+                padding: "0.85rem 1rem",
+                width: 280,
+                boxShadow: "0 12px 40px rgba(0,0,0,0.5)",
+                fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.6rem", paddingBottom: "0.55rem", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                  <span className="pm-live-dot" style={{ width: 8, height: 8, borderRadius: "50%", background: "#16c784", display: "inline-block", boxShadow: "0 0 8px rgba(22,199,132,0.7)" }} />
+                  <span style={{ fontSize: "0.7rem", color: "#16c784", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>Live activity</span>
+                  <span style={{ marginLeft: "auto", fontSize: "0.65rem", color: "#4e5c72" }}>@rique_cortes</span>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.42rem", fontSize: "0.7rem", lineHeight: 1.45 }}>
+                  <div className="pm-live-log" style={{ color: "#8394b0" }}>
+                    <span style={{ color: "#4e5c72" }}>10:32 </span><span style={{ color: "#a78bfa" }}>▶</span> Job iniciado
+                  </div>
+                  <div className="pm-live-log" style={{ color: "#8394b0" }}>
+                    <span style={{ color: "#4e5c72" }}>10:32 </span><span style={{ color: "#f59e0b" }}>⬇</span> Baixando vídeo do canal
+                  </div>
+                  <div className="pm-live-log" style={{ color: "#8394b0" }}>
+                    <span style={{ color: "#4e5c72" }}>10:33 </span><span style={{ color: "#69c9d0" }}>✂</span> Cortando 9:16 + legenda IA
+                  </div>
+                  <div className="pm-live-log" style={{ color: "#c8d6f0", fontWeight: 600 }}>
+                    <span style={{ color: "#4e5c72" }}>10:34 </span><span style={{ color: "#16c784" }}>✓</span> Postado no Instagram
+                  </div>
+                </div>
+                <div style={{ marginTop: "0.65rem", paddingTop: "0.55rem", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.62rem", marginBottom: "0.3rem", color: "#4e5c72" }}>
+                    <span>Próximo post</span>
+                    <span>em ~6min</span>
+                  </div>
+                  <div style={{ height: 3, background: "rgba(255,255,255,0.06)", borderRadius: 2, overflow: "hidden" }}>
+                    <div className="pm-live-bar" style={{ height: "100%", background: "linear-gradient(90deg,#16c784,#10b981)", width: 0 }} />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
