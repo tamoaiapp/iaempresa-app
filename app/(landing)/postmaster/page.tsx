@@ -469,6 +469,19 @@ export default function PostmasterPage() {
 
       {/* ── Comparison Manual vs PostMaster ── */}
       <RevealSection style={{ padding: "5rem 1.5rem", background: "var(--bg2)" }}>
+        {/* @media: em telas <600px a tabela vira cards empilhados (Manual em cima,
+            PostMaster embaixo) — fica legivel sem espremer texto. */}
+        <style>{`
+          @media (max-width: 600px) {
+            .pm-cmp-header { display: none !important; }
+            .pm-cmp-row { grid-template-columns: 1fr !important; gap: 0.5rem !important; padding: 1rem !important; }
+            .pm-cmp-row > .pm-cmp-metric { font-size: 0.95rem !important; margin-bottom: 0.35rem !important; padding-bottom: 0.35rem !important; border-bottom: 1px solid rgba(255,255,255,0.05); }
+            .pm-cmp-row > .pm-cmp-manual,
+            .pm-cmp-row > .pm-cmp-pm { text-align: left !important; padding-left: 0.5rem; position: relative; }
+            .pm-cmp-row > .pm-cmp-manual::before { content: 'Manual:'; color: #8394b0; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 0.15rem; font-weight: 700; }
+            .pm-cmp-row > .pm-cmp-pm::before { content: 'PostMaster:'; color: #a78bfa; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 0.15rem; font-weight: 700; }
+          }
+        `}</style>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <h2 style={{ textAlign: "center", fontSize: "clamp(1.8rem,4vw,2.4rem)", fontWeight: 800, marginBottom: "0.6rem" }}>
             Postando manual vs. PostMaster
@@ -480,7 +493,7 @@ export default function PostmasterPage() {
             background: "var(--card)", border: "1px solid var(--line)",
             borderRadius: 18, overflow: "hidden",
           }}>
-            <div style={{
+            <div className="pm-cmp-header" style={{
               display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr",
               background: "rgba(99,102,241,0.06)", padding: "0.85rem 1rem",
               fontSize: "0.78rem", fontWeight: 800, color: "#8394b0",
@@ -492,15 +505,15 @@ export default function PostmasterPage() {
               <div style={{ textAlign: "center", color: "#a78bfa" }}>PostMaster</div>
             </div>
             {comparison.map(([metric, manual, pm], i) => (
-              <div key={metric} style={{
+              <div key={metric} className="pm-cmp-row" style={{
                 display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr",
                 padding: "1rem", alignItems: "center", gap: "0.5rem",
                 borderBottom: i < comparison.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
                 fontSize: "0.88rem",
               }}>
-                <div style={{ color: "#eef2f9", fontWeight: 600 }}>{metric}</div>
-                <div style={{ textAlign: "center", color: "#8394b0" }}>{manual}</div>
-                <div style={{ textAlign: "center", color: "#16c784", fontWeight: 600 }}>{pm}</div>
+                <div className="pm-cmp-metric" style={{ color: "#eef2f9", fontWeight: 600 }}>{metric}</div>
+                <div className="pm-cmp-manual" style={{ textAlign: "center", color: "#8394b0" }}>{manual}</div>
+                <div className="pm-cmp-pm" style={{ textAlign: "center", color: "#16c784", fontWeight: 600 }}>{pm}</div>
               </div>
             ))}
           </div>
