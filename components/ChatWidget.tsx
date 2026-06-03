@@ -270,21 +270,12 @@ export default function ChatWidget({ produto = "postmaster" }: { produto?: "post
                 ↑
               </button>
             </div>
-            <a
-              href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(WHATSAPP_MSG)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "flex", alignItems: "center", justifyContent: "center",
-                gap: 6, marginTop: 10,
-                color: "#16c784", fontSize: "0.78rem", fontWeight: 700,
-                textDecoration: "none", padding: "6px",
-                borderRadius: 8,
-              }}
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.74.46 3.42 1.31 4.93L2 22l5.21-1.29C8.7 21.55 10.31 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
-              Prefere falar com humano? Toca aqui
-            </a>
+            {/* WhatsApp humano fica disponivel mas DISCRETO — a TamoIA eh o suporte. */}
+            <div style={{
+              marginTop: 10, fontSize: "0.7rem", color: "#4e5c72", textAlign: "center",
+            }}>
+              Pra falar com pessoa, digita <strong style={{ color: "#8394b0" }}>"quero falar com humano"</strong>
+            </div>
           </div>
         </div>
       )}
