@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import WhatsAppFloat from "@/components/WhatsAppFloat";
+import ChatWidget from "@/components/ChatWidget";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -8,7 +8,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <Header />
       <main style={{ flexGrow: 1 }}>{children}</main>
       <Footer />
-      <WhatsAppFloat />
+      <ChatWidget produto="geral" />
     </>
   );
 }

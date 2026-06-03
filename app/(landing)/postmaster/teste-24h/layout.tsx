@@ -21,6 +21,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/postmaster/teste-24h" },
 };
 
+import ChatWidget from "@/components/ChatWidget";
+
 export default function Teste24hLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <ChatWidget produto="postmaster" />
+    </>
+  );
 }
