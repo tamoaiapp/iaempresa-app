@@ -21,7 +21,7 @@ export async function POST() {
             description: "Aplicativo Windows que aposta em Total de Escanteios no KTO via modelo estatístico. Acesso vitalício + auto-update.",
             quantity: 1,
             currency_id: "BRL",
-            unit_price: 197,
+            unit_price: 69,
           },
         ],
         back_urls: {
