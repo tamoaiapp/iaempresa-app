@@ -29,6 +29,8 @@ export async function POST() {
           failure: "https://iaempresa.app/robodabet?status=falhou",
           pending: "https://iaempresa.app/robodabetpago?status=pendente",
         },
+        // MP anexa payment_id na URL de retorno automaticamente,
+        // o que faz o polling do PIX funcionar mesmo se o webhook atrasar.
         auto_return: "approved",
         notification_url: "https://iaempresa.app/api/webhooks/mercadopago/robodabet",
         statement_descriptor: "IAEMPRESA ROBODABET",

@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  ensureTokenForRoboDaBet,
+  fetchMpPaymentRoboDaBet,
+  isApprovedRoboDaBet,
+} from "@/lib/robodabet-tokens";
 
 export const dynamic = "force-dynamic";
 
-// Webhook do MercadoPago para Robô da Bet.
-// MVP: só loga aprovação. v0.2 vai gerar token de acesso ao download
-// e mandar email automático com link do .exe (copy do sistema PostMaster).
+// Webhook MercadoPago — Robô da Bet
+// Quando pagamento aprovado (R$69), gera/recupera token único.
+// Idempotente — pode ser chamado várias vezes pro mesmo payment_id.
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({} as Record<string, unknown>));
@@ -15,8 +20,19 @@ export async function POST(req: NextRequest) {
       (body as { type?: string })?.type || req.nextUrl.searchParams.get("topic");
 
     if (topic === "payment" && id) {
-      console.log("[MP webhook RoboDaBet] payment_id:", id, "topic:", topic);
-      // TODO: ensureTokenForRoboDaBet(id) — pegar email, gerar token, enviar download link
+      const payment = await fetchMpPaymentRoboDaBet(id);
+      console.log("[MP webhook RoboDaBet]", {
+        id: payment?.id,
+        status: payment?.status,
+        amount: payment?.amount,
+        email: payment?.email,
+        method: payment?.method,
+      });
+
+      if (isApprovedRoboDaBet(payment)) {
+        const { token, created } = await ensureTokenForRoboDaBet(payment!.id, payment!.email);
+        console.log("[MP webhook RoboDaBet] token", { id: payment!.id, token, created });
+      }
     }
   } catch (e) {
     console.error("[MP webhook RoboDaBet] erro:", e);
