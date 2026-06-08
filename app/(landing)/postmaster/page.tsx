@@ -42,6 +42,48 @@ const features = [
     desc: "Cole o link do canal, perfil ou vídeo — de qualquer plataforma. O PostMaster baixa, converte para 9:16 e posta sozinho. Roda 24h.",
   },
   {
+    platform: "youtube_post",
+    color: "#ff4242",
+    bg: "rgba(255,0,0,0.06)",
+    border: "rgba(255,0,0,0.22)",
+    logo: (
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect width="28" height="28" rx="7" fill="#FF0000" />
+        <path d="M21.5 9.5s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.4 6.4 14 6.4 14 6.4s-2.4 0-4.7.2c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S6.3 11.1 6.3 12.6v1.4c0 1.5.2 3 .2 3s.2 1.4.8 2c.8.8 1.8.7 2.3.8C11 20 14 20 14 20s2.4 0 4.7-.2c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.5.2-3v-1.4c0-1.5-.2-3-.2-3zm-8.8 6v-5.2l5.4 2.6-5.4 2.6z" fill="white" />
+      </svg>
+    ),
+    title: "Posta no YouTube com SEO automatizado",
+    desc: "Upload via Chrome real (sem API que dá ban), título/descrição/tags geradas por IA local, formato 16:9 1080p — pronto pra monetizar.",
+  },
+  {
+    platform: "dub",
+    color: "#ff8c42",
+    bg: "rgba(255,140,66,0.07)",
+    border: "rgba(255,140,66,0.22)",
+    logo: (
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect width="28" height="28" rx="7" fill="rgba(255,140,66,0.18)" />
+        <path d="M9 11v6M12 9v10M15 12v4M18 10v8M21 13v2" stroke="#ff8c42" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    ),
+    title: "Dublagem e narração 100% local",
+    desc: "Whisper transcreve, Qwen traduz, Piper TTS (Faber ou Cadu BR). Vídeo gringo vira PT-BR ou vídeo seu ganha voz de IA — sem custo de API.",
+  },
+  {
+    platform: "dense",
+    color: "#a78bfa",
+    bg: "rgba(167,139,250,0.07)",
+    border: "rgba(167,139,250,0.22)",
+    logo: (
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect width="28" height="28" rx="7" fill="rgba(167,139,250,0.18)" />
+        <path d="M7 8h14M7 12h10M7 16h13M7 20h7" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    ),
+    title: "Corte inteligente de podcast 1h → 10min",
+    desc: "IA lê a transcrição inteira e seleciona os trechos mais densos — gera um vídeo de 8-16min ideal pra monetização YouTube.",
+  },
+  {
     platform: "instagram",
     color: "#e1306c",
     bg: "rgba(225,48,108,0.08)",
@@ -124,8 +166,8 @@ const features = [
 
 const steps = [
   { n: "1", title: "Instala em 2 minutos", desc: "Baixa, instala no Windows e abre. Sem configuração técnica. Funciona em qualquer PC ou notebook." },
-  { n: "2", title: "Conecta sua conta", desc: "Entra no Instagram ou TikTok normalmente pela janela de login. Sessão fica salva — não precisa entrar de novo." },
-  { n: "3", title: "Configura o conteúdo", desc: "Cola o link do canal do YouTube, define o horário e clica em salvar. Pronto — configurou." },
+  { n: "2", title: "Conecta sua(s) conta(s)", desc: "Entra no YouTube, Instagram ou TikTok normalmente pela janela de login. Sessão fica salva — não precisa entrar de novo." },
+  { n: "3", title: "Escolhe a estratégia", desc: "Repostar canal, traduzir vídeo gringo, narrar com IA, viralizar TikTok, crescer Instagram — escolhe o fluxo e cola a fonte (canal ou link de vídeo direto)." },
   { n: "4", title: "Clica em Iniciar e esquece", desc: "O PostMaster roda em segundo plano e posta sozinho. Você pode fechar a janela — ele continua." },
 ];
 
@@ -148,6 +190,80 @@ const painPoints = [
   },
 ];
 
+/* ── 3 caminhos pra ganhar dinheiro ── */
+const moneyTracks = [
+  {
+    key: "youtube",
+    accent: "#ff0000",
+    bg: "rgba(255,0,0,0.06)",
+    border: "rgba(255,0,0,0.22)",
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <rect width="36" height="36" rx="9" fill="#FF0000" />
+        <path d="M27.5 12.5s-.25-1.8-1-2.55c-1-1-2-1-2.5-1.05C20 8.6 18 8.6 18 8.6s-3 0-5.7.25c-.55.05-1.5.05-2.5 1.05-.75.75-1 2.55-1 2.55S8.5 14.4 8.5 16.2v1.6c0 1.8.3 3.7.3 3.7s.25 1.8 1 2.55c1 1 2.3.95 2.95 1.05C14.5 25.5 18 25.5 18 25.5s3 0 5.7-.25c.55-.05 1.5-.05 2.5-1.05.75-.75 1-2.55 1-2.55s.3-1.9.3-3.7v-1.6c0-1.8-.3-3.7-.3-3.7zm-11.2 7.7v-6.5l6.6 3.25-6.6 3.25z" fill="white" />
+      </svg>
+    ),
+    label: "YouTube",
+    headline: "Monetize com o Programa de Parcerias",
+    desc: "Vídeo longo (8-16min) é o conteúdo que mais paga no YouTube. PostMaster monta sua biblioteca em escala — sem você editar nada.",
+    bullets: [
+      { t: "Reposta vídeos de canais grandes", d: "Cole o link do canal, ele baixa, re-edita 16:9 com sua marca d'água e publica no seu canal." },
+      { t: "Corta podcast em vídeo de 10min", d: "Pega um podcast longo do YouTube, separa os melhores trechos (corte denso por IA) e gera um vídeo pronto pra monetizar." },
+      { t: "Traduz vídeo gringo pra PT-BR", d: "Whisper + Qwen + Piper (tudo local). Pega vídeo em inglês/espanhol, gera dublagem PT-BR e publica — vídeo gringo viral fica disponível pro brasileiro." },
+      { t: "Narração com IA do seu roteiro", d: "Vídeo já em PT-BR? Substitui sua voz por voz de IA profissional (Faber ou Cadu). Útil pra quem não quer aparecer/falar." },
+    ],
+  },
+  {
+    key: "tiktok",
+    accent: "#00f2ea",
+    bg: "rgba(0,242,234,0.05)",
+    border: "rgba(0,242,234,0.22)",
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <rect width="36" height="36" rx="9" fill="#010101" />
+        <path d="M25 9h-3.6v12a3.1 3.1 0 0 1-3.1 3 3.1 3.1 0 0 1-3.1-3 3.1 3.1 0 0 1 3.1-3c.3 0 .65 0 .9.1V14a6.7 6.7 0 0 0-.9 0 6.7 6.7 0 0 0-6.7 6.7 6.7 6.7 0 0 0 6.7 6.7 6.7 6.7 0 0 0 6.7-6.7v-6.3a9 9 0 0 0 5.1 1.55v-3.6a5.4 5.4 0 0 1-5.1-3.45z" fill="white" />
+      </svg>
+    ),
+    label: "TikTok",
+    headline: "Crie viral todo dia + monetize de 3 jeitos",
+    desc: "TikTok recompensa volume + retenção. PostMaster posta 3-6 cortes virais por dia com legenda dinâmica — fluxo de receita em 3 frentes.",
+    bullets: [
+      { t: "Vídeo viral em formato dinâmico", d: "Auto-edit IA estilo TikTok: face track, corte de silêncio, karaokê das legendas, hashtag por IA. Tudo automático." },
+      { t: "Monetiza com Creator Rewards", d: "Vídeos longos (≥60s) com alto retention pagam via TikTok Creator Rewards. PostMaster mantém o ritmo de upload diário sem você lembrar." },
+      { t: "Vende seu produto na bio", d: "Bio com link da sua loja, infoproduto ou serviço. Cada Reel que viraliza puxa tráfego direto pro link." },
+      { t: "Ganha seguidor pra vender depois", d: "Volume de posts = mais alcance = perfil grande. Perfil grande = autoridade pra qualquer venda que você quiser fazer." },
+    ],
+  },
+  {
+    key: "instagram",
+    accent: "#e1306c",
+    bg: "rgba(225,48,108,0.06)",
+    border: "rgba(225,48,108,0.22)",
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <rect width="36" height="36" rx="9" fill="url(#igmoney)" />
+        <defs>
+          <linearGradient id="igmoney" x1="0" y1="36" x2="36" y2="0">
+            <stop stopColor="#f9a825" /><stop offset="0.4" stopColor="#e1306c" /><stop offset="1" stopColor="#833ab4" />
+          </linearGradient>
+        </defs>
+        <rect x="9" y="9" width="18" height="18" rx="5" stroke="white" strokeWidth="2.2" fill="none" />
+        <circle cx="18" cy="18" r="4.5" stroke="white" strokeWidth="2.2" fill="none" />
+        <circle cx="23.4" cy="12.6" r="1.3" fill="white" />
+      </svg>
+    ),
+    label: "Instagram",
+    headline: "Cresce o perfil pra vender o que você quiser",
+    desc: "No Instagram não tem monetização direta forte — o jogo é VENDA. PostMaster faz o trabalho duro de crescer o perfil pra você vender com autoridade.",
+    bullets: [
+      { t: "Reels diários sem você grudar no celular", d: "Posta 3-6 Reels por dia com legenda IA, hashtag e horário de pico. Alcance orgânico que precisa de volume." },
+      { t: "Cresce até virar perfil de autoridade", d: "Perfil de 1k não vende. Perfil de 50k vende qualquer coisa que você colocar na bio. Volume + tempo = autoridade." },
+      { t: "Vende produto/serviço na bio", d: "Loja, infoproduto, consultoria, link de afiliado. Cada Reel viral entrega tráfego direto pra sua oferta." },
+      { t: "Múltiplas contas em paralelo", d: "Roda 1 conta por nicho (fitness, finanças, receita, etc) em paralelo. Diversifica fontes de tráfego sem custo extra." },
+    ],
+  },
+];
+
 const comparison = [
   ["Tempo por post", "1h–1h30 (baixar, cortar, legenda, agendar)", "0 minuto — automático"],
   ["Posts por mês", "2 a 8 (quando lembra)", "Até 180 (6 por dia, 30 dias)"],
@@ -158,6 +274,10 @@ const comparison = [
 ];
 
 const faqs = [
+  {
+    q: "Como eu ganho dinheiro com o PostMaster?",
+    a: "São 3 caminhos: (1) YouTube — vídeos de 8-16min monetizam via Programa de Parcerias; o PostMaster reposta vídeos, corta podcasts longos, traduz vídeos gringos e narra com IA. (2) TikTok — vídeos virais (≥60s com bom retention) pagam via Creator Rewards, e a bio gera tráfego pra produto/serviço. (3) Instagram — perfil grande vende qualquer coisa que estiver na bio (loja, infoproduto, afiliado). Você escolhe a estratégia, o PostMaster executa em escala todo dia.",
+  },
   {
     q: "Minha conta pode ser banida?",
     a: "O PostMaster posta como humano — sessão real de navegador, intervalos naturais, sem APIs não oficiais (que são o que a Meta detecta e bane). É o mesmo comportamento de quem abre o Instagram no PC e posta manualmente. Recomendamos começar com intervalo de 2h+ entre posts nos primeiros dias para criar histórico. Clientes têm contas rodando há meses sem problema seguindo essa prática.",
@@ -339,17 +459,17 @@ export default function PostmasterPage() {
             fontSize: "clamp(2.4rem,5vw,4.2rem)",
             fontWeight: 900, lineHeight: 1.07, marginBottom: "1.1rem",
           }}>
-            Seu perfil postando sozinho no{" "}
+            Ganhe dinheiro no{" "}
+            <span style={{ color: "#ff4242" }}>YouTube</span>,{" "}
+            <span style={{ color: "#69c9d0" }}>TikTok</span> e{" "}
             <span style={{ background: "linear-gradient(135deg,#f58529,#dd2a7b,#8134af)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               Instagram
-            </span>{" "}
-            e{" "}
-            <span style={{ color: "#69c9d0" }}>TikTok</span>
-            <br />enquanto você trabalha
+            </span>
+            <br />com piloto automático
           </h1>
 
-          <p style={{ textAlign: "center", fontSize: "1.1rem", color: "#8394b0", lineHeight: 1.7, maxWidth: 640, margin: "0 auto 2rem" }}>
-            Configure em 10 minutos. Posta até 6 vídeos por dia, com legenda e hashtag por IA local, sem mensalidade nem limite — você não toca em nada.
+          <p style={{ textAlign: "center", fontSize: "1.1rem", color: "#8394b0", lineHeight: 1.7, maxWidth: 680, margin: "0 auto 2rem" }}>
+            Monetização do YouTube, ads do TikTok, venda na bio do Instagram. PostMaster posta sozinho com IA local — você foca em escalar o que dá lucro, não em editar Reel.
           </p>
 
           {/* CTA principal — duas opções: testar antes ou comprar direto */}
@@ -382,7 +502,7 @@ export default function PostmasterPage() {
 
           {/* Trust badges */}
           <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap", justifyContent: "center", marginBottom: "3.5rem" }}>
-            {["Sem mensalidade", "IA grátis ilimitada", "Posts ilimitados", "Instagram + TikTok", "Múltiplas contas"].map(t => (
+            {["Sem mensalidade", "IA grátis ilimitada", "YouTube + Instagram + TikTok", "Posts ilimitados", "Múltiplas contas"].map(t => (
               <span key={t} style={{ color: "#8394b0", fontSize: "0.82rem", fontWeight: 500, display: "flex", alignItems: "center", gap: "0.3rem" }}>
                 <span style={{ color: "#16c784" }}>✓</span> {t}
               </span>
@@ -511,14 +631,80 @@ export default function PostmasterPage() {
         </div>
       </RevealSection>
 
+      {/* ── 3 caminhos pra ganhar dinheiro (uma seção por plataforma) ── */}
+      <RevealSection style={{ padding: "5rem 1.5rem" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+            <div style={{
+              display: "inline-block", background: "rgba(22,199,132,0.12)",
+              border: "1px solid rgba(22,199,132,0.28)", color: "#16c784",
+              borderRadius: 20, padding: "0.35rem 1rem", fontSize: "0.78rem",
+              fontWeight: 800, marginBottom: "1.25rem", letterSpacing: "0.04em",
+            }}>
+              💸 3 PLATAFORMAS, 3 CAMINHOS PRA MONETIZAR
+            </div>
+            <h2 style={{ fontSize: "clamp(1.9rem,4.2vw,2.6rem)", fontWeight: 900, marginBottom: "0.75rem", lineHeight: 1.15 }}>
+              Não é sobre postar sozinho.<br />É sobre <span style={{ background: "linear-gradient(135deg,#16c784,#10b981)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>ganhar dinheiro</span> sozinho.
+            </h2>
+            <p style={{ color: "#8394b0", fontSize: "1rem", lineHeight: 1.7, maxWidth: 640, margin: "0 auto" }}>
+              Cada plataforma paga de um jeito diferente. PostMaster cobre as 3 — você escolhe a estratégia, ele executa.
+            </p>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+            {moneyTracks.map((t) => (
+              <div key={t.key} style={{
+                background: t.bg, border: `1px solid ${t.border}`,
+                borderRadius: 22, padding: "2rem 1.75rem",
+                display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1.4fr)",
+                gap: "2rem", alignItems: "start",
+              }} className="pm-money-row">
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.85rem", marginBottom: "1.1rem" }}>
+                    {t.icon}
+                    <div style={{ fontWeight: 900, fontSize: "1.45rem", color: t.accent, letterSpacing: "-0.01em" }}>{t.label}</div>
+                  </div>
+                  <h3 style={{ fontWeight: 800, fontSize: "1.25rem", color: "#eef2f9", lineHeight: 1.3, marginBottom: "0.7rem" }}>
+                    {t.headline}
+                  </h3>
+                  <p style={{ color: "#8394b0", fontSize: "0.93rem", lineHeight: 1.7 }}>{t.desc}</p>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+                  {t.bullets.map((b) => (
+                    <div key={b.t} style={{
+                      background: "rgba(255,255,255,0.025)",
+                      border: "1px solid rgba(255,255,255,0.05)",
+                      borderRadius: 12, padding: "0.9rem 1.05rem",
+                      display: "flex", gap: "0.7rem", alignItems: "flex-start",
+                    }}>
+                      <span style={{ color: t.accent, fontSize: "1rem", fontWeight: 900, lineHeight: 1.45, flexShrink: 0 }}>→</span>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: "0.92rem", color: "#eef2f9", marginBottom: "0.2rem" }}>{b.t}</div>
+                        <div style={{ fontSize: "0.83rem", color: "#8394b0", lineHeight: 1.55 }}>{b.d}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <style>{`
+            @media (max-width: 720px) {
+              .pm-money-row { grid-template-columns: 1fr !important; gap: 1.25rem !important; padding: 1.5rem 1.25rem !important; }
+            }
+          `}</style>
+        </div>
+      </RevealSection>
+
       {/* ── Features ── */}
-      <RevealSection style={{ padding: "4rem 1.5rem" }}>
+      <RevealSection style={{ padding: "4rem 1.5rem", background: "var(--bg2)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <h2 style={{ textAlign: "center", fontSize: "clamp(1.8rem,4vw,2.4rem)", fontWeight: 800, marginBottom: "0.6rem" }}>
-            Tudo que você precisa pra crescer no automático
+            Recursos que tornam isso possível
           </h2>
           <p style={{ textAlign: "center", color: "#8394b0", marginBottom: "3rem", fontSize: "1rem" }}>
-            Configure uma vez — ele trabalha para você enquanto você dorme.
+            Por trás dos 3 caminhos de monetização, esses recursos fazem o trabalho pesado.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: "1.1rem" }}>
             {features.map((f) => (
@@ -710,11 +896,12 @@ export default function PostmasterPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem", textAlign: "left", marginBottom: "2rem" }}>
               {[
                 "App PostMaster pra Windows 10/11",
-                "IA de legenda embutida — sem custo extra",
-                "Posts ilimitados no Instagram e TikTok",
-                "Múltiplas contas em paralelo, sem limite",
-                "Atualizações grátis por 1 ano",
-                "Guia de instalação passo a passo",
+                "Posta no YouTube + TikTok + Instagram",
+                "Dublagem e narração com IA local (Whisper + Piper)",
+                "Corte inteligente de podcast longo",
+                "Título / descrição / tags SEO YouTube por IA",
+                "Posts ilimitados, múltiplas contas em paralelo",
+                "Atualizações grátis por 1 ano (auto-update)",
                 "Suporte por e-mail e WhatsApp",
               ].map(item => (
                 <div key={item} style={{ fontSize: "0.93rem", color: "#c8d6f0", display: "flex", alignItems: "center", gap: "0.5rem" }}>
@@ -804,10 +991,10 @@ export default function PostmasterPage() {
             Ainda postando na mão?
           </h2>
           <p style={{ color: "#8394b0", marginBottom: "0.5rem", fontSize: "1rem", lineHeight: 1.7 }}>
-            Cada dia sem automatizar é mais uma hora do seu dia que vai pra edição em vez de gravação.
+            Cada dia sem automatizar é mais um dia de monetização YouTube, Creator Rewards do TikTok e venda no Instagram que escapa.
           </p>
           <p style={{ color: "#8394b0", marginBottom: "2rem", fontSize: "1rem" }}>
-            Configure o PostMaster hoje. Em 10 minutos seu perfil já está no piloto automático.
+            Configure o PostMaster hoje. Em 10 minutos as 3 plataformas estão trabalhando pra você.
           </p>
           <button onClick={buy} disabled={loading} style={{
             ...BTN, padding: "1.1rem 2.5rem", fontSize: "1.1rem",
