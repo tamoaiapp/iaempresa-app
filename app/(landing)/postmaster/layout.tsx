@@ -54,14 +54,11 @@ const productJsonLd = {
   ],
 };
 
-import ChatWidget from "@/components/ChatWidget";
-
 export default function PostmasterLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
       {children}
-      <ChatWidget produto="postmaster" />
     </>
   );
 }

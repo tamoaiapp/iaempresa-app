@@ -5,7 +5,6 @@ import { useState } from "react";
 /* ── Feature flags pra esconder seções sem material real ────────────────── */
 const HAS_TESTIMONIALS = false; // ativar quando tiver 4+ depoimentos reais
 const HAS_FOUNDER_PHOTO = false; // ativar quando tiver foto + CNPJ
-const WHATSAPP_SUPPORT = "5511967245795"; // troca quando tiver número de suporte real
 
 /* ── Conteúdo ────────────────────────────────────────────────────────────── */
 const features = [
@@ -355,11 +354,6 @@ async function handleCheckout(setLoading: (v: boolean) => void) {
   }
 }
 
-function whatsappLink() {
-  const text = encodeURIComponent("Oi! Tô pensando em assinar o PostMaster, quero tirar uma dúvida antes.");
-  return `https://wa.me/${WHATSAPP_SUPPORT}?text=${text}`;
-}
-
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
@@ -420,17 +414,16 @@ export default function PostmasterPage() {
         display: "flex", alignItems: "center", justifyContent: "space-between",
         height: 58,
       }}>
-        <a href="/" style={{ textDecoration: "none", fontWeight: 800, fontSize: "1.05rem", color: "#eef2f9" }}>
-          iaempresa<span style={{ color: "#8b5cf6" }}>.app</span>
+        <a href="/postmaster" style={{ textDecoration: "none", fontWeight: 800, fontSize: "1.05rem", color: "#eef2f9", display: "inline-flex", alignItems: "center", gap: "0.45rem" }}>
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            width: 28, height: 28, borderRadius: 7,
+            background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
+            color: "#fff", fontWeight: 900, fontSize: "0.85rem", letterSpacing: "-0.02em",
+          }}>PM</span>
+          Post<span style={{ color: "#8b5cf6" }}>Master</span>
         </a>
         <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
-          <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" style={{
-            ...BTN_GHOST, padding: "0.45rem 1rem", fontSize: "0.82rem",
-            textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.4rem",
-          }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#16c784"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.74.46 3.42 1.31 4.93L2 22l5.21-1.29C8.7 21.55 10.31 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.05 14.18c-.21.59-1.21 1.13-1.67 1.18-.44.05-1 .07-1.61-.1-.37-.11-.85-.27-1.45-.53-2.55-1.1-4.22-3.67-4.35-3.84-.12-.17-1.03-1.37-1.03-2.61 0-1.24.65-1.85.88-2.1.23-.25.5-.31.66-.31s.33 0 .47.01c.15.01.36-.06.56.43.21.5.71 1.74.77 1.86.06.12.1.27.02.43-.08.17-.12.27-.24.41-.12.14-.25.32-.36.43-.12.12-.25.25-.11.49.14.25.62 1.02 1.33 1.65.91.81 1.68 1.07 1.92 1.19.24.12.38.1.52-.06.14-.16.6-.7.76-.94.16-.24.31-.2.53-.12.21.08 1.34.63 1.57.74.23.11.39.17.45.27.06.1.06.55-.15 1.14z" /></svg>
-            Tirar dúvida
-          </a>
           <button onClick={buy} disabled={loading} style={{
             ...BTN, padding: "0.45rem 1.25rem", fontSize: "0.875rem",
             cursor: loading ? "wait" : "pointer",
@@ -472,29 +465,19 @@ export default function PostmasterPage() {
             Monetização do YouTube, ads do TikTok, venda na bio do Instagram. PostMaster posta sozinho com IA local — você foca em escalar o que dá lucro, não em editar Reel.
           </p>
 
-          {/* CTA principal — duas opções: testar antes ou comprar direto */}
+          {/* CTA principal — direto pra compra */}
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem", marginBottom: "1.75rem" }}>
-            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center" }}>
-              <a href="/postmaster/teste-24h" style={{
-                ...BTN, padding: "1.05rem 2rem", fontSize: "1.05rem",
-                textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.5rem",
-                background: "linear-gradient(135deg,#16c784,#10b981)",
-                boxShadow: "0 4px 32px rgba(22,199,132,0.4)",
-              }}>
-                🚀 Testar 24h grátis
-              </a>
-              <button onClick={buy} disabled={loading} style={{
-                ...BTN_GHOST, padding: "1.05rem 2rem", fontSize: "1.05rem",
-                cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1,
-                display: "inline-flex", alignItems: "center", gap: "0.5rem",
-              }}>
-                {loading ? "Redirecionando..." : "Comprar agora — R$ 197"}
-              </button>
-            </div>
+            <button onClick={buy} disabled={loading} style={{
+              ...BTN, padding: "1.1rem 2.5rem", fontSize: "1.1rem",
+              cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1,
+              display: "inline-flex", alignItems: "center", gap: "0.5rem",
+            }}>
+              {loading ? "Redirecionando..." : "🚀 Quero automatizar — R$ 197"}
+            </button>
             <div style={{ display: "flex", alignItems: "center", gap: "1rem", fontSize: "0.82rem", color: "#4e5c72", flexWrap: "wrap", justifyContent: "center" }}>
-              <span>Sem cartão · Tudo liberado · Sem cadastro</span>
+              <span>🔒 7 dias de garantia total</span>
               <span>·</span>
-              <span>🔒 7 dias de garantia ao comprar</span>
+              <span>Pagamento único, sem mensalidade</span>
               <span>·</span>
               <a href="#como-funciona" style={{ color: "#8394b0", textDecoration: "none" }}>Ver como funciona ↓</a>
             </div>
@@ -902,7 +885,7 @@ export default function PostmasterPage() {
                 "Título / descrição / tags SEO YouTube por IA",
                 "Posts ilimitados, múltiplas contas em paralelo",
                 "Atualizações grátis por 1 ano (auto-update)",
-                "Suporte por e-mail e WhatsApp",
+                "Suporte por e-mail",
               ].map(item => (
                 <div key={item} style={{ fontSize: "0.93rem", color: "#c8d6f0", display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <span style={{ color: "#16c784" }}>✓</span>{item}
@@ -918,26 +901,6 @@ export default function PostmasterPage() {
             }}>
               {loading ? "Redirecionando..." : "🚀 Quero automatizar meu perfil"}
             </button>
-
-            <a href="/postmaster/teste-24h" style={{
-              ...BTN_GHOST, display: "flex", justifyContent: "center", alignItems: "center",
-              gap: "0.5rem", padding: "0.85rem", fontSize: "0.93rem",
-              textDecoration: "none", marginBottom: "0.6rem",
-              background: "rgba(22,199,132,0.08)",
-              borderColor: "rgba(22,199,132,0.25)",
-              color: "#16c784",
-            }}>
-              🚀 Antes, testar 24h grátis (sem cartão)
-            </a>
-
-            <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" style={{
-              ...BTN_GHOST, display: "flex", justifyContent: "center", alignItems: "center",
-              gap: "0.5rem", padding: "0.85rem", fontSize: "0.93rem",
-              textDecoration: "none", marginBottom: "1.25rem",
-            }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#16c784"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.74.46 3.42 1.31 4.93L2 22l5.21-1.29C8.7 21.55 10.31 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z" /></svg>
-              Tirar dúvida no WhatsApp
-            </a>
 
             <div style={{
               display: "flex", alignItems: "center", gap: "0.6rem",
@@ -975,7 +938,7 @@ export default function PostmasterPage() {
             Dúvidas frequentes
           </h2>
           <p style={{ textAlign: "center", color: "#8394b0", marginBottom: "2.5rem", fontSize: "0.95rem" }}>
-            Tem outra dúvida? <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" style={{ color: "#a78bfa" }}>Manda WhatsApp</a> que eu respondo na hora.
+            Tem outra dúvida? <a href="mailto:contato@iaempresa.app" style={{ color: "#a78bfa" }}>Manda um e-mail</a> que eu respondo o mais rápido possível.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem" }}>
             {faqs.map((f) => <FAQItem key={f.q} q={f.q} a={f.a} />)}
@@ -1033,7 +996,6 @@ export default function PostmasterPage() {
             </div>
             <div>
               <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "#8394b0", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.75rem" }}>Suporte</div>
-              <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" style={{ display: "block", color: "#8394b0", fontSize: "0.85rem", textDecoration: "none", marginBottom: "0.4rem" }}>WhatsApp</a>
               <a href="mailto:contato@iaempresa.app" style={{ display: "block", color: "#8394b0", fontSize: "0.85rem", textDecoration: "none", marginBottom: "0.4rem" }}>contato@iaempresa.app</a>
             </div>
             <div>
