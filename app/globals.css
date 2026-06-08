@@ -36,6 +36,129 @@ a { color: inherit; text-decoration: none; }
 
 img { max-width: 100%; display: block; }
 
+/* ============ Futuristic home (linktree) ============ */
+@keyframes lt-grid-pan {
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 60px 60px, 60px 60px; }
+}
+@keyframes lt-orb-a {
+  0%, 100% { transform: translate(-50%, -50%) translate(0, 0) scale(1); }
+  50%      { transform: translate(-50%, -50%) translate(60px, -40px) scale(1.15); }
+}
+@keyframes lt-orb-b {
+  0%, 100% { transform: translate(-50%, -50%) translate(0, 0) scale(1.1); }
+  50%      { transform: translate(-50%, -50%) translate(-70px, 50px) scale(0.9); }
+}
+@keyframes lt-shimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes lt-spin {
+  to { transform: rotate(1turn); }
+}
+@keyframes lt-rise {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes lt-scan {
+  0%   { transform: translateY(-120%); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: translateY(320%); opacity: 0; }
+}
+
+.lt-wrap {
+  position: relative;
+  min-height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.25rem;
+  overflow: hidden;
+}
+.lt-grid {
+  position: absolute; inset: -50%;
+  background-image:
+    linear-gradient(rgba(124,58,237,0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,58,237,0.10) 1px, transparent 1px);
+  background-size: 60px 60px, 60px 60px;
+  animation: lt-grid-pan 6s linear infinite;
+  -webkit-mask-image: radial-gradient(ellipse 60% 55% at 50% 45%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 60% 55% at 50% 45%, #000 30%, transparent 75%);
+  pointer-events: none;
+}
+.lt-orb { position: absolute; border-radius: 50%; filter: blur(60px); pointer-events: none; }
+.lt-orb.a { top: 32%; left: 38%; width: 460px; height: 460px;
+  background: radial-gradient(circle, rgba(99,102,241,0.5), transparent 70%);
+  animation: lt-orb-a 11s ease-in-out infinite; }
+.lt-orb.b { top: 55%; left: 62%; width: 420px; height: 420px;
+  background: radial-gradient(circle, rgba(0,255,136,0.28), transparent 70%);
+  animation: lt-orb-b 13s ease-in-out infinite; }
+
+.lt-head { position: relative; text-align: center; margin-bottom: 2.75rem;
+  animation: lt-rise 0.7s cubic-bezier(.2,.7,.2,1) both; }
+.lt-title {
+  font-size: clamp(2rem, 5.5vw, 3rem); font-weight: 900; letter-spacing: -1.5px;
+  margin-bottom: 0.7rem;
+  background: linear-gradient(100deg, #eef2f9, #a78bfa, #00ff88, #a78bfa, #eef2f9);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: lt-shimmer 5s linear infinite;
+}
+.lt-sub { color: var(--muted); font-size: 1.05rem; }
+.lt-grid-cards {
+  position: relative; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1.5rem; width: 100%; max-width: 760px;
+}
+
+.lt-card {
+  --accent: #7c3aed;
+  position: relative;
+  display: flex; flex-direction: column; gap: 0.85rem;
+  border-radius: 22px;
+  padding: 2rem 1.75rem;
+  text-decoration: none;
+  background: linear-gradient(160deg, rgba(17,24,32,0.9), rgba(12,16,24,0.9));
+  border: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.35s cubic-bezier(.2,.7,.2,1), box-shadow 0.35s, border-color 0.35s;
+  animation: lt-rise 0.7s cubic-bezier(.2,.7,.2,1) both;
+}
+.lt-card.c1 { animation-delay: 0.1s; }
+.lt-card.c2 { animation-delay: 0.22s; }
+/* rotating conic glow border */
+.lt-card::before {
+  content: ""; position: absolute; z-index: -1; inset: -1px; border-radius: 23px;
+  background: conic-gradient(from 0deg, transparent 0 70%, var(--accent) 85%, transparent 100%);
+  opacity: 0; transition: opacity 0.4s;
+  animation: lt-spin 4s linear infinite;
+}
+.lt-card::after {
+  content: ""; position: absolute; z-index: -1; inset: 1px; border-radius: 21px;
+  background: linear-gradient(160deg, rgba(17,24,32,0.96), rgba(10,14,20,0.96));
+}
+.lt-card:hover {
+  transform: translateY(-8px);
+  border-color: transparent;
+  box-shadow: 0 24px 60px -20px var(--glow);
+}
+.lt-card:hover::before { opacity: 1; }
+/* scan-line sweep on hover */
+.lt-card .lt-scan {
+  position: absolute; left: 0; right: 0; top: 0; height: 40%;
+  background: linear-gradient(180deg, transparent, var(--glow), transparent);
+  opacity: 0; mix-blend-mode: screen; pointer-events: none;
+}
+.lt-card:hover .lt-scan { animation: lt-scan 1.1s ease-in-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lt-grid, .lt-orb, .lt-title, .lt-card, .lt-card::before, .lt-card .lt-scan { animation: none !important; }
+  .lt-title { -webkit-text-fill-color: #eef2f9; }
+}
+
 /* Prose styles for MDX guides */
 .prose {
   color: var(--text);
